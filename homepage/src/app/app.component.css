@@ -1,0 +1,20 @@
+#app {
+position: absolute;
+height: 100vh;
+width: 100%;
+}
+
+#controls {
+position: fixed;
+text-align: center;
+width: 100%;
+bottom: 10px;
+}
+
+#current-track {
+text-align: center;
+background-color: black;
+color: white;
+padding: 10px 0;
+}
+  
