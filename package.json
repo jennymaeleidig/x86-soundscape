@@ -19,7 +19,10 @@
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
     "@sakun/system.css": "^0.1.11",
+    "@tailwindcss/postcss": "^4.0.14",
+    "postcss": "^8.5.3",
     "rxjs": "~7.8.0",
+    "tailwindcss": "^4.0.14",
     "tslib": "^2.3.0",
     "webamp": "^1.5.0",
     "zone.js": "~0.14.3"

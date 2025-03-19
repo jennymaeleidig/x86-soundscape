@@ -1,0 +1,16 @@
+<div #popup class="absolute min-w-screen min-h-screen">
+    <div class="fixed top-0 right-0 left-0 z-50 justify-center content-center max-w-1/4 h-[calc(100%-1rem)] max-h-full m-auto" >
+            <div class="modal-dialog outer-border">
+                <div class="inner-border center">
+                    <div class="modal-contents">
+                        <h1 class="modal-text text-center">{{msg}}</h1>
+                        <br>
+                        <section class="field-row justify-end gap-2">
+                            <button class="btn" (click)="close()">Cancel</button>
+                            <button class="btn" (click)="close()">OK</button>
+                        </section>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
