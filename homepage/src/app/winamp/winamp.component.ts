@@ -34,7 +34,7 @@ export class WinampComponent {
                         artist: "WRIR",
                         title: "Richmond, VA Community Radio",
                     },
-                    url: "http://files.wrir.org:8000/WRIR96kbps"
+                    url: "https://live.wrir.org"
                 },
                 {
                     metaData: {
