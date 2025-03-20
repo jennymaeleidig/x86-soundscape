@@ -1,4 +1,9 @@
-<div class="w-screen h-screen">
-    <app-menu></app-menu>
+<app-menu></app-menu>
+<div class="w-full h-full overflow-hidden desktop-bounds">
+    <!-- <app-applet></app-applet> -->
+    <ng-container *ngFor="let applet of applets">
+        <ng-container *ngComponentOutlet="AppletComponent"></ng-container>
+    </ng-container>
     <winamp></winamp>
+    <app-window></app-window>
 </div>
