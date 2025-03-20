@@ -31,11 +31,6 @@ export class WinampComponent {
 
         // Example of adding a confirmation button before Webamp can be closed.
         webamp.onWillClose((cancel) => {
-            // if (!window.confirm("Are you sure you want to close Webamp?")) {
-            //     cancel();
-            // }
-            this.openPopUpComponent("Are you sure you want to close Webamp?");
-            //TODO: Need to actually handle the callback
             cancel();
         });
 
@@ -49,8 +44,8 @@ export class WinampComponent {
         }
     }
 
-    openPopUpComponent(msg: string) {
-        this.popUpService.open(PopUpComponent, {msg: msg})
+    openPopUpComponent(msg: string, callback: Function) {
+        this.popUpService.open(PopUpComponent, {msg: msg, callback: callback})
     }
 
     close() {

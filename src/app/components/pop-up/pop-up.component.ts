@@ -11,16 +11,17 @@ import { PopUpService } from '../../services/pop-up/pop-up.service';
 })
 
 export class PopUpComponent {
-  @ViewChild('popup') popup!: ElementRef<HTMLDivElement>;
+  @ViewChild('popUp') popUp!: ElementRef<HTMLDivElement>;
   options!: Options | undefined;
   msg!: string;
+  callback!: Function;
   
   constructor(
     private popUpService: PopUpService,
     private element: ElementRef
   ) {}
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     this.options = this.popUpService.options;
     this.addOptions();
   }
@@ -38,6 +39,12 @@ export class PopUpComponent {
 
   addOptions() {
     this.msg = this.options?.msg || '';
+    this.callback = this.options?.callback || (() => {});
+  }
+
+  executeCallback() {
+    this.callback();
+    this.close();
   }
 
   close(){
