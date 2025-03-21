@@ -53,3 +53,7 @@
     --disabled: var(--sys-color-darkgrey);
     font-family: 'Chicago';
 }
+
+body {
+  image-rendering: pixelated;
+}
