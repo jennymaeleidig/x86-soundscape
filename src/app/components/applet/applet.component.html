@@ -1,6 +1,8 @@
-<div class="w-fit h-fit grid justify-items-center" cdkDragBoundary=".desktop-bounds" cdkDrag>
+<div class="w-fit h-fit grid justify-items-center hover:invert">
     <div class="" cdkDragHandle>
-        <img src="assets/images/Disk.png">
+        <button class="cursor-pointer" (dblclick)="openPopUpComponent()" (mousedown)="console.log('down')" (mouseup)="console.log('up')"> 
+            <img src={{icon}}>
+        </button>
     </div>
-    <div class="bg-white">Disk</div>
+    <div class="mt-1 bg-white">{{title}}</div>
 </div>

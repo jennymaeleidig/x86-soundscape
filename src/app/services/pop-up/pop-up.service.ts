@@ -13,8 +13,6 @@ export class PopUpService {
     private injector: EnvironmentInjector
   ) { }
 
-  open<C>(vcrOrComponent: Type<C>, options?: Options): void;
-
   // Function implementation
   open<C>(
     popUpComponent:Type<C>,

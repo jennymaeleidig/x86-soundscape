@@ -3,12 +3,11 @@
 }
 
 .dts-select-box {
-  background: rgba(125, 218, 252, 0.3);
-  border: 2px solid currentColor;
+  border: 1px solid currentColor;
   contain: layout;
   transform: translateZ(0);
   box-sizing: border-box;
-  color: #7ddafc;
+  color: #000000;
   position: absolute;
   left: 0;
   top: 0;
@@ -19,14 +18,20 @@
   z-index: 1;
 }
 .dts-select-box.dts-removing {
-  background: rgba(125, 218, 252, 0.3);
-  border: 2px solid #7ddafc;
+  border: 1px solid #000000;
 }
 
 .dts-select-container:not(.dts-custom) .dts-select-item.selected {
-  border: 1px solid #d2d2d2;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+  /* border: 1px solid #d2d2d2;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.1); */
+  /* filter: invert(1) */
+  /* width: 100%;
+  height: 100%; */
 }
 .dts-select-container:not(.dts-custom) .dts-select-item.dts-range-start {
-  border: 1px solid #2196f3;
+  /* filter: invert(1) */
+  /* border: 1px solid #2196f3; */
+  /* filter: inver(1) */
+  /* width: 100%;
+  height: 100%; */
 }

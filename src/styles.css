@@ -56,4 +56,5 @@
 
 body {
   image-rendering: pixelated;
+  cursor: url("assets/images/normal.cur"), auto;
 }
