@@ -36,14 +36,6 @@ export default class Songs {
         },
         {
             metaData: {
-                artist: "Isekoi Radio",
-                title: "Chill Zone",
-            },
-            url: "https://public.isekoi-radio.com/listen/chill/radio.mp3",
-            duration: 5999
-        },
-        {
-            metaData: {
                 artist: "soma fm",
                 title: "Vaporwaves",
             },
@@ -64,14 +56,6 @@ export default class Songs {
                 title: "live",
             },
             url: "https://public.isekoi-radio.com/listen/isekoi/radio.mp3",
-            duration: 5999
-        },
-        {
-            metaData: {
-                artist: "Radio Paradise",
-                title: "Mellow Mix",
-            },
-            url: "http://stream.radioparadise.com/mellow-192",
             duration: 5999
         },
         {
@@ -124,43 +108,35 @@ export default class Songs {
         },
         {
             metaData: {
-                artist: "KEXP",
-                title: "Seattle, WA Community Radio",
+                artist: "Krelez",
+                title: "VaporFunk Radio",
             },
-            url: "https://live-aacplus-64.streamguys1.com/kexp64.aac",
+            url: "http://79.120.11.40:8000/vapor.ogg",
             duration: 5999
         },
         {
             metaData: {
-                artist: "WORT",
-                title: "Madison, WI Community Radio",
+                artist: "Guias Sonoras",
+                title: "live",
             },
-            url: "https://wortcast01.wortfm.org:8443/high.mp3",
+            url: "https://visual.shoutca.st/stream/guiassonoras",
             duration: 5999
         },
         {
             metaData: {
-                artist: "KOOP",
-                title: "Austin, TX Community Radio",
+                artist: "Radio Caprice",
+                title: "Chillwave",
             },
-            url: "https://streaming.koop.org/stream.mp3",
+            url: "http://79.111.119.111:8004/chillwave",
             duration: 5999
         },
         {
             metaData: {
-                artist: "KGNU",
-                title: "Boulder, CO Community Radio",
+                artist: "Modular Station",
+                title: "live",
             },
-            url: "https://kgnu.streamguys1.com/kgnu",
+            url: "https://broadcast.modular-station.com/radio/8000/radio.aac",
             duration: 5999
-        },   
-        {
-            metaData: {
-                artist: "WRIR",
-                title: "Richmond, VA Community Radio",
-            },
-            url: "http://files.wrir.org:8000/wrir",
-            duration: 5999
-        }        
+        }            
     ];
 }
