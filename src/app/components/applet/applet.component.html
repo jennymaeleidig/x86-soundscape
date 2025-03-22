@@ -1,8 +1,13 @@
 <div class="w-fit h-fit grid justify-items-center hover:invert">
-    <div class="" cdkDragHandle>
-        <button class="cursor-pointer" (dblclick)="openPopUpComponent()" (mousedown)="console.log('down')" (mouseup)="console.log('up')"> 
-            <img src={{icon}}>
-        </button>
-    </div>
-    <div class="mt-1 bg-white">{{title}}</div>
+  <div class="" cdkDragHandle>
+    <button
+      class="cursor-pointer"
+      (dblclick)="openPopUpComponent()"
+      (mousedown)="setMoving()"
+      (mouseup)="unsetMoving()"
+    >
+      <img src="{{ icon }}" />
+    </button>
+  </div>
+  <div class="mt-1 bg-white">{{ title }}</div>
 </div>
