@@ -44,6 +44,10 @@ export class DesktopComponent {
       title: 'Annoucements',
       icon: 'assets/images/Annouce.png',
     },
+    {
+      title: 'Radio Stream',
+      icon: 'assets/images/x86.png',
+    }
   ];
   appletIsMoving: boolean = false;
   injector = Injector.create({

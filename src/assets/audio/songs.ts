@@ -4,6 +4,14 @@ export default class Songs {
     static songs: Track[] = [
         {
             metaData: {
+                artist: "x86 Soundscape",
+                title: "live",
+            },
+            url: "http://radio.barb.date/x86-soundscape",
+            duration: 5999
+        },
+        {
+            metaData: {
                 artist: "soma fm",
                 title: "Groove Salad",
             },
