@@ -1,34 +1,21 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { WindowService } from '../../services/window/window.service';
 import { Options } from '../../services/window/window.options';
 import { AboutContent } from '../../../assets/applets/applet-content/about';
 import { AnnoucementContent } from '../../../assets/applets/applet-content/annoucements';
 import { VisualizerContent } from '../../../assets/applets/applet-content/visualizer';
-import {
-  NgSwitch,
-  NgSwitchCase,
-  NgSwitchDefault,
-  NgFor,
-} from '@angular/common';
+import { NgSwitch, NgSwitchCase, NgFor, NgClass } from '@angular/common';
 import { AppletTypes } from '../../../assets/applets/applet-definitions';
 
 @Component({
   selector: 'app-window',
   standalone: true,
-  imports: [
-    CdkDrag,
-    CdkDragHandle,
-    NgSwitch,
-    NgSwitchCase,
-    NgSwitchDefault,
-    NgFor,
-  ],
+  imports: [CdkDrag, CdkDragHandle, NgSwitch, NgSwitchCase, NgFor, NgClass],
   templateUrl: './window.component.html',
   styleUrl: './window.component.css',
 })
 export class WindowComponent {
-  @ViewChild('window') window!: ElementRef<HTMLDivElement>;
   options!: Options | undefined;
   selector!: AppletTypes;
   windowContent!:
@@ -40,8 +27,16 @@ export class WindowComponent {
 
   constructor(private windowService: WindowService) {}
 
+  setActive() {
+    this.windowService.setActiveWindow(this.selector);
+  }
+
+  isActive() {
+    return this.selector === this.windowService.getActiveWindow();
+  }
+
   close() {
-    this.windowService.close();
+    this.windowService.close(this.selector);
   }
 
   addOptions() {

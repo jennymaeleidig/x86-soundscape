@@ -37,9 +37,9 @@ export default class Songs {
     {
       metaData: {
         artist: 'LOCAFM',
-        title: 'Chill Out',
+        title: 'Ambient',
       },
-      url: 'https://s2.we4stream.com/listen/loca_chill_out/live',
+      url: 'https://s2.we4stream.com/listen/loca_ambient/live',
       duration: 5999,
     },
     {
@@ -135,7 +135,7 @@ export default class Songs {
         artist: 'Radio Caprice',
         title: 'Chillwave',
       },
-      url: 'http://79.111.119.111:8004/chillwave',
+      url: 'http://79.111.119.111:8000/chillwave',
       duration: 5999,
     },
     {

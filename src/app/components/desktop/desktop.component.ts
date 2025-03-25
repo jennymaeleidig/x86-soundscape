@@ -3,9 +3,10 @@ import { MenuComponent } from '../menu/menu.component';
 import { WinampComponent } from '../winamp/winamp.component';
 import { AppletComponent } from '../applet/applet.component';
 import { DragToSelectModule } from 'ngx-drag-to-select';
-import { NgComponentOutlet, NgFor } from '@angular/common';
+import { NgComponentOutlet, NgFor, NgIf } from '@angular/common';
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import AppletDefinitions from '../../../assets/applets/applet-definitions';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'app-desktop',
@@ -15,6 +16,7 @@ import AppletDefinitions from '../../../assets/applets/applet-definitions';
     WinampComponent,
     DragToSelectModule,
     NgFor,
+    NgIf,
     NgComponentOutlet,
     CdkDrag,
   ],
@@ -36,11 +38,15 @@ export class DesktopComponent {
     ],
   });
 
-  constructor() {}
+  constructor(private deviceService: DeviceDetectorService) {}
 
   ngOnInit() {}
 
   setAppletIsMoving(data: boolean) {
     this.appletIsMoving = data;
+  }
+
+  isMobileRes(): boolean {
+    return this.deviceService.isMobile() || this.deviceService.isTablet();
   }
 }

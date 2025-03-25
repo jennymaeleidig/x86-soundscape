@@ -2,7 +2,7 @@
 <app-menu></app-menu>
 <!-- Winamp injects css and i dont really now know to intercept that so its at the top :) -->
 <winamp></winamp>
-<div class="w-full h-full overflow-hidden desktop-bounds">
+<div *ngIf="!isMobileRes()" class="w-full h-full overflow-hidden desktop-bounds">
   <!-- Selectable area -->
   <!-- The selectable area does not play nice w/ the drag library, conly ever marks as selected at intial location. -->
   <dts-select-container

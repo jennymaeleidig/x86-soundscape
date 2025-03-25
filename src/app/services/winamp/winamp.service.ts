@@ -12,6 +12,7 @@ export class WinampService {
       url: 'assets/skins/Old_Mac-OS.wsz',
     },
     availableSkins: [{ url: 'assets/skins/Old_Mac-OS.wsz', name: 'MacOS' }],
+    zIndex: 15,
   });
   rootElement!: HTMLElement;
 
@@ -40,5 +41,25 @@ export class WinampService {
     this.webamp.reopen();
     this.webamp.setTracksToPlay(Songs.songs);
     this.webamp.play();
+  }
+
+  play() {
+    this.webamp.play();
+  }
+
+  pause() {
+    this.webamp.pause();
+  }
+
+  prev() {
+    this.webamp.previousTrack();
+  }
+
+  stop() {
+    this.webamp.stop();
+  }
+
+  next() {
+    this.webamp.nextTrack();
   }
 }

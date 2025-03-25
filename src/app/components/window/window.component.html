@@ -1,20 +1,43 @@
-<div #window class="window max-w-max absolute top-10 left-35" cdkDragBoundary=".desktop-bounds" cdkDrag>
-    <div class="title-bar" cdkDragHandle>
+<div [ngSwitch]="selector">
+  <div *ngSwitchCase="AppletTypes.About" class="window absolute top-20 left-300 w-1/4 h-1/2 resize" [ngClass]="isActive() ? 'z-5' : 'z-0'" cdkDragBoundary=".desktop-bounds" cdkDrag>
+    <div [ngClass]="isActive() ? 'title-bar' : 'inactive-title-bar'" cdkDragHandle (mousedown)="setActive()">
       <button aria-label="Close" class="close" (click)="close()"></button>
-      <h1 class="title">Window</h1>
+      <h1 class="title">{{AppletTypes[selector]}}</h1>
       <button aria-label="Resize" class="resize hidden"></button>
     </div>
     <div class="separator"></div>
-    <div [ngSwitch]="selector" class="window-pane">
-      <div id="about" *ngSwitchCase="AppletTypes.About">{{$any(windowContent).msg}}</div>
-      <img *ngSwitchCase="AppletTypes.Visualizer" class="border-solid border-black border" src="{{$any(windowContent).imgSrc}}">
-      <div *ngSwitchCase="AppletTypes.Annoucements">
-        <div *ngFor="let annoucement of $any(windowContent)">
-          <div>{{annoucement.title}}</div>
-          <div>{{annoucement.msg}}</div>
-          <div>{{annoucement.date}}</div>
+    <div class="window-pane text-sm overflow-y:scroll relative">
+      <div *ngSwitchCase="AppletTypes.About" class="text-justify text-base">{{$any(windowContent).msg}}</div>
+    </div>
+  </div>
+  <div *ngSwitchCase="AppletTypes.Visualizer" class="window absolute top-35 left-55 resize" [ngClass]="isActive() ? 'z-5' : 'z-0'" cdkDragBoundary=".desktop-bounds" cdkDrag>
+    <div [ngClass]="isActive() ? 'title-bar' : 'inactive-title-bar'" cdkDragHandle (mousedown)="setActive()">
+      <button aria-label="Close" class="close" (click)="close()"></button>
+      <h1 class="title">{{AppletTypes[selector]}}</h1>
+      <button aria-label="Resize" class="resize hidden"></button>
+    </div>
+    <div class="separator"></div>
+    <div class="window-pane text-sm">
+      <img class="border-solid border-black border w-full" src="{{$any(windowContent).imgSrc}}">
+    </div>
+  </div>
+  <div *ngSwitchCase="AppletTypes.Annoucements" class="window absolute top-10 w-1/4 h-3/4 resize" [ngClass]="isActive() ? 'z-5' : 'z-0'" cdkDragBoundary=".desktop-bounds" cdkDrag>
+    <div [ngClass]="isActive() ? 'title-bar' : 'inactive-title-bar'" cdkDragHandle (mousedown)="setActive()">
+      <button aria-label="Close" class="close" (click)="close()"></button>
+      <h1 class="title">{{AppletTypes[selector]}}</h1>
+      <button aria-label="Resize" class="resize hidden"></button>
+    </div>
+    <div class="separator"></div>
+    <div class="window-pane text-sm overflow-y:scroll relative">
+      <div class="grid divide-y-2 pb-4">
+        <div class="mt-4 pb-4" *ngFor="let annoucement of $any(windowContent)">
+          <div class="flex justify-between items-end mb-2">
+            <div class="font-bold" >{{annoucement.title}}</div>
+            <div class="italic text-base">{{annoucement.date}}</div>
+          </div>
+          <div class="text-base text-justify">{{annoucement.msg}}</div>
         </div>
       </div>
-      <div *ngSwitchDefault></div>
     </div>
+  </div>
 </div>

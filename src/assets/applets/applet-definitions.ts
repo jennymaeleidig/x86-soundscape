@@ -8,9 +8,9 @@ import VisualizerInput, {
 
 export enum AppletTypes {
   About,
+  Annoucements,
   Visualizer,
   Winamp,
-  Annoucements,
   Stream,
   Default,
 }
@@ -35,6 +35,12 @@ export default class AppletDefinitions {
       windowContent: AboutInput.aboutInput,
     },
     {
+      title: 'Annoucements',
+      icon: 'assets/images/Annouce.png',
+      selector: AppletTypes.Annoucements,
+      windowContent: AnnoucementsInput.accouncementsInput,
+    },
+    {
       title: 'Visualizer',
       icon: 'assets/images/Viz.png',
       selector: AppletTypes.Visualizer,
@@ -45,12 +51,6 @@ export default class AppletDefinitions {
       icon: 'assets/images/Sound.png',
       selector: AppletTypes.Winamp,
       windowContent: undefined,
-    },
-    {
-      title: 'Annoucements',
-      icon: 'assets/images/Annouce.png',
-      selector: AppletTypes.Annoucements,
-      windowContent: AnnoucementsInput.accouncementsInput,
     },
     {
       title: 'Play Radio',
