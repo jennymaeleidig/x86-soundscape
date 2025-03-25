@@ -7,18 +7,17 @@ import { PopUpService } from '../../services/pop-up/pop-up.service';
   standalone: true,
   imports: [],
   templateUrl: './pop-up.component.html',
-  styleUrl: './pop-up.component.css'
+  styleUrl: './pop-up.component.css',
 })
-
 export class PopUpComponent {
   @ViewChild('popUp') popUp!: ElementRef<HTMLDivElement>;
   options!: Options | undefined;
   msg!: string;
   callback!: Function;
-  
+
   constructor(
     private popUpService: PopUpService,
-    private element: ElementRef
+    private element: ElementRef,
   ) {}
 
   ngAfterContentInit() {
@@ -28,7 +27,7 @@ export class PopUpComponent {
 
   @HostListener('document:keydown.escape')
   onEscape() {
-    // closing modal on escape     
+    // closing modal on escape
     this.popUpService.close();
   }
 
@@ -47,7 +46,7 @@ export class PopUpComponent {
     this.close();
   }
 
-  close(){
+  close() {
     this.popUpService.options = undefined;
     this.element.nativeElement.remove();
   }

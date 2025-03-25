@@ -1,4 +1,4 @@
-import { Component,ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { DesktopComponent } from './components/desktop/desktop.component';
 
@@ -7,9 +7,8 @@ import { DesktopComponent } from './components/desktop/desktop.component';
   standalone: true,
   imports: [RouterOutlet, DesktopComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
-
 export class AppComponent {
   title = 'homepage';
 }

@@ -1,11 +1,11 @@
-import { Component, Injector, ViewChild } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
 import { WinampComponent } from '../winamp/winamp.component';
-import { WindowComponent } from '../window/window.component';
 import { AppletComponent } from '../applet/applet.component';
 import { DragToSelectModule } from 'ngx-drag-to-select';
 import { NgComponentOutlet, NgFor } from '@angular/common';
-import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import { CdkDrag } from '@angular/cdk/drag-drop';
+import AppletDefinitions from '../../../assets/applets/applet-definitions';
 
 @Component({
   selector: 'app-desktop',
@@ -13,7 +13,6 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
   imports: [
     MenuComponent,
     WinampComponent,
-    WindowComponent,
     DragToSelectModule,
     NgFor,
     NgComponentOutlet,
@@ -26,29 +25,7 @@ export class DesktopComponent {
   selectedApplets: Array<any> = [];
   AppletComponent = AppletComponent;
   console = console;
-  // TODO: POssibly extract this value;
-  appletInputs = [
-    {
-      title: 'About',
-      icon: 'assets/images/Note.png',
-    },
-    {
-      title: 'Visualizer',
-      icon: 'assets/images/Viz.png',
-    },
-    {
-      title: 'Webamp',
-      icon: 'assets/images/Sound.png',
-    },
-    {
-      title: 'Annoucements',
-      icon: 'assets/images/Annouce.png',
-    },
-    {
-      title: 'Radio Stream',
-      icon: 'assets/images/x86.png',
-    }
-  ];
+  appletInputs = AppletDefinitions.appletDefinitions;
   appletIsMoving: boolean = false;
   injector = Injector.create({
     providers: [

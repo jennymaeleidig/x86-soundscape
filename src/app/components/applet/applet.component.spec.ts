@@ -8,10 +8,9 @@ describe('AppletComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppletComponent]
-    })
-    .compileComponents();
-    
+      imports: [AppletComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(AppletComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

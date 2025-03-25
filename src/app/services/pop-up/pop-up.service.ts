@@ -1,27 +1,32 @@
-import { ApplicationRef, ComponentRef, createComponent, EnvironmentInjector, Injectable, Type, ViewContainerRef } from '@angular/core';
+import {
+  ApplicationRef,
+  ComponentRef,
+  createComponent,
+  EnvironmentInjector,
+  Injectable,
+  Type,
+  ViewContainerRef,
+} from '@angular/core';
 import { PopUpComponent } from '../../components/pop-up/pop-up.component';
 import { Options } from './pop-up.options';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PopUpService {
-  newPopUpComponent!: ComponentRef<PopUpComponent>
+  newPopUpComponent!: ComponentRef<PopUpComponent>;
   options!: Options | undefined;
   constructor(
     private appRef: ApplicationRef,
-    private injector: EnvironmentInjector
-  ) { }
+    private injector: EnvironmentInjector,
+  ) {}
 
   // Function implementation
-  open<C>(
-    popUpComponent:Type<C>,
-    options?: Options
-  ) {
-      this.openWithComponent(popUpComponent);
-      // Same story here : for the second approach, the second param will be of type Options or undefined, since optional 
-      this.options = options
-    }
+  open<C>(popUpComponent: Type<C>, options?: Options) {
+    this.openWithComponent(popUpComponent);
+    // Same story here : for the second approach, the second param will be of type Options or undefined, since optional
+    this.options = options;
+  }
 
   private openWithComponent(component: Type<unknown>) {
     // create the desired component, the content of the modal box

@@ -1,4 +1,4 @@
 export interface Options {
-    msg?: string,
-    callback?: Function
+  msg?: string;
+  callback?: Function;
 }
