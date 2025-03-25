@@ -1,27 +1,33 @@
-# Homepage
+# x86 Soundscape 
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.13.
+An Internet radio and collage.
 
-## Development server
+https://jennymaeleidig.github.io/x86-soundscape/
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Development
 
-## Code scaffolding
+Setup:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+`npm install --legacy-peer-deps`
 
-## Build
+Run dev server locally:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+`ng serve --open`
 
-## Running unit tests
+Format:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+`npm run prettier`
 
-## Running end-to-end tests
+Deploy:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+`ng deploy --base-href=/x86-soundscape/`
 
-## Further help
+## Credits and Shoutouts
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+* [system.css](https://sakofchit.github.io/system.css/)
+* [webamp](https://github.com/captbaritone/webamp)
+* [Infinite Mac](https://infinitemac.org/1984/System%201.0)
+* [Macintosh Repository](https://emulate-in-browser.macintoshrepository.org/?macmodel=4&disk1=System11.dsk&disk2=system-mfs-blank.dsk)
+* [Susan Kare](https://kare.com/apple-icons/)
+
+
