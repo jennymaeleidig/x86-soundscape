@@ -1,0 +1,29 @@
+<ul role="menu-bar" class="border-b">
+    <li role="menu-item" tabindex="0" aria-haspopup="false" (click)="openAbout()">About</li>
+    <li role="menu-item" tabindex="0" aria-haspopup="false" (click)="openAnnoucements()">Latest</li>
+    <li role="menu-item" tabindex="0" aria-haspopup="true">
+      Edit
+      <ul role="menu">
+        <li role="menu-item" (click)="play()"><a>Play</a></li>
+        <li role="menu-item" (click)="pause()"><a>Pause</a></li>
+        <li role="menu-item" (click)="prev()"><a>Previous</a></li>
+        <li role="menu-item" (click)="stop()"><a>Stop</a></li>
+        <li role="menu-item" (click)="next()"><a>Next</a></li>
+      </ul>
+    </li>
+    <li role="menu-item" tabindex="0" aria-haspopup="true">
+      View
+      <ul role="menu">
+        <li role="menu-item" class="divider"><a>Other Spaces</a></li>
+        <li role="menu-item"><a href="https://alazysunday.com/" target="_blank" rel="noopener noreferrer">the lazy sundays blog</a></li>
+        <li role="menu-item"><a href="https://jennyleidig.straw.page/" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+      </ul>
+    </li>
+    <li role="menu-item" tabindex="0" aria-haspopup="true">
+      Contact
+      <ul role="menu">
+        <li role="menu-item" class="divider"><a>Email</a></li>
+        <li role="menu-item"><a href="mailto:jennymaeleidig@gmail.com" target="_blank" rel="noopener noreferrer">jennymaeleidig&#64;gmail.com</a></li>
+      </ul>
+    </li>
+</ul>

@@ -1,16 +1,18 @@
 {
-  "name": "homepage",
-  "version": "0.0.0",
+  "name": "x86-soundscape",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.3.0",
+    "@angular/cdk": "^19.2.4",
     "@angular/common": "^17.3.0",
     "@angular/compiler": "^17.3.0",
     "@angular/core": "^17.3.0",
@@ -19,7 +21,12 @@
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
     "@sakun/system.css": "^0.1.11",
+    "@tailwindcss/postcss": "^4.0.14",
+    "ngx-device-detector": "^9.0.0",
+    "ngx-drag-to-select": "^5.0.1",
+    "postcss": "^8.5.3",
     "rxjs": "~7.8.0",
+    "tailwindcss": "^4.0.14",
     "tslib": "^2.3.0",
     "webamp": "^1.5.0",
     "zone.js": "~0.14.3"
@@ -36,6 +43,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "prettier": "^3.5.3",
     "typescript": "~5.4.2"
   }
 }
