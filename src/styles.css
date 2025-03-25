@@ -58,3 +58,26 @@ body {
   image-rendering: pixelated;
   cursor: url("assets/images/normal.cur"), auto;
 }
+
+.dts-no-select {
+  user-select: none;
+}
+
+.dts-select-box {
+  border: 1px solid currentColor;
+  contain: layout;
+  transform: translateZ(0);
+  box-sizing: border-box;
+  color: #000000;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 1;
+}
+.dts-select-box.dts-removing {
+  border: 1px solid #000000;
+}
