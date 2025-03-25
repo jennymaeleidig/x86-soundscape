@@ -29,5 +29,6 @@ Deploy:
 * [Infinite Mac](https://infinitemac.org/1984/System%201.0)
 * [Macintosh Repository](https://emulate-in-browser.macintoshrepository.org/?macmodel=4&disk1=System11.dsk&disk2=system-mfs-blank.dsk)
 * [Susan Kare](https://kare.com/apple-icons/)
+* [hirudov2d](https://youtu.be/BlFnGgZHPzY)
 
 
