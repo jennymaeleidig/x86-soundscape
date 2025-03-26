@@ -30,5 +30,6 @@ Deploy:
 * [Macintosh Repository](https://emulate-in-browser.macintoshrepository.org/?macmodel=4&disk1=System11.dsk&disk2=system-mfs-blank.dsk)
 * [Susan Kare](https://kare.com/apple-icons/)
 * [hirudov2d](https://youtu.be/BlFnGgZHPzY)
+* [ookamithewolf1](https://www.smspower.org/forums/19228-SMSBoxTemplate)
 
 
