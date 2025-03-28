@@ -31,5 +31,6 @@ Deploy:
 * [Susan Kare](https://kare.com/apple-icons/)
 * [hirudov2d](https://youtu.be/BlFnGgZHPzY)
 * [ookamithewolf1](https://www.smspower.org/forums/19228-SMSBoxTemplate)
+* [winamp skin](https://archive.org/details/winampskin_Old_Mac-OS)
 
 
