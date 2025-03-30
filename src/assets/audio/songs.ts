@@ -146,5 +146,13 @@ export default class Songs {
       url: 'https://broadcast.modular-station.com/radio/8000/radio.aac',
       duration: 5999,
     },
+    {
+      metaData: {
+        artist: 'Luxury Lounge',
+        title: 'Level 1',
+      },
+      url: 'http://188.40.109.122:8000/ices',
+      duration: 5999,
+    },
   ];
 }
