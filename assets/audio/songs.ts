@@ -7,7 +7,15 @@ export default class Songs {
         artist: 'x86 Soundscape',
         title: 'live',
       },
-      url: 'http://radio.barb.date/x86-soundscape',
+      url: 'https://radio.barb.date/x86-soundscape',
+      duration: 5999,
+    },
+    {
+      metaData: {
+        artist: 'WRIR 97.3FM',
+        title: 'Richmond, VA',
+      },
+      url: 'https://live.wrir.org/',
       duration: 5999,
     },
     {
@@ -154,5 +162,21 @@ export default class Songs {
       url: 'http://188.40.109.122:8000/ices',
       duration: 5999,
     },
+    {
+      metaData: {
+        artist: 'KOSMIK DSTROYER',
+        title: 'SOUL MASSAGE',
+      },
+      url: 'https://kdradio.top/listen/kd_balearic/radio.mp3',
+      duration: 5999,
+    },
+    {
+      metaData: {
+        artist: 'KOSMIK DSTROYER',
+        title: 'DNB / JUNGLE',
+      },
+      url: 'https://kdradio.top/listen/dnbjungle/radio.mp3',
+      duration: 5999,
+    }
   ];
 }
