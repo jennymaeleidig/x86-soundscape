@@ -7,14 +7,13 @@ import IcecastMetadataStats from 'icecast-metadata-stats';
 export class MetadataService {
   statsListener: IcecastMetadataStats;
   constructor() {
-    console.log('hi');
     this.statsListener = new IcecastMetadataStats('https://radio.barb.date/', {
-      interval: 30,
+      interval: 5,
       sources: ['icestats'],
       onStats: (stats: any) => {
         console.log(stats);
       },
     });
-    console.log(this.statsListener.getIcestats());
+    this.statsListener.start();
   }
 }
