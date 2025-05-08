@@ -9,12 +9,16 @@ export class WinampService {
   webamp = new Webamp({
     initialTracks: Songs.songs,
     initialSkin: {
-      url: 'assets/skins/Old_Mac-OS.wsz',
+      url: 'assets/skins/classic_mac_v1.wsz',
     },
     availableSkins: [{ url: 'assets/skins/Old_Mac-OS.wsz', name: 'MacOS' }],
     zIndex: 15,
   });
   rootElement!: HTMLElement;
+
+  unsubFromTrackChange = this.webamp.onTrackDidChange((track) => {
+    console.log(track);
+  });
 
   constructor() {}
 

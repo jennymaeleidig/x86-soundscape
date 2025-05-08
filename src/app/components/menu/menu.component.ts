@@ -4,6 +4,7 @@ import { AppletTypes } from '../../../assets/applets/applet-definitions';
 import AboutInput from '../../../assets/applets/applet-content/about';
 import AnnoucementsInput from '../../../assets/applets/applet-content/annoucements';
 import { WinampService } from '../../services/winamp/winamp.service';
+import { MetadataService } from '../../services/metadata/metadata.service';
 
 @Component({
   selector: 'app-menu',
@@ -16,6 +17,7 @@ export class MenuComponent {
   constructor(
     private popUpService: PopUpService,
     private winampService: WinampService,
+    private metadataService: MetadataService,
   ) {}
 
   openAbout() {
