@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import Webamp from 'webamp';
-import Songs from '../../../assets/audio/songs';
+import Songs, { TrackWithMeta } from '../../../assets/audio/songs';
+import { MetadataService } from '../metadata/metadata.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WinampService {
+  /**
+   * Initialize webamp
+   */
   webamp = new Webamp({
     initialTracks: Songs.songs,
     initialSkin: {
@@ -16,11 +20,21 @@ export class WinampService {
   });
   rootElement!: HTMLElement;
 
+  /**
+   * Initialize MetadataService
+   */
   unsubFromTrackChange = this.webamp.onTrackDidChange((track) => {
-    console.log(track);
+    if (track) {
+      const trackWithMeta: TrackWithMeta | undefined = Songs.songs.find(
+        (trackWithMeta: TrackWithMeta) => trackWithMeta.url === track.url,
+      );
+      if (trackWithMeta) {
+        console.log(trackWithMeta.metadataSource);
+      }
+    }
   });
 
-  constructor() {}
+  constructor(private metadataService: MetadataService) {}
 
   /**
    * Must be called before renderWebamp().

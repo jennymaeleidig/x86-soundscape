@@ -14,6 +14,6 @@ export class MetadataService {
         console.log(stats);
       },
     });
-    this.statsListener.start();
+    // this.statsListener.start();
   }
 }
