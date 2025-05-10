@@ -13,6 +13,7 @@ export enum AppletTypes {
   Winamp,
   Stream,
   Default,
+  Attention,
 }
 export interface AppletDefinition extends Record<string, unknown> {
   title: string;

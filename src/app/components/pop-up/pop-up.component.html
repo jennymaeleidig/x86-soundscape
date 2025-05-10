@@ -1,32 +1,52 @@
 <div class="absolute min-w-screen min-h-screen">
-    <div [ngClass]="isMobileRes() ? 'h-[calc(100%-1rem)]' : 'max-w-1/4 h-[calc(100%-1rem)] max-h-full'" class="fixed top-0 right-0 left-0 z-50 justify-center content-center m-auto" >
-            <div class="modal-dialog outer-border">
-                <div [ngSwitch]="options.selector" class="inner-border center">
-                    <div *ngSwitchCase="AppletTypes.About" class="modal-contents">
-                        <h1 class="modal-text text-center">{{AppletTypes[options.selector]}}</h1>
-                        <br>
-                        <div class="text-justify px-2">{{$any(options.contents).msg}}</div>
-                        <br>
-                        <section class="field-row justify-end gap-2">
-                            <button class="btn" (click)="close()">OK</button>
-                        </section>
-                    </div>
-                    <div *ngSwitchCase="AppletTypes.Annoucements" class="modal-contents">
-                        <h1 class="modal-text text-center">Latest</h1>
-                        <br>
-                        <div class="grid pb-4">
-                            <div class="flex justify-between items-end">
-                                <div>{{getLatest().title}}</div>
-                                <div>{{getLatest().date}}</div>
-                            </div>
-                            <hr class="mb-2 mt-1">
-                            <div class="text-justify px-2">{{getLatest().msg}}</div>
-                        </div>
-                        <section class="field-row justify-end gap-2">
-                            <button class="btn" (click)="close()">OK</button>
-                        </section>
-                    </div>
-                </div>
+  <div
+    [ngClass]="
+      isMobileRes()
+        ? 'h-[calc(100%-1rem)]'
+        : 'max-w-1/4 h-[calc(100%-1rem)] max-h-full'
+    "
+    class="fixed top-0 right-0 left-0 z-50 justify-center content-center m-auto"
+  >
+    <div class="modal-dialog outer-border">
+      <div [ngSwitch]="options.selector" class="inner-border center">
+        <div *ngSwitchCase="AppletTypes.About" class="modal-contents">
+          <h1 class="modal-text text-center">
+            {{ AppletTypes[options.selector] }}
+          </h1>
+          <br />
+          <div class="text-justify px-2">{{ $any(options.contents).msg }}</div>
+          <br />
+          <section class="field-row justify-end gap-2">
+            <button class="btn" (click)="close()">OK</button>
+          </section>
+        </div>
+        <div *ngSwitchCase="AppletTypes.Annoucements" class="modal-contents">
+          <h1 class="modal-text text-center">Latest</h1>
+          <br />
+          <div class="grid pb-4">
+            <div class="flex justify-between items-end">
+              <div>{{ getLatest().title }}</div>
+              <div>{{ getLatest().date }}</div>
             </div>
+            <hr class="mb-2 mt-1" />
+            <div class="text-justify px-2">{{ getLatest().msg }}</div>
+          </div>
+          <section class="field-row justify-end gap-2">
+            <button class="btn" (click)="close()">OK</button>
+          </section>
+        </div>
+        <div *ngSwitchCase="AppletTypes.Attention" class="modal-contents">
+          <h1 class="modal-text text-center">
+            {{ AppletTypes[options.selector] }}!
+          </h1>
+          <br />
+          <div class="text-justify px-2">{{ options.contents }}</div>
+          <br />
+          <section class="field-row justify-end gap-2">
+            <button class="btn" (click)="close()">OK</button>
+          </section>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

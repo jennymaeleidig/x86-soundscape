@@ -64,7 +64,35 @@
       </li>
     </ul>
   </li>
-  <li role="menu-item" tabindex="0" aria-haspopup="false">
-    {{ currentTrack | decodeHtmlString }}
-  </li>
+  <ng-container *ngIf="!isMobileRes(); else mobileWarning">
+    <li
+      role="menu-item"
+      tabindex="0"
+      aria-haspopup="false"
+      class="!bg-white !text-black !cursor-[url(assets/images/normal.cur),_auto] border-l"
+    >
+      Now Playing —
+    </li>
+    <li
+      role="menu-item"
+      tabindex="0"
+      aria-haspopup="false"
+      id="scroll-container"
+      class="max-w-3xs !bg-white !text-black !cursor-text !overflow-hidden !text-nowrap"
+    >
+      <div id="scroll-text">
+        {{ currentTrack | decodeHtmlString }}
+      </div>
+    </li>
+  </ng-container>
+  <ng-template #mobileWarning>
+    <li
+      role="menu-item"
+      tabindex="0"
+      aria-haspopup="false"
+      (click)="openAttention()"
+    >
+      Attention!
+    </li>
+  </ng-template>
 </ul>

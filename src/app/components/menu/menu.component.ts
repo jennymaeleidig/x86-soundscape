@@ -5,6 +5,8 @@ import AboutInput from '../../../assets/applets/applet-content/about';
 import AnnoucementsInput from '../../../assets/applets/applet-content/annoucements';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { MetadataService } from '../../services/metadata/metadata.service';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { NgIf } from '@angular/common';
 
 @Pipe({ name: 'decodeHtmlString', standalone: true })
 export class DecodeHtmlString implements PipeTransform {
@@ -18,16 +20,17 @@ export class DecodeHtmlString implements PipeTransform {
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [DecodeHtmlString],
+  imports: [DecodeHtmlString, NgIf],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
 })
 export class MenuComponent {
-  currentTrack: string = 'Not Playing';
+  currentTrack: string = 'N / A';
   constructor(
     private popUpService: PopUpService,
     private winampService: WinampService,
     private metadataService: MetadataService,
+    private deviceService: DeviceDetectorService,
   ) {}
 
   ngOnInit() {
@@ -50,6 +53,13 @@ export class MenuComponent {
     });
   }
 
+  openAttention() {
+    this.popUpService.open({
+      selector: AppletTypes.Attention,
+      contents: 'This website is best expirienced on a desktop PC.',
+    });
+  }
+
   play() {
     this.winampService.play();
   }
@@ -68,5 +78,9 @@ export class MenuComponent {
 
   next() {
     this.winampService.next();
+  }
+
+  isMobileRes(): boolean {
+    return this.deviceService.isMobile() || this.deviceService.isTablet();
   }
 }

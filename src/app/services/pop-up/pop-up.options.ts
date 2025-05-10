@@ -3,6 +3,6 @@ import { AnnoucementContent } from '../../../assets/applets/applet-content/annou
 import { AppletTypes } from '../../../assets/applets/applet-definitions';
 
 export interface Options {
-  contents: AboutContent | AnnoucementContent[];
+  contents: AboutContent | AnnoucementContent[] | string;
   selector: AppletTypes;
 }

@@ -9,9 +9,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 export class MetadataService {
   statsListener: IcecastMetadataStats | undefined;
   trackToListen: TrackWithMeta | undefined;
-  private readonly currentTrackSource = new BehaviorSubject<string>(
-    'Not Playing',
-  );
+  private readonly currentTrackSource = new BehaviorSubject<string>('N / A');
   currentTrack$ = this.currentTrackSource.asObservable();
 
   constructor() {
@@ -38,10 +36,12 @@ export class MetadataService {
     }
     this.statsListener = undefined;
     this.trackToListen = undefined;
+    this.currentTrackSource.next('N /A');
   }
 
   getTitleFromMetadata(metadata: any): string {
     if (this.trackToListen && metadata) {
+      //TODO: Parse this better
       switch (this.trackToListen.metadataSource) {
         case MetadataSource.IceStats:
           if (metadata[MetadataSource.IceStats]) {
@@ -86,14 +86,14 @@ export class MetadataService {
           return this.getTrackName();
       }
     }
-    return 'N/A';
+    return 'N / A';
   }
 
   private getTrackName(): string {
     if (this.trackToListen) {
       return `${this.trackToListen.metaData!.artist} - ${this.trackToListen.metaData!.title}`;
     }
-    return 'N/A';
+    return 'N / A';
   }
 
   announceTrackUpdate(metadata: any) {
