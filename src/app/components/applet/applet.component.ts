@@ -32,7 +32,6 @@ export class AppletComponent {
     @Inject('appletIsMoving') public setAppletIsMoving: Function,
   ) {}
 
-  //TODO: Adapt this to the Window component / service
   openWindowComponent() {
     this.windowService.open({
       selector: this.selector,

@@ -22,6 +22,7 @@
     "@angular/router": "^17.3.0",
     "@sakun/system.css": "^0.1.11",
     "@tailwindcss/postcss": "^4.0.14",
+    "icecast-metadata-stats": "^0.1.12",
     "ngx-device-detector": "^9.0.0",
     "ngx-drag-to-select": "^5.0.1",
     "postcss": "^8.5.3",

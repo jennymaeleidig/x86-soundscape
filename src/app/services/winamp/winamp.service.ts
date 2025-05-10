@@ -1,22 +1,48 @@
 import { Injectable } from '@angular/core';
 import Webamp from 'webamp';
-import Songs from '../../../assets/audio/songs';
+import Songs, { TrackWithMeta } from '../../../assets/audio/songs';
+import { MetadataService } from '../metadata/metadata.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WinampService {
+  /**
+   * Initialize webamp
+   */
   webamp = new Webamp({
     initialTracks: Songs.songs,
     initialSkin: {
-      url: 'assets/skins/Old_Mac-OS.wsz',
+      url: 'assets/skins/classic_mac_v1.wsz',
     },
     availableSkins: [{ url: 'assets/skins/Old_Mac-OS.wsz', name: 'MacOS' }],
     zIndex: 15,
   });
   rootElement!: HTMLElement;
 
-  constructor() {}
+  /**
+   * Initialize MetadataService
+   */
+  unsubFromTrackChange = this.webamp.onTrackDidChange((track) => {
+    if (track) {
+      const trackWithMeta: TrackWithMeta | undefined = Songs.songs.find(
+        (trackWithMeta: TrackWithMeta) => trackWithMeta.url === track.url,
+      );
+      if (trackWithMeta) {
+        this.metadataService.stop();
+        this.metadataService.start(trackWithMeta, (metadata: any) => {
+          // console.log(metadata);
+          this.metadataService.announceTrackUpdate(metadata);
+        });
+      } else {
+        this.metadataService.stop();
+      }
+    } else {
+      this.metadataService.stop();
+    }
+  });
+
+  constructor(private metadataService: MetadataService) {}
 
   /**
    * Must be called before renderWebamp().

@@ -1,14 +1,30 @@
-import { Track } from 'webamp';
+import { URLTrack } from 'webamp';
+
+export type TrackWithMeta = URLTrack & {
+  metadataSource: MetadataSource;
+};
+
+export enum MetadataSource {
+  Icy = 'icy',
+  Ogg = 'ogg',
+  IceStats = 'icestats',
+  ShoutV2 = 'stats',
+  ShoutV1 = 'sevenhtml',
+  NextSongs = 'nextsongs',
+}
+
+const DEFAULT_DURATION: number = 5999;
 
 export default class Songs {
-  static songs: Track[] = [
+  static songs: TrackWithMeta[] = [
     {
       metaData: {
         artist: 'x86 Soundscape',
         title: 'live',
       },
       url: 'https://radio.barb.date/x86-soundscape',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -16,7 +32,8 @@ export default class Songs {
         title: 'Richmond, VA',
       },
       url: 'https://live.wrir.org/',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -24,7 +41,8 @@ export default class Songs {
         title: 'Groove Salad',
       },
       url: 'https://ice2.somafm.com/groovesalad-128-mp3',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -32,15 +50,35 @@ export default class Songs {
         title: 'Groove Salad Classic',
       },
       url: 'https://ice4.somafm.com/gsclassic-128-mp3',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
         artist: 'Echoes of Bluemars',
-        title: 'Bluemars (rcast)',
+        title: 'live',
       },
-      url: 'https://free.rcast.net/214026',
-      duration: 5999,
+      url: 'http://streams.echoesofbluemars.org:8000/bluemars',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
+    },
+    {
+      metaData: {
+        artist: 'Echoes of Bluemars',
+        title: 'Cryosleep',
+      },
+      url: 'http://streams.echoesofbluemars.org:8000/cryosleep',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
+    },
+    {
+      metaData: {
+        artist: 'Echoes of Bluemars',
+        title: 'Voices From Within',
+      },
+      url: 'http://streams.echoesofbluemars.org:8000/voicesfromwithin',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -48,7 +86,8 @@ export default class Songs {
         title: 'Ambient',
       },
       url: 'https://s2.we4stream.com/listen/loca_ambient/live',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -56,15 +95,17 @@ export default class Songs {
         title: 'Vaporwaves',
       },
       url: 'https://ice2.somafm.com/vaporwaves-128-mp3',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
         artist: 'Nightwave Plaza',
         title: 'Online Vaporwave Radio',
       },
-      url: 'https://radio.plaza.one/mp3_low',
-      duration: 5999,
+      url: 'https://radio.plaza.one/ogg',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -72,7 +113,26 @@ export default class Songs {
         title: 'live',
       },
       url: 'https://public.isekoi-radio.com/listen/isekoi/radio.mp3',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
+    },
+    {
+      metaData: {
+        artist: 'Isekoi Radio',
+        title: 'Non Stop Ambient',
+      },
+      url: 'https://public.isekoi-radio.com/listen/ambient/ambientradio.mp3',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
+    },
+    {
+      metaData: {
+        artist: 'Isekoi Radio',
+        title: 'Chill Zone',
+      },
+      url: 'https://public.isekoi-radio.com/listen/chill/radio.mp3',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -80,7 +140,8 @@ export default class Songs {
         title: 'Labrynth',
       },
       url: 'https://stream-mixtape-geo.ntslive.net/mixtape31',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -88,7 +149,17 @@ export default class Songs {
         title: 'Field Recordings',
       },
       url: 'https://stream-mixtape-geo.ntslive.net/mixtape23',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
+    {
+      metaData: {
+        artist: 'NTS 1',
+        title: 'live',
+      },
+      url: 'https://176.9.48.145:8000/nts_b',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -96,15 +167,26 @@ export default class Songs {
         title: 'live',
       },
       url: 'https://streams.radio.co/s0aa1e6f4a/listen',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
         artist: 'dinamo.fm',
-        title: 'live',
+        title: 'locodyno',
       },
-      url: 'https://channels.dinamo.fm/legacy-mp3',
-      duration: 5999,
+      url: 'https://channels.dinamo.fm/locodyno-mp3',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
+    },
+    {
+      metaData: {
+        artist: 'dinamo.fm',
+        title: 'sleep',
+      },
+      url: 'https://channels.dinamo.fm/sleep-mp3',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -112,7 +194,8 @@ export default class Songs {
         title: 'live',
       },
       url: 'https://s2.radio.co/s12ef3f65a/listen',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -120,7 +203,8 @@ export default class Songs {
         title: 'live',
       },
       url: 'https://ad.rateau.live:8000/radio.mp3',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -128,23 +212,35 @@ export default class Songs {
         title: 'VaporFunk Radio',
       },
       url: 'http://79.120.11.40:8000/vapor.ogg',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
         artist: 'Guias Sonoras',
-        title: 'live',
+        title: 'Experimental Ambient',
       },
       url: 'https://visual.shoutca.st/stream/guiassonoras',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.ShoutV2,
+    },
+    {
+      metaData: {
+        artist: 'Guias Sonoras',
+        title: 'Dom Fox Is Sleeping',
+      },
+      url: 'https://visual.shoutca.st/stream/domfoxissleeping',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.ShoutV2,
     },
     {
       metaData: {
         artist: 'Radio Caprice',
-        title: 'Chillwave',
+        title: 'Ambient',
       },
-      url: 'http://79.111.119.111:8000/chillwave',
-      duration: 5999,
+      url: 'http://79.111.119.111:8000/ambient',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -152,7 +248,8 @@ export default class Songs {
         title: 'live',
       },
       url: 'https://broadcast.modular-station.com/radio/8000/radio.aac',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -160,7 +257,17 @@ export default class Songs {
         title: 'Level 1',
       },
       url: 'http://188.40.109.122:8000/ices',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
+    },
+    {
+      metaData: {
+        artist: 'Luxury Lounge',
+        title: 'Level 2',
+      },
+      url: 'http://188.40.109.122:8000/ices2',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -168,7 +275,8 @@ export default class Songs {
         title: 'SOUL MASSAGE',
       },
       url: 'https://kdradio.top/listen/kd_balearic/radio.mp3',
-      duration: 5999,
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -176,7 +284,8 @@ export default class Songs {
         title: 'DNB / JUNGLE',
       },
       url: 'https://kdradio.top/listen/dnbjungle/radio.mp3',
-      duration: 5999,
-    }
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
   ];
 }
