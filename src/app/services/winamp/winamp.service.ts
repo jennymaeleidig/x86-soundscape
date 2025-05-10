@@ -32,9 +32,7 @@ export class WinampService {
         this.metadataService.stop();
         this.metadataService.start(trackWithMeta, (metadata: any) => {
           // console.log(metadata);
-
-          //TODO: display this value in the navbar component #observable time
-          console.log(this.metadataService.getTitleFromMetadata(metadata));
+          this.metadataService.announceTrackUpdate(metadata);
         });
       } else {
         this.metadataService.stop();

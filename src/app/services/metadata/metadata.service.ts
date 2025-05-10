@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import IcecastMetadataStats from 'icecast-metadata-stats';
 import { MetadataSource, TrackWithMeta } from '../../../assets/audio/songs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,6 +9,10 @@ import { MetadataSource, TrackWithMeta } from '../../../assets/audio/songs';
 export class MetadataService {
   statsListener: IcecastMetadataStats | undefined;
   trackToListen: TrackWithMeta | undefined;
+  private readonly currentTrackSource = new BehaviorSubject<string>(
+    'Not Playing',
+  );
+  currentTrack$ = this.currentTrackSource.asObservable();
 
   constructor() {
     this.statsListener = undefined;
@@ -89,5 +94,9 @@ export class MetadataService {
       return `${this.trackToListen.metaData!.artist} - ${this.trackToListen.metaData!.title}`;
     }
     return 'N/A';
+  }
+
+  announceTrackUpdate(metadata: any) {
+    this.currentTrackSource.next(this.getTitleFromMetadata(metadata));
   }
 }

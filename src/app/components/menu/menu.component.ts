@@ -1,24 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, Pipe, PipeTransform } from '@angular/core';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { AppletTypes } from '../../../assets/applets/applet-definitions';
 import AboutInput from '../../../assets/applets/applet-content/about';
 import AnnoucementsInput from '../../../assets/applets/applet-content/annoucements';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { MetadataService } from '../../services/metadata/metadata.service';
+import { DecodeHtmlString } from './menu.pipes';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [],
+  imports: [DecodeHtmlString],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
 })
 export class MenuComponent {
+  currentTrack: string = 'Not Playing';
   constructor(
     private popUpService: PopUpService,
     private winampService: WinampService,
     private metadataService: MetadataService,
   ) {}
+
+  ngOnInit() {
+    this.metadataService.currentTrack$.subscribe(
+      (current) => (this.currentTrack = current),
+    );
+  }
 
   openAbout() {
     this.popUpService.open({
