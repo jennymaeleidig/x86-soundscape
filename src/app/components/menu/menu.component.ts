@@ -5,7 +5,15 @@ import AboutInput from '../../../assets/applets/applet-content/about';
 import AnnoucementsInput from '../../../assets/applets/applet-content/annoucements';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { MetadataService } from '../../services/metadata/metadata.service';
-import { DecodeHtmlString } from './menu.pipes';
+
+@Pipe({ name: 'decodeHtmlString', standalone: true })
+export class DecodeHtmlString implements PipeTransform {
+  transform(value: string) {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = value;
+    return tempElement.innerText;
+  }
+}
 
 @Component({
   selector: 'app-menu',
