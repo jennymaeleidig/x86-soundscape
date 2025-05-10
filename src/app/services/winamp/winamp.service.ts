@@ -29,8 +29,18 @@ export class WinampService {
         (trackWithMeta: TrackWithMeta) => trackWithMeta.url === track.url,
       );
       if (trackWithMeta) {
-        console.log(trackWithMeta.metadataSource);
+        this.metadataService.stop();
+        this.metadataService.start(trackWithMeta, (metadata: any) => {
+          // console.log(metadata);
+
+          //TODO: display this value in the navbar component #observable time
+          console.log(this.metadataService.getTitleFromMetadata(metadata));
+        });
+      } else {
+        this.metadataService.stop();
       }
+    } else {
+      this.metadataService.stop();
     }
   });
 

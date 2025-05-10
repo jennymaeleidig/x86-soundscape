@@ -105,7 +105,7 @@ export default class Songs {
       },
       url: 'https://radio.plaza.one/ogg',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.Ogg,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -177,7 +177,7 @@ export default class Songs {
       },
       url: 'https://channels.dinamo.fm/locodyno-mp3',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.Icy,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -186,7 +186,7 @@ export default class Songs {
       },
       url: 'https://channels.dinamo.fm/sleep-mp3',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.Icy,
+      metadataSource: MetadataSource.IceStats,
     },
     {
       metaData: {
@@ -276,7 +276,7 @@ export default class Songs {
       },
       url: 'https://kdradio.top/listen/kd_balearic/radio.mp3',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.IceStats,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -285,7 +285,7 @@ export default class Songs {
       },
       url: 'https://kdradio.top/listen/dnbjungle/radio.mp3',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.IceStats,
+      metadataSource: MetadataSource.Icy,
     },
   ];
 }
