@@ -8,7 +8,7 @@ https://jennymaeleidig.github.io/x86-soundscape/
 
 Setup:
 
-`npm install --legacy-peer-deps`
+`npm install`
 
 Run dev server locally:
 
@@ -16,7 +16,7 @@ Run dev server locally:
 
 Format:
 
-`npm run prettier`
+`npm run pretty`
 
 Deploy:
 
