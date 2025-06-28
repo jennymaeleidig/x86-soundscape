@@ -40,56 +40,51 @@ export class MetadataService {
   }
 
   getTitleFromMetadata(metadata: any): string {
-    if (this.trackToListen && metadata) {
-      //TODO: Parse this better
-      switch (this.trackToListen.metadataSource) {
+    try {
+      switch (this.trackToListen!.metadataSource) {
         case MetadataSource.IceStats:
           if (metadata[MetadataSource.IceStats]) {
-            if (this.getTrackName().includes('Nightwave Plaza')) {
+            if (this.getDefaultName().includes('Nightwave Plaza')) {
               return metadata[MetadataSource.IceStats]['source'][0][
                 'yp_currently_playing'
               ];
             }
-            if (this.getTrackName().includes('Isekoi Radio')) {
+            if (this.getDefaultName().includes('Isekoi Radio')) {
               return metadata[MetadataSource.IceStats]['source'][1][
                 'yp_currently_playing'
               ];
             }
-            if (this.getTrackName().includes('dinamo.fm - locodyno')) {
+            if (this.getDefaultName().includes('dinamo.fm - locodyno')) {
               return metadata[MetadataSource.IceStats]['source'][17]['title'];
             }
-            if (this.getTrackName().includes('dinamo.fm - sleep')) {
+            if (this.getDefaultName().includes('dinamo.fm - sleep')) {
               return metadata[MetadataSource.IceStats]['source'][23]['title'];
             }
             if (
-              this.getTrackName().includes('rateau') ||
-              this.getTrackName().includes('Modular Station')
+              this.getDefaultName().includes('rateau') ||
+              this.getDefaultName().includes('Modular Station')
             ) {
               return metadata[MetadataSource.IceStats]['source'][
                 'yp_currently_playing'
               ];
             }
-            if (this.getTrackName().includes('Krelez')) {
-              return `${metadata[MetadataSource.IceStats]['source'][1]['artist']} - ${metadata[MetadataSource.IceStats]['source'][1]['title']}`;
-            }
-            return metadata[MetadataSource.IceStats]['source']['title'];
           }
-          return this.getTrackName();
+          return this.getDefaultName();
         case MetadataSource.Icy:
           if (metadata[MetadataSource.Icy]) {
             if (metadata[MetadataSource.Icy]['StreamTitle']) {
               return metadata[MetadataSource.Icy]['StreamTitle'];
             }
           }
-          return this.getTrackName();
+          return this.getDefaultName();
         default:
-          return this.getTrackName();
+          return this.getDefaultName();
       }
-    }
-    return 'N / A';
+    } catch (error) {}
+    return this.getDefaultName();
   }
 
-  private getTrackName(): string {
+  private getDefaultName(): string {
     if (this.trackToListen) {
       return `${this.trackToListen.metaData!.artist} - ${this.trackToListen.metaData!.title}`;
     }
