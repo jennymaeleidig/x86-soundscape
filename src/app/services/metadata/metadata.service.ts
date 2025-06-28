@@ -40,7 +40,6 @@ export class MetadataService {
   }
 
   getTitleFromMetadata(metadata: any): string {
-    console.log(metadata);
     try {
       switch (this.trackToListen!.metadataSource) {
         case MetadataSource.IceStats:
