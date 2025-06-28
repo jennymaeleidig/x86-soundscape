@@ -24,7 +24,7 @@ export default class Songs {
       },
       url: 'https://radio.barb.date/listen/x86_soundscape/radio.mp3',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.IceStats,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -60,7 +60,7 @@ export default class Songs {
       },
       url: 'https://radio.barb.date/listen/echoes_of_bluemars/bluemars',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.IceStats,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -69,7 +69,7 @@ export default class Songs {
       },
       url: 'https://radio.barb.date/listen/echoes_of_bluemars/cryosleep',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.IceStats,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -78,7 +78,7 @@ export default class Songs {
       },
       url: 'https://radio.barb.date/listen/echoes_of_bluemars/voicesfromwithin',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.IceStats,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -222,7 +222,7 @@ export default class Songs {
       },
       url: 'https://radio.barb.date/listen/krelez/vapor',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.IceStats,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -249,7 +249,7 @@ export default class Songs {
       },
       url: 'https://radio.barb.date/listen/radio_caprice/ambient',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.IceStats,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -267,7 +267,7 @@ export default class Songs {
       },
       url: 'http://radio.barb.date/listen/luxury_lounge/level-1',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.IceStats,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
@@ -276,7 +276,7 @@ export default class Songs {
       },
       url: 'http://radio.barb.date/listen/luxury_lounge/level-2',
       duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.IceStats,
+      metadataSource: MetadataSource.Icy,
     },
     {
       metaData: {
