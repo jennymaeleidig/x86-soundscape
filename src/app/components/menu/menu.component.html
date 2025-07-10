@@ -87,9 +87,13 @@
       id="scroll-container"
       class="max-w-3xs !bg-white !text-black !cursor-text !overflow-hidden !text-nowrap"
     >
-      <div id="scroll-text">
-        {{ currentTrack | decodeHtmlString }}
-      </div>
+      <om-marquee [marqueeGap]="'4rem'" [pauseOnHover]="false">
+        <ng-template>
+          <div title="{{ currentTrack | decodeHtmlString }}" class="item">
+            {{ currentTrack | decodeHtmlString }}
+          </div>
+        </ng-template>
+      </om-marquee>
     </li>
   </ng-container>
   <ng-template #mobileWarning>

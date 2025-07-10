@@ -7,11 +7,20 @@ import { AnnoucementContent } from '../../../assets/applets/applet-content/annou
 import { VisualizerContent } from '../../../assets/applets/applet-content/visualizer';
 import { NgSwitch, NgSwitchCase, NgFor, NgClass } from '@angular/common';
 import { AppletTypes } from '../../../assets/applets/applet-definitions';
+import { X86SurferComponent } from 'x86-surfer-component';
 
 @Component({
   selector: 'app-window',
   standalone: true,
-  imports: [CdkDrag, CdkDragHandle, NgSwitch, NgSwitchCase, NgFor, NgClass],
+  imports: [
+    CdkDrag,
+    CdkDragHandle,
+    NgSwitch,
+    NgSwitchCase,
+    NgFor,
+    NgClass,
+    X86SurferComponent,
+  ],
   templateUrl: './window.component.html',
   styleUrl: './window.component.css',
 })
