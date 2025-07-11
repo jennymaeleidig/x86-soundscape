@@ -1,7 +1,7 @@
 <div [ngSwitch]="selector">
   <div
     *ngSwitchCase="AppletTypes.About"
-    class="window absolute top-35 left-200 w-1/4 h-1/2 resize"
+    class="window absolute top-5 left-200 w-1/4 h-1/2 resize"
     [ngClass]="isActive() ? 'z-5' : 'z-0'"
     cdkDragBoundary=".desktop-bounds"
     cdkDrag
