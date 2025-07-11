@@ -8,7 +8,7 @@ export default class AnnoucementsInput {
   static accouncementsInput: AnnoucementContent[] = [
     {
       title: 'New Sights (⌐■_■)',
-      msg: 'Enjoy some improved reliability and check out the new visualizer.  Stay chill.  -- DJ x86',
+      msg: 'Enjoy some improved reliability and check out the new visualizer and added ambience. Stay chill. -- DJ x86',
       date: '07/10/25',
     },
     {
