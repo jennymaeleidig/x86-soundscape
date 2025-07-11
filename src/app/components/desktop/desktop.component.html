@@ -2,7 +2,10 @@
 <app-menu></app-menu>
 <!-- Winamp injects css and i dont really now know to intercept that so its at the top :) -->
 <winamp></winamp>
-<div *ngIf="!isMobileRes()" class="w-full h-full overflow-hidden desktop-bounds">
+<div
+  *ngIf="!isMobileRes()"
+  class="w-full h-full overflow-hidden desktop-bounds"
+>
   <!-- Selectable area -->
   <!-- The selectable area does not play nice w/ the drag library, conly ever marks as selected at intial location. -->
   <dts-select-container
@@ -11,7 +14,10 @@
     [(selectedItems)]="selectedApplets"
     [disabled]="appletIsMoving"
   >
-    <div class="grid gap-10 h-max absolute top-5 right-5 justify-items-center">
+    <div
+      dir="rtl"
+      class="flex flex-col flex-wrap gap-10 max-h-full absolute top-5 right-5 items-center"
+    >
       <div
         *ngFor="let applet of appletInputs"
         [dtsSelectItem]="applet"

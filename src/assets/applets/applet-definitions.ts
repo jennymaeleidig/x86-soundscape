@@ -2,9 +2,6 @@ import AboutInput, { AboutContent } from './applet-content/about';
 import AnnoucementsInput, {
   AnnoucementContent,
 } from './applet-content/annoucements';
-import VisualizerInput, {
-  VisualizerContent,
-} from './applet-content/visualizer';
 
 export enum AppletTypes {
   About,
@@ -14,21 +11,35 @@ export enum AppletTypes {
   Stream,
   Default,
   Attention,
+  Ambience,
 }
 export interface AppletDefinition extends Record<string, unknown> {
   title: string;
   icon: string;
   selector: AppletTypes;
-  windowContent:
-    | AboutContent
-    | AnnoucementContent[]
-    | VisualizerContent
-    | string
-    | undefined;
+  windowContent: AboutContent | AnnoucementContent[] | string | undefined;
 }
 
 export default class AppletDefinitions {
   static appletDefinitions: AppletDefinition[] = [
+    {
+      title: 'Ambience',
+      icon: 'assets/images/ambience_off.png',
+      selector: AppletTypes.Ambience,
+      windowContent: undefined,
+    },
+    {
+      title: 'Visualizer',
+      icon: 'assets/images/Viz.png',
+      selector: AppletTypes.Visualizer,
+      windowContent: undefined,
+    },
+    {
+      title: 'Webamp',
+      icon: 'assets/images/Sound.png',
+      selector: AppletTypes.Winamp,
+      windowContent: undefined,
+    },
     {
       title: 'About',
       icon: 'assets/images/Note.png',
@@ -40,18 +51,6 @@ export default class AppletDefinitions {
       icon: 'assets/images/Annouce.png',
       selector: AppletTypes.Annoucements,
       windowContent: AnnoucementsInput.accouncementsInput,
-    },
-    {
-      title: 'Visualizer',
-      icon: 'assets/images/Viz.png',
-      selector: AppletTypes.Visualizer,
-      windowContent: VisualizerInput.visualizerInput,
-    },
-    {
-      title: 'Webamp',
-      icon: 'assets/images/Sound.png',
-      selector: AppletTypes.Winamp,
-      windowContent: undefined,
     },
     {
       title: 'Play Radio',

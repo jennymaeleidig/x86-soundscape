@@ -4,7 +4,6 @@ import { WindowService } from '../../services/window/window.service';
 import { Options } from '../../services/window/window.options';
 import { AboutContent } from '../../../assets/applets/applet-content/about';
 import { AnnoucementContent } from '../../../assets/applets/applet-content/annoucements';
-import { VisualizerContent } from '../../../assets/applets/applet-content/visualizer';
 import { NgSwitch, NgSwitchCase, NgFor, NgClass } from '@angular/common';
 import { AppletTypes } from '../../../assets/applets/applet-definitions';
 import { X86SurferComponent } from 'x86-surfer-component';
@@ -27,11 +26,7 @@ import { X86SurferComponent } from 'x86-surfer-component';
 export class WindowComponent {
   options!: Options | undefined;
   selector!: AppletTypes;
-  windowContent!:
-    | AboutContent
-    | AnnoucementContent[]
-    | VisualizerContent
-    | string;
+  windowContent!: AboutContent | AnnoucementContent[] | string;
   AppletTypes = AppletTypes;
 
   constructor(private windowService: WindowService) {}

@@ -1,32 +1,41 @@
 <div class="w-fit h-fit grid justify-items-center hover:invert">
   <div [ngSwitch]="selector" cdkDragHandle>
-      <button
-        *ngSwitchCase="AppletTypes.Winamp"
-        class="cursor-pointer"
-        (dblclick)="openWinamp()"
-        (mousedown)="setMoving()"
-        (mouseup)="unsetMoving()"
-      >
-        <img src="{{ icon }}" />
-      </button>
-      <button
-        *ngSwitchCase="AppletTypes.Stream"
-        class="cursor-pointer"
-        (dblclick)="playRadio()"
-        (mousedown)="setMoving()"
-        (mouseup)="unsetMoving()"
-      >
-        <img src="{{ icon }}" />
-      </button>
-      <button
-        *ngSwitchDefault
-        class="cursor-pointer"
-        (dblclick)="openWindowComponent()"
-        (mousedown)="setMoving()"
-        (mouseup)="unsetMoving()"
-      >
-        <img src="{{ icon }}" />
-      </button>
+    <button
+      *ngSwitchCase="AppletTypes.Winamp"
+      class="cursor-pointer"
+      (dblclick)="openWinamp()"
+      (mousedown)="setMoving()"
+      (mouseup)="unsetMoving()"
+    >
+      <img src="{{ icon }}" />
+    </button>
+    <button
+      *ngSwitchCase="AppletTypes.Stream"
+      class="cursor-pointer"
+      (dblclick)="playRadio()"
+      (mousedown)="setMoving()"
+      (mouseup)="unsetMoving()"
+    >
+      <img src="{{ icon }}" />
+    </button>
+    <button
+      *ngSwitchCase="AppletTypes.Ambience"
+      class="cursor-pointer"
+      (dblclick)="toggleAmbience()"
+      (mousedown)="setMoving()"
+      (mouseup)="unsetMoving()"
+    >
+      <img src="{{ icon }}" />
+    </button>
+    <button
+      *ngSwitchDefault
+      class="cursor-pointer"
+      (dblclick)="openWindowComponent()"
+      (mousedown)="setMoving()"
+      (mouseup)="unsetMoving()"
+    >
+      <img src="{{ icon }}" />
+    </button>
   </div>
   <div class="mt-1 bg-white">{{ title }}</div>
 </div>
