@@ -54,4 +54,12 @@ export class AmbienceService {
       console.log('Ambience stopped.');
     }
   }
+
+  getAmbienceName(): string {
+    if (this.currentAudio) {
+      return this.currentAudio.src.split('/').pop() || 'Unknown';
+    } else {
+      return 'Not Playing';
+    }
+  }
 }

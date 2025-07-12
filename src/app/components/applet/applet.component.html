@@ -19,6 +19,7 @@
       <img src="{{ icon }}" />
     </button>
     <button
+      title="{{ getAmbienceName() }}"
       *ngSwitchCase="AppletTypes.Ambience"
       class="cursor-pointer"
       (dblclick)="toggleAmbience()"

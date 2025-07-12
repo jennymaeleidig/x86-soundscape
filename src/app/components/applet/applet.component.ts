@@ -74,4 +74,12 @@ export class AppletComponent {
       }
     }
   }
+
+  getAmbienceName(): string {
+    if (this.selector === AppletTypes.Ambience) {
+      return this.ambienceAudioService.getAmbienceName();
+    } else {
+      return 'N / A';
+    }
+  }
 }

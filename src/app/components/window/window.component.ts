@@ -4,22 +4,14 @@ import { WindowService } from '../../services/window/window.service';
 import { Options } from '../../services/window/window.options';
 import { AboutContent } from '../../../assets/applets/applet-content/about';
 import { AnnoucementContent } from '../../../assets/applets/applet-content/annoucements';
-import { NgSwitch, NgSwitchCase, NgFor, NgClass } from '@angular/common';
+import { NgClass, CommonModule } from '@angular/common';
 import { AppletTypes } from '../../../assets/applets/applet-definitions';
 import { X86SurferComponent } from 'x86-surfer-component';
 
 @Component({
   selector: 'app-window',
   standalone: true,
-  imports: [
-    CdkDrag,
-    CdkDragHandle,
-    NgSwitch,
-    NgSwitchCase,
-    NgFor,
-    NgClass,
-    X86SurferComponent,
-  ],
+  imports: [CommonModule, CdkDrag, CdkDragHandle, NgClass, X86SurferComponent],
   templateUrl: './window.component.html',
   styleUrl: './window.component.css',
 })

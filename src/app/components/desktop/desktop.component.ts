@@ -3,7 +3,7 @@ import { MenuComponent } from '../menu/menu.component';
 import { WinampComponent } from '../winamp/winamp.component';
 import { AppletComponent } from '../applet/applet.component';
 import { DragToSelectModule } from 'ngx-drag-to-select';
-import { NgComponentOutlet, NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgComponentOutlet } from '@angular/common';
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import AppletDefinitions from '../../../assets/applets/applet-definitions';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -15,8 +15,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
     MenuComponent,
     WinampComponent,
     DragToSelectModule,
-    NgFor,
-    NgIf,
+    CommonModule,
     NgComponentOutlet,
     CdkDrag,
   ],

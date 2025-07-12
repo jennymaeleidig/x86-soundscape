@@ -6,7 +6,7 @@ import AnnoucementsInput from '../../../assets/applets/applet-content/annoucemen
 import { WinampService } from '../../services/winamp/winamp.service';
 import { MetadataService } from '../../services/metadata/metadata.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
 
 @Pipe({ name: 'decodeHtmlString', standalone: true })
@@ -21,7 +21,7 @@ export class DecodeHtmlString implements PipeTransform {
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [DecodeHtmlString, NgIf, NgxMarqueeComponent],
+  imports: [DecodeHtmlString, NgxMarqueeComponent, CommonModule],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
 })
