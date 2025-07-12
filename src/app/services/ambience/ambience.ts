@@ -57,7 +57,9 @@ export class AmbienceService {
 
   getAmbienceName(): string {
     if (this.currentAudio) {
-      return this.currentAudio.src.split('/').pop() || 'Unknown';
+      // Extract the filename from the path
+      var path: string[] = this.currentAudio.src.split('/');
+      return `${path.pop() || 'Unknown'} by ${path.pop() || 'Unknown'}`;
     } else {
       return 'Not Playing';
     }
