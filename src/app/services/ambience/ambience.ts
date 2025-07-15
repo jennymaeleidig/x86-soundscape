@@ -58,8 +58,10 @@ export class AmbienceService {
   getAmbienceName(): string {
     if (this.currentAudio) {
       // Extract the filename from the path
-      var path: string[] = this.currentAudio.src.split('/');
-      return `${path.pop() || 'Unknown'} by ${path.pop() || 'Unknown'}`;
+      var path: string[] = this.currentAudio.src
+        .replaceAll('_', ' ')
+        .split('/');
+      return `${path.pop() || 'Unknown'} from ${path.pop() || 'Unknown'}`;
     } else {
       return 'Not Playing';
     }

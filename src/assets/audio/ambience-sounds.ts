@@ -28,15 +28,15 @@ export const ambienceSoundPaths: string[] = [
   'assets/audio/sounds/Tech_Barn/Old_Apple_Keyboard_M0110A-ASMR-No-talking,_typing,_tapping,_educational-007_Typing-z_3G-UbJQc.mp3',
   // coneypylon
   'assets/audio/sounds/coneypylon/Macintosh_SE_Short_Typing_ASMR-0Oobl4xf13w.mp3',
-  // stanley
-  'assets/audio/sounds/stanley/Amb_Loop_MonitorRoom_Off.wav',
-  'assets/audio/sounds/stanley/Amb_Loop_MonitorRoom_Off_01.wav',
-  'assets/audio/sounds/stanley/Amb_Loop_Office_General_02.wav',
-  'assets/audio/sounds/stanley/Amb_Loop_Office_General_05.wav',
-  'assets/audio/sounds/stanley/Ambient_OfficeAlive.wav',
-  'assets/audio/sounds/stanley/amb_loop_office_general_01.wav',
-  'assets/audio/sounds/stanley/amb_loop_office_general_03.wav',
-  'assets/audio/sounds/stanley/amb_loop_office_general_04.wav',
+  // The_Stanley_Parable
+  'assets/audio/sounds/The_Stanley_Parable/Amb_Loop_MonitorRoom_Off.wav',
+  'assets/audio/sounds/The_Stanley_Parable/Amb_Loop_MonitorRoom_Off_01.wav',
+  'assets/audio/sounds/The_Stanley_Parable/Amb_Loop_Office_General_02.wav',
+  'assets/audio/sounds/The_Stanley_Parable/Amb_Loop_Office_General_05.wav',
+  'assets/audio/sounds/The_Stanley_Parable/Ambient_OfficeAlive.wav',
+  'assets/audio/sounds/The_Stanley_Parable/amb_loop_office_general_01.wav',
+  'assets/audio/sounds/The_Stanley_Parable/amb_loop_office_general_03.wav',
+  'assets/audio/sounds/The_Stanley_Parable/amb_loop_office_general_04.wav',
   // vcamnowaa
   'assets/audio/sounds/vcamnowaa/ASMR_Old_Computer_Sounds-KUVILrVnM_Y.mp3',
 ];
