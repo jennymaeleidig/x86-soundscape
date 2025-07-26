@@ -4,6 +4,7 @@
       *ngSwitchCase="AppletTypes.Winamp"
       class="cursor-pointer"
       (dblclick)="openWinamp()"
+      (touchend)="openWinamp()"
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
@@ -13,6 +14,7 @@
       *ngSwitchCase="AppletTypes.Stream"
       class="cursor-pointer"
       (dblclick)="playRadio()"
+      (touchend)="playRadio()"
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
@@ -23,6 +25,7 @@
       *ngSwitchCase="AppletTypes.Ambience"
       class="cursor-pointer"
       (dblclick)="toggleAmbience()"
+      (touchend)="toggleAmbience()"
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
@@ -32,6 +35,7 @@
       *ngSwitchDefault
       class="cursor-pointer"
       (dblclick)="openWindowComponent()"
+      (touchend)="openWindowComponent()"
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
