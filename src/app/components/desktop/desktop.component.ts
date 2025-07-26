@@ -46,6 +46,6 @@ export class DesktopComponent {
   }
 
   isMobileRes(): boolean {
-    return this.deviceService.isMobile() || this.deviceService.isTablet();
+    return this.deviceService.isMobile();
   }
 }
