@@ -37,6 +37,15 @@ export default class Songs {
     },
     {
       metaData: {
+        artist: '222.5FM Ghostwave Pirate Radio',
+        title: 'Nightleek タマネギ',
+      },
+      url: 'https://radio.barb.date/listen/222.5fm_ghostwave/ghostwave',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
+    {
+      metaData: {
         artist: 'soma fm',
         title: 'Groove Salad',
       },
