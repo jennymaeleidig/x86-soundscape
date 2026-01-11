@@ -29,7 +29,7 @@
           href="https://dj-x86.straw.page/"
           target="_blank"
           rel="noopener noreferrer"
-          >56 kbit/s</a
+          >DJ x86</a
         >
       </li>
       <li role="menu-item">
@@ -71,12 +71,39 @@
       </li>
     </ul>
   </li>
+  <li role="menu-item" tabindex="0" aria-haspopup="true">
+    Ambience
+    <ul role="menu">
+      <li role="menu-item" class="divider max-w-3xs">
+        <om-marquee
+          [marqueeGap]="'4rem'"
+          [animationDuration]="'15s'"
+          [pauseOnHover]="false"
+        >
+          <ng-template>
+            <div
+              title="{{ getAmbienceName() | decodeHtmlString }}"
+              class="item"
+            >
+              {{ getAmbienceName() | decodeHtmlString }}
+            </div>
+          </ng-template>
+        </om-marquee>
+      </li>
+      <li role="menu-item" (click)="playAmbience()"><a>Play</a></li>
+      <li role="menu-item" (click)="stopAmbience()"><a>Stop</a></li>
+      <li role="menu-item" (click)="shuffleAmbience()"><a>Shuffle</a></li>
+      <li role="menu-item" (click)="volumeUpAmbience()"><a>Volume +</a></li>
+      <li role="menu-item" (click)="volumeDownAmbience()"><a>Volume -</a></li>
+    </ul>
+  </li>
+
   <ng-container *ngIf="!isMobileRes(); else mobileWarning">
     <li
       role="menu-item"
       tabindex="0"
       aria-haspopup="false"
-      class="!bg-white !text-black !cursor-[url(assets/images/normal.cur),_auto] border-l"
+      class="!bg-white !text-black !cursor-[url(assets/images/normal.png),_auto] border-l"
     >
       Now Playing —
     </li>

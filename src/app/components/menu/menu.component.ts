@@ -8,6 +8,9 @@ import { MetadataService } from '../../services/metadata/metadata.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { CommonModule } from '@angular/common';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
+import { AmbienceService } from '../../services/ambience/ambience';
+
+export const DEFAULT_TITLE = 'N / A';
 
 @Pipe({ name: 'decodeHtmlString', standalone: true })
 export class DecodeHtmlString implements PipeTransform {
@@ -26,12 +29,13 @@ export class DecodeHtmlString implements PipeTransform {
   styleUrl: './menu.component.css',
 })
 export class MenuComponent {
-  currentTrack: string = 'N / A';
+  currentTrack: string = DEFAULT_TITLE;
   constructor(
     private popUpService: PopUpService,
     private winampService: WinampService,
     private metadataService: MetadataService,
     private deviceService: DeviceDetectorService,
+    private ambienceService: AmbienceService,
   ) {}
 
   ngOnInit() {
@@ -79,6 +83,30 @@ export class MenuComponent {
 
   next() {
     this.winampService.next();
+  }
+
+  playAmbience() {
+    this.ambienceService.playAmbience();
+  }
+
+  stopAmbience() {
+    this.ambienceService.stopAmbience();
+  }
+
+  shuffleAmbience() {
+    this.ambienceService.playRandomAmbience();
+  }
+
+  volumeUpAmbience() {
+    this.ambienceService.volumeUp();
+  }
+
+  volumeDownAmbience() {
+    this.ambienceService.volumeDown();
+  }
+
+  getAmbienceName(): string {
+    return this.ambienceService.getAmbienceName();
   }
 
   isMobileRes(): boolean {

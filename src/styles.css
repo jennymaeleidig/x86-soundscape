@@ -1,62 +1,109 @@
 @import "tailwindcss";
 
 @font-face {
-    font-family: 'Chicago';
-    src: url('assets/fonts/ChicagoFLF.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "Chicago";
+  src: url("assets/fonts/ChicagoFLF.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
 :root {
-    --box-shadow: 2px 2px;
+  --box-shadow: 2px 2px;
 
-    /* Spacing */
-    --element-spacing: 8px;
-    --grouped-element-spacing: 6px;
-    --radio-width: 12px;
-    --checkbox-width: 13px;
-    --radio-label-spacing: 6px;
-  
-    /* Some detailed computations for radio buttons and checkboxes (from 98.css) */
-    --radio-total-width-precalc: var(--radio-width) + var(--radio-label-spacing);
-    --radio-total-width: calc(var(--radio-total-width-precalc));
-    --radio-left: calc(-1 * var(--radio-total-width-precalc));
-    --radio-dot-width: 6px;
-    --radio-dot-top: calc(var(--radio-width) / 2 - var(--radio-dot-width) / 2);
-    --radio-dot-left: calc(
-      -1 * (var(--radio-total-width-precalc)) + var(--radio-width) / 2 - var(
-          --radio-dot-width
-        ) / 2
-    );
-  
-    --checkbox-total-width-precalc: var(--checkbox-width) +
-      var(--radio-label-spacing);
-    --checkbox-total-width: calc(var(--checkbox-total-width-precalc));
-    --checkbox-left: calc(-1 * var(--checkbox-total-width-precalc));
-    --checkmark-width: 12px;
-    --checkmark-top: 2px;
-    --checkmark-left: 2px;
-  
-    /* ---- ⚫️ Colors ⚪️ ---- */
-    /* Base Tokens */
-    --sys-color-white: #FFFFFF;
-    --sys-color-black: #000000;
-    --sys-color-grey: #A5A5A5;
-    --sys-color-darkgrey: #B6B7B8;
-  
-    /* Theme Tokens */
-    --primary: var(--sys-color-white);
-    --secondary: var(--sys-color-black);
-    --tertiary: var(--sys-color-grey);
-  
-    /* Component Tokens */
-    --disabled: var(--sys-color-darkgrey);
-    font-family: 'Chicago';
+  /* Spacing */
+  --element-spacing: 8px;
+  --grouped-element-spacing: 6px;
+  --radio-width: 12px;
+  --checkbox-width: 13px;
+  --radio-label-spacing: 6px;
+
+  /* Some detailed computations for radio buttons and checkboxes (from 98.css) */
+  --radio-total-width-precalc: var(--radio-width) + var(--radio-label-spacing);
+  --radio-total-width: calc(var(--radio-total-width-precalc));
+  --radio-left: calc(-1 * var(--radio-total-width-precalc));
+  --radio-dot-width: 6px;
+  --radio-dot-top: calc(var(--radio-width) / 2 - var(--radio-dot-width) / 2);
+  --radio-dot-left: calc(
+    -1 * (var(--radio-total-width-precalc)) + var(--radio-width) / 2 -
+      var(--radio-dot-width) / 2
+  );
+
+  --checkbox-total-width-precalc: var(--checkbox-width) +
+    var(--radio-label-spacing);
+  --checkbox-total-width: calc(var(--checkbox-total-width-precalc));
+  --checkbox-left: calc(-1 * var(--checkbox-total-width-precalc));
+  --checkmark-width: 12px;
+  --checkmark-top: 2px;
+  --checkmark-left: 2px;
+
+  /* ---- ⚫️ Colors ⚪️ ---- */
+  /* Base Tokens */
+  --sys-color-white: #ffffff;
+  --sys-color-black: #000000;
+  --sys-color-grey: #a5a5a5;
+  --sys-color-darkgrey: #b6b7b8;
+
+  /* Theme Tokens */
+  --primary: var(--sys-color-white);
+  --secondary: var(--sys-color-black);
+  --tertiary: var(--sys-color-grey);
+
+  /* Component Tokens */
+  --disabled: var(--sys-color-darkgrey);
+  font-family: "Chicago";
 }
 
 body {
   image-rendering: pixelated;
-  cursor: url("assets/images/normal.cur"), auto;
+  cursor: url("assets/images/normal.png"), auto;
+}
+
+/* Cursor styles for different interactions */
+button,
+a,
+[role="button"] {
+  cursor: url("assets/images/arrow.png"), pointer !important;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="search"],
+textarea,
+[contenteditable="true"] {
+  cursor: url("assets/images/beam.png"), text !important;
+}
+
+.draggable {
+  cursor: url("assets/images/hand.png"), grab !important;
+}
+
+.draggable:active {
+  cursor: url("assets/images/hand2.png"), grabbing !important;
+}
+
+.resize-horizontal {
+  cursor: url("assets/images/horizontal.png"), ew-resize !important;
+}
+
+.resize-vertical {
+  cursor: url("assets/images/vertical.png"), ns-resize !important;
+}
+
+.loading,
+.busy {
+  cursor: wait !important;
+}
+
+.wait {
+  cursor: wait !important;
+}
+
+.precision {
+  cursor: url("assets/images/precision.png"), crosshair !important;
+}
+
+.edit-mode {
+  cursor: url("assets/images/pencil.png"), text !important;
 }
 
 .dts-no-select {
@@ -80,4 +127,38 @@ body {
 }
 .dts-select-box.dts-removing {
   border: 1px solid #000000;
+}
+
+/* Force cursor overrides for system.css elements */
+* {
+  cursor: inherit;
+}
+
+ul[role="menu-bar"],
+ul[role="menu-bar"] > li,
+ul[role="menu"] > li,
+ul[role="menu"] > li > a,
+[role="menu-item"],
+[role="menu-item"] > a,
+button:not(:disabled),
+.window button:not(:disabled),
+.title-bar button:not(:disabled) {
+  cursor: url("assets/images/hand.png"), pointer !important;
+}
+
+/* Dragging states */
+.window.dragging,
+.window.dragging *,
+[dragging="true"],
+[dragging="true"] *,
+.cdk-drag-dragging,
+.cdk-drag-dragging *,
+body.dragging,
+body.dragging * {
+  cursor: url("assets/images/hand2.png"), grabbing !important;
+}
+
+.title-bar:active,
+.title-bar.dragging {
+  cursor: url("assets/images/hand2.png"), grabbing !important;
 }

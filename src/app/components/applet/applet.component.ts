@@ -63,14 +63,21 @@ export class AppletComponent {
     this.setAppletIsMoving(false);
   }
 
+  getIcon(): string {
+    if (this.selector === AppletTypes.Ambience) {
+      return this.ambienceAudioService.isPlaying()
+        ? AMBIENCE_ON_ICON
+        : AMBIENCE_OFF_ICON;
+    }
+    return this.icon;
+  }
+
   toggleAmbience() {
     if (this.selector === AppletTypes.Ambience) {
-      if (this.icon === AMBIENCE_OFF_ICON) {
-        this.icon = AMBIENCE_ON_ICON;
-        this.ambienceAudioService.playRandomAmbience();
-      } else {
-        this.icon = AMBIENCE_OFF_ICON;
+      if (this.ambienceAudioService.isPlaying()) {
         this.ambienceAudioService.stopAmbience();
+      } else {
+        this.ambienceAudioService.playRandomAmbience();
       }
     }
   }

@@ -8,7 +8,7 @@
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
-      <img src="{{ icon }}" />
+      <img src="{{ getIcon() }}" />
     </button>
     <button
       *ngSwitchCase="AppletTypes.Stream"
@@ -18,7 +18,7 @@
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
-      <img src="{{ icon }}" />
+      <img src="{{ getIcon() }}" />
     </button>
     <button
       title="{{ getAmbienceName() }}"
@@ -29,7 +29,7 @@
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
-      <img src="{{ icon }}" />
+      <img src="{{ getIcon() }}" />
     </button>
     <button
       *ngSwitchDefault
@@ -39,7 +39,7 @@
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
-      <img src="{{ icon }}" />
+      <img src="{{ getIcon() }}" />
     </button>
   </div>
   <div class="mt-1 bg-white">{{ title }}</div>

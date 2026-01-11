@@ -19,19 +19,30 @@
       class="flex flex-col flex-wrap gap-10 max-h-full absolute top-5 right-5 items-center"
     >
       <div
-        *ngFor="let applet of appletInputs"
+        *ngFor="let applet of applets"
         [dtsSelectItem]="applet"
-        cdkDragBoundary=".desktop-bounds"
-        cdkDrag
+        [class.selected]="isSelected(applet)"
+        [style.transform]="
+          applet.x !== 0 || applet.y !== 0
+            ? 'translate3d(' + applet.x + 'px, ' + applet.y + 'px, 0)'
+            : 'none'
+        "
       >
-        <ng-container
-          #applet
-          *ngComponentOutlet="
-            AppletComponent;
-            inputs: applet;
-            injector: injector
-          "
-        ></ng-container>
+        <div
+          cdkDragBoundary=".desktop-bounds"
+          cdkDrag
+          (cdkDragStarted)="onDragStarted($event, applet)"
+          (cdkDragMoved)="onDragMoved($event, applet)"
+          (cdkDragEnded)="onDragEnded($event, applet)"
+        >
+          <ng-container
+            *ngComponentOutlet="
+              AppletComponent;
+              inputs: getAppletInputs(applet);
+              injector: injector
+            "
+          ></ng-container>
+        </div>
       </div>
     </div>
   </dts-select-container>

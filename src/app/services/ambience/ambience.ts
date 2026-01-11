@@ -7,6 +7,7 @@ const DEFAULT_VOLUME = 0.5;
   providedIn: 'root',
 })
 export class AmbienceService {
+  private currentVolume: number = DEFAULT_VOLUME;
   private currentAudio: HTMLAudioElement | null = null;
   private ambienceSounds: string[] = ambienceSoundPaths;
 
@@ -29,7 +30,7 @@ export class AmbienceService {
 
     this.currentAudio = new Audio(selectedSoundPath);
     this.currentAudio.loop = true; // Set the sound to loop
-    this.currentAudio.volume = DEFAULT_VOLUME;
+    this.currentAudio.volume = this.currentVolume;
 
     // Handle potential errors
     this.currentAudio.onerror = (e) => {
@@ -51,7 +52,14 @@ export class AmbienceService {
       this.currentAudio.pause();
       this.currentAudio.currentTime = 0;
       this.currentAudio = null;
-      console.log('Ambience stopped.');
+    }
+  }
+
+  playAmbience() {
+    if (this.currentAudio) {
+      this.currentAudio.play();
+    } else {
+      this.playRandomAmbience();
     }
   }
 
@@ -65,5 +73,29 @@ export class AmbienceService {
     } else {
       return 'Not Playing';
     }
+  }
+
+  volumeUp(): void {
+    if (this.currentAudio && this.currentAudio.volume < 1.0) {
+      this.currentAudio.volume = Math.min(1.0, this.currentAudio.volume + 0.1);
+      this.currentVolume = this.currentAudio.volume;
+    }
+  }
+
+  volumeDown(): void {
+    if (this.currentAudio && this.currentAudio.volume > 0.0) {
+      this.currentAudio.volume = Math.max(0.0, this.currentAudio.volume - 0.1);
+      this.currentVolume = this.currentAudio.volume;
+    }
+  }
+
+  mute(): void {
+    if (this.currentAudio) {
+      this.currentAudio.volume = 0.0;
+    }
+  }
+
+  isPlaying(): boolean {
+    return this.currentAudio !== null && !this.currentAudio.paused;
   }
 }
