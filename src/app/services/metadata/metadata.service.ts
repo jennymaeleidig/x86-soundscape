@@ -50,7 +50,7 @@ export class MetadataService {
               ];
             }
             if (this.getDefaultName().includes('Isekoi Radio')) {
-              return metadata[MetadataSource.IceStats]['source'][1][
+              return metadata[MetadataSource.IceStats]['source'][0][
                 'yp_currently_playing'
               ];
             }
