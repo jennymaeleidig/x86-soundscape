@@ -12,7 +12,14 @@ import { WeatherStarComponent } from '../weatherstar/weatherstar.component';
 @Component({
   selector: 'app-window',
   standalone: true,
-  imports: [CommonModule, CdkDrag, CdkDragHandle, NgClass, SurferComponent, WeatherStarComponent],
+  imports: [
+    CommonModule,
+    CdkDrag,
+    CdkDragHandle,
+    NgClass,
+    SurferComponent,
+    WeatherStarComponent,
+  ],
   templateUrl: './window.component.html',
   styleUrl: './window.component.css',
 })

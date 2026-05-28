@@ -35,7 +35,7 @@ export class SurferComponent {
 
   constructor(
     private http: HttpClient,
-    @Inject(X86_AGENT_ROOT) private x86AgentRoot: string
+    @Inject(X86_AGENT_ROOT) private x86AgentRoot: string,
   ) {
     this.video$ = null;
   }
@@ -70,7 +70,7 @@ export class SurferComponent {
 
     // Return the observable chain from the http post request
     return this.http.post<VideoData>(apiPath, requestBody).pipe(
-      retry(5) // retry the request up to 5 times
+      retry(5), // retry the request up to 5 times
     );
   }
 }
