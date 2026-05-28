@@ -32,6 +32,16 @@
       <img src="{{ getIcon() }}" />
     </button>
     <button
+      *ngSwitchCase="AppletTypes.WeatherStar"
+      class="cursor-pointer"
+      (dblclick)="openWindowComponent()"
+      (touchend)="openWindowComponent()"
+      (mousedown)="setMoving()"
+      (mouseup)="unsetMoving()"
+    >
+      <img src="{{ getIcon() }}" />
+    </button>
+    <button
       *ngSwitchDefault
       class="cursor-pointer"
       (dblclick)="openWindowComponent()"

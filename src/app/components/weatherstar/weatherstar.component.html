@@ -1,0 +1,24 @@
+<div class="ws-location-bar">
+  <input
+    type="text"
+    [(ngModel)]="location"
+    class="weatherstar-location-input"
+    placeholder="Enter location"
+  />
+  <button
+    (click)="updateLocation()"
+    class="ws-update-btn"
+  >
+    Update
+  </button>
+</div>
+<div class="ws-iframe-container">
+  <div class="ws-crt">
+    <iframe
+      [src]="weatherUrl"
+      class="ws-iframe"
+      allow="geolocation"
+      title="WeatherStar 4000+"
+    ></iframe>
+  </div>
+</div>

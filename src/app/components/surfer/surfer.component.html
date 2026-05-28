@@ -1,0 +1,76 @@
+<div id="surfer" class="relative w-fit h-fit">
+  <img
+    class="w-full h-full object-contain"
+    src="assets/images/macintosh.png"
+  />
+  <div *ngIf="video$ | async as videoData; else loading">
+    <div id="video-container" class="absolute z-10 inset-0">
+      <div class="crt grayscale">
+        <video
+          class="w-full object-fill aspect-512/342 rounded-2xl brightness-115"
+          [autoplay]="'autoplay'"
+          [muted]="'muted'"
+          [loop]="'loop'"
+          [src]="videoData.url"
+        ></video>
+      </div>
+    </div>
+    <div id="surf-button-container" class="absolute z-10 inset-0">
+      <button
+        (click)="changeChannel()"
+        class="active:invert hover:cursor-pointer"
+        aria-hidden="true"
+      >
+        <div class="standard-dialog center scale-down w-fit h-fit rounded-lg">
+          <p class="dialog-text !text-md !py-1.5">Surf!</p>
+        </div>
+      </button>
+    </div>
+    <div id="surf-info-container" class="absolute z-10 inset-0">
+      <div class="bg-black rounded-sm overflow-hidden">
+        <om-marquee [pauseOnHover]="false">
+          <ng-template>
+            <div
+              title="{{ getTooltip(videoData.title, videoData.uploader) }}"
+              class="item text-white w-full h-full text-nowrap"
+            >
+              Now Playing: <i>{{ videoData.title }}</i> by
+              <i>{{ videoData.uploader }}</i> on the
+              <i>{{ getChannel() }}</i> channel.
+            </div>
+          </ng-template>
+        </om-marquee>
+      </div>
+    </div>
+  </div>
+  <ng-template #loading>
+    <div id="video-container" class="absolute z-10 inset-0">
+      <div class="crt grayscale">
+        <img
+          class="w-full object-fill aspect-512/342 rounded-2xl brightness-150"
+          src="assets/images/offline.gif"
+        />
+      </div>
+    </div>
+    <div id="surf-button-container" class="absolute z-10 inset-0">
+      <button class="cursor-not-allowed" aria-hidden="true" disabled>
+        <div
+          class="standard-dialog center scale-down w-fit h-fit rounded-lg text-gray-400"
+        >
+          <p class="dialog-text !text-md !py-1.5">Surf!</p>
+        </div>
+      </button>
+    </div>
+    <div id="surf-info-container" class="absolute z-10 inset-0">
+      <div class="bg-black rounded-sm overflow-hidden">
+        <om-marquee [pauseOnHover]="false">
+          <ng-template>
+            <div class="item text-white w-full h-full text-nowrap">
+              Loading...
+            </div>
+          </ng-template>
+        </om-marquee>
+      </div>
+    </div>
+  </ng-template>
+</div>

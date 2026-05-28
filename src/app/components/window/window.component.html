@@ -1,7 +1,7 @@
 <div [ngSwitch]="selector">
   <div
     *ngSwitchCase="AppletTypes.About"
-    class="window absolute top-5 left-200 w-1/4 h-1/2 resize"
+    class="window absolute top-25 left-75 w-1/4 h-1/2 resize"
     [ngClass]="isActive() ? 'z-5' : 'z-0'"
     cdkDragBoundary=".desktop-bounds"
     cdkDrag
@@ -40,7 +40,28 @@
     </div>
     <div class="separator"></div>
     <div class="window-pane text-sm !p-px">
-      <lib-x86-surfer-component></lib-x86-surfer-component>
+      <app-surfer></app-surfer>
+    </div>
+  </div>
+  <div
+    *ngSwitchCase="AppletTypes.WeatherStar"
+    class="window absolute top-15 left-25"
+    [ngClass]="isActive() ? 'z-5' : 'z-0'"
+    cdkDragBoundary=".desktop-bounds"
+    cdkDrag
+  >
+    <div
+      [ngClass]="isActive() ? 'title-bar' : 'inactive-title-bar'"
+      cdkDragHandle
+      (mousedown)="setActive()"
+    >
+      <button aria-label="Close" class="close" (click)="close()"></button>
+      <h1 class="title">WeatherStar 4000+</h1>
+      <button aria-label="Resize" class="resize hidden"></button>
+    </div>
+    <div class="separator"></div>
+    <div class="window-pane text-sm !p-px">
+      <app-weatherstar></app-weatherstar>
     </div>
   </div>
   <div

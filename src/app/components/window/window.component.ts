@@ -6,12 +6,13 @@ import { AboutContent } from '../../../assets/applets/applet-content/about';
 import { AnnoucementContent } from '../../../assets/applets/applet-content/annoucements';
 import { NgClass, CommonModule } from '@angular/common';
 import { AppletTypes } from '../../../assets/applets/applet-definitions';
-import { X86SurferComponent } from 'x86-surfer-component';
+import { SurferComponent } from '../surfer/surfer.component';
+import { WeatherStarComponent } from '../weatherstar/weatherstar.component';
 
 @Component({
   selector: 'app-window',
   standalone: true,
-  imports: [CommonModule, CdkDrag, CdkDragHandle, NgClass, X86SurferComponent],
+  imports: [CommonModule, CdkDrag, CdkDragHandle, NgClass, SurferComponent, WeatherStarComponent],
   templateUrl: './window.component.html',
   styleUrl: './window.component.css',
 })

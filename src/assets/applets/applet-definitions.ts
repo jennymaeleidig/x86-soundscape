@@ -12,6 +12,7 @@ export enum AppletTypes {
   Default,
   Attention,
   Ambience,
+  WeatherStar,
 }
 export interface AppletDefinition extends Record<string, unknown> {
   title: string;
@@ -56,6 +57,12 @@ export default class AppletDefinitions {
       title: 'Play Radio',
       icon: 'assets/images/x86.png',
       selector: AppletTypes.Stream,
+      windowContent: undefined,
+    },
+    {
+      title: 'WeatherStar by Matt',
+      icon: 'assets/images/twc.png',
+      selector: AppletTypes.WeatherStar,
       windowContent: undefined,
     },
   ];
