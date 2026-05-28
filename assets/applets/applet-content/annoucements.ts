@@ -7,9 +7,14 @@ export interface AnnoucementContent {
 export default class AnnoucementsInput {
   static accouncementsInput: AnnoucementContent[] = [
     {
+      title: 'New Music and the Weather',
+      msg: "I've added some new stations to the mix. I've aslo added a the WeatherStar 4000+ widget by Matt. Some stations are currently unavailable, but I'm working on increasing their uptime! Love y'all. -- DJ x86",
+      date: '05/27/26',
+    },
+    {
       title: '56 kbit/s - Hiatus',
       msg: '56 kbit/s is on pause for a while, thank you for the support ♥. Stay tuned for future updates and new music!? Some minor tweaks in here for ya as well. -- DJ x86',
-      date: '1/11/25',
+      date: '1/11/26',
     },
     {
       title: 'New Sights (⌐■_■)',
