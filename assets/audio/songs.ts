@@ -35,15 +35,15 @@ export default class Songs {
       duration: DEFAULT_DURATION,
       metadataSource: MetadataSource.Icy,
     },
-    // {
-    //   metaData: {
-    //     artist: '222.5FM Ghostwave Pirate Radio',
-    //     title: 'Nightleek タマネギ',
-    //   },
-    //   url: 'http://192.168.1.52:9497/listen/ghostwave/ghostwave',
-    //   duration: DEFAULT_DURATION,
-    //   metadataSource: MetadataSource.Icy,
-    // },
+    {
+      metaData: {
+        artist: '222.5FM Ghostwave Pirate Radio',
+        title: 'Nightleek タマネギ',
+      },
+      url: 'http://192.168.1.52:9497/listen/ghostwave/ghostwave',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
     {
       metaData: {
         artist: 'soma fm',
@@ -143,42 +143,42 @@ export default class Songs {
       duration: DEFAULT_DURATION,
       metadataSource: MetadataSource.IceStats,
     },
-    // {
-    //   metaData: {
-    //     artist: 'NTS Mixtapes',
-    //     title: 'Labrynth',
-    //   },
-    //   url: 'https://stream-mixtape-geo.ntslive.net/mixtape31',
-    //   duration: DEFAULT_DURATION,
-    //   metadataSource: MetadataSource.Icy,
-    // },
-    // {
-    //   metaData: {
-    //     artist: 'NTS Mixtapes',
-    //     title: 'Field Recordings',
-    //   },
-    //   url: 'https://stream-mixtape-geo.ntslive.net/mixtape23',
-    //   duration: DEFAULT_DURATION,
-    //   metadataSource: MetadataSource.Icy,
-    // },
-    // {
-    //   metaData: {
-    //     artist: 'NTS 1',
-    //     title: 'live',
-    //   },
-    //   url: 'https://stream-relay-geo.ntslive.net/stream',
-    //   duration: DEFAULT_DURATION,
-    //   metadataSource: MetadataSource.Icy,
-    // },
-    // {
-    //   metaData: {
-    //     artist: 'NTS 2',
-    //     title: 'live',
-    //   },
-    //   url: 'https://stream-relay-geo.ntslive.net/stream2',
-    //   duration: DEFAULT_DURATION,
-    //   metadataSource: MetadataSource.Icy,
-    // },
+    {
+      metaData: {
+        artist: 'NTS Mixtapes',
+        title: 'Labrynth',
+      },
+      url: 'https://audio-edge-vqwx4.yyz.g.radiomast.io/51a1ebc2-ca46-43e4-9567-943551b956ce',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
+    {
+      metaData: {
+        artist: 'NTS Mixtapes',
+        title: 'Field Recordings',
+      },
+      url: 'https://audio-edge-n9hx8.yul.o.radiomast.io/86a296fc-a231-4328-bba0-754fa3eb28e7',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
+    {
+      metaData: {
+        artist: 'NTS 1',
+        title: 'live',
+      },
+      url: 'https://audio-edge-vqwx4.yyz.g.radiomast.io/nts1',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
+    {
+      metaData: {
+        artist: 'NTS 2',
+        title: 'live',
+      },
+      url: 'https://audio-edge-vqwx4.yyz.g.radiomast.io/nts2',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
     {
       metaData: {
         artist: '9128',
@@ -224,15 +224,15 @@ export default class Songs {
     //   duration: DEFAULT_DURATION,
     //   metadataSource: MetadataSource.IceStats,
     // },
-    // {
-    //   metaData: {
-    //     artist: 'Krelez',
-    //     title: 'VaporFunk Radio',
-    //   },
-    //   url: 'https://radio.barb.date/listen/krelez/vapor',
-    //   duration: DEFAULT_DURATION,
-    //   metadataSource: MetadataSource.Icy,
-    // },
+    {
+      metaData: {
+        artist: 'Krelez',
+        title: 'VaporFunk Radio',
+      },
+      url: 'https://radio.barb.date/listen/krelez/vapor',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
     {
       metaData: {
         artist: 'Guias Sonoras',
@@ -251,15 +251,15 @@ export default class Songs {
       duration: DEFAULT_DURATION,
       metadataSource: MetadataSource.ShoutV2,
     },
-    // {
-    //   metaData: {
-    //     artist: 'Radio Caprice',
-    //     title: 'Ambient',
-    //   },
-    //   url: 'https://radio.barb.date/listen/radio_caprice/ambient',
-    //   duration: DEFAULT_DURATION,
-    //   metadataSource: MetadataSource.Icy,
-    // },
+    {
+      metaData: {
+        artist: 'Radio Caprice',
+        title: 'Ambient',
+      },
+      url: 'https://radio.barb.date/listen/radio_caprice/ambient',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
     {
       metaData: {
         artist: 'Modular Station',
@@ -269,24 +269,24 @@ export default class Songs {
       duration: DEFAULT_DURATION,
       metadataSource: MetadataSource.IceStats,
     },
-    // {
-    //   metaData: {
-    //     artist: 'Luxury Lounge',
-    //     title: 'Level 1',
-    //   },
-    //   url: 'http://radio.barb.date/listen/luxury_lounge/level-1',
-    //   duration: DEFAULT_DURATION,
-    //   metadataSource: MetadataSource.Icy,
-    // },
-    // {
-    //   metaData: {
-    //     artist: 'Luxury Lounge',
-    //     title: 'Level 2',
-    //   },
-    //   url: 'http://radio.barb.date/listen/luxury_lounge/level-2',
-    //   duration: DEFAULT_DURATION,
-    //   metadataSource: MetadataSource.Icy,
-    // },
+    {
+      metaData: {
+        artist: 'Luxury Lounge',
+        title: 'Level 1',
+      },
+      url: 'http://radio.barb.date/listen/luxury_lounge/level-1',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
+    {
+      metaData: {
+        artist: 'Luxury Lounge',
+        title: 'Level 2',
+      },
+      url: 'http://radio.barb.date/listen/luxury_lounge/level-2',
+      duration: DEFAULT_DURATION,
+      metadataSource: MetadataSource.Icy,
+    },
     {
       metaData: {
         artist: 'KOSMIK DSTROYER',
