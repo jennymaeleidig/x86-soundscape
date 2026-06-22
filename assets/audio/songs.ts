@@ -17,15 +17,15 @@ const DEFAULT_DURATION: number = 5999;
 
 export default class Songs {
   static songs: TrackWithMeta[] = [
-    {
-      metaData: {
-        artist: 'x86 Soundscape',
-        title: 'live',
-      },
-      url: 'https://radio.barb.date/listen/x86_soundscape/radio.mp3',
-      duration: DEFAULT_DURATION,
-      metadataSource: MetadataSource.Icy,
-    },
+    // {
+    //   metaData: {
+    //     artist: 'x86 Soundscape',
+    //     title: 'live',
+    //   },
+    //   url: 'https://radio.barb.date/listen/x86_soundscape/radio.mp3',
+    //   duration: DEFAULT_DURATION,
+    //   metadataSource: MetadataSource.Icy,
+    // },
     {
       metaData: {
         artist: 'WRIR 97.3FM',
