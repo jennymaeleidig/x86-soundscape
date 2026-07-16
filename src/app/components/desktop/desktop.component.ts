@@ -83,7 +83,6 @@ export class DesktopComponent {
     this.appletIsMoving = data;
   }
 
-
   onDragStarted(event: CdkDragStart, applet: DesktopApplet) {
     this.dragGestureActive = true;
     this.activelyDraggedApplet = applet;

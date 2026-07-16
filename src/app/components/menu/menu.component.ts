@@ -63,7 +63,6 @@ export class MenuComponent {
     });
   }
 
-
   play() {
     this.winampService.play();
   }
@@ -107,5 +106,4 @@ export class MenuComponent {
   getAmbienceName(): string {
     return this.ambienceService.getAmbienceName();
   }
-
 }

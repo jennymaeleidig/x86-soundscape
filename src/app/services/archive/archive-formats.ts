@@ -11,9 +11,9 @@
  *   Chrome/Safari and wastes a retry.
  */
 export const ACCEPTED_VIDEO_FORMATS: readonly string[] = [
-	"h.264",
-	"h.264 IA",
-	"h.264 720P",
-	"MPEG4",
-	"WebM",
+  'h.264',
+  'h.264 IA',
+  'h.264 720P',
+  'MPEG4',
+  'WebM',
 ];
