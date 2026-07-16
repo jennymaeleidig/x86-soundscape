@@ -1,24 +1,25 @@
 :host {
   display: flex;
   flex-direction: column;
-  width: 480px;
-  height: 360px;
+  width: min(480px, 90vw);
+  aspect-ratio: 480 / 360;
+  container-type: inline-size;
   font-family: "Chicago", sans-serif;
 }
 
 .ws-location-bar {
   display: flex;
-  gap: 4px;
+  gap: 0.85cqw;
   align-items: center;
-  padding: 4px;
+  padding: 0.85cqw;
 }
 
 .weatherstar-location-input {
   flex: 1;
   min-width: 0;
   color: black;
-  padding: 2px 4px;
-  font-size: 12px;
+  padding: 0.42cqw 0.85cqw;
+  font-size: 2.5cqw;
   border: 1px solid #808080;
   font-family: "Chicago", sans-serif;
   cursor: text !important;
@@ -26,8 +27,8 @@
 
 .ws-update-btn {
   font-family: "Chicago", sans-serif;
-  font-size: 12px;
-  padding: 2px 8px;
+  font-size: 2.5cqw;
+  padding: 0.42cqw 1.67cqw;
   border: 1px solid #808080;
   background: #ddd;
   cursor: pointer;

@@ -5,11 +5,9 @@ import AboutInput from '../../../assets/applets/applet-content/about';
 import AnnoucementsInput from '../../../assets/applets/applet-content/annoucements';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { MetadataService } from '../../services/metadata/metadata.service';
-import { DeviceDetectorService } from 'ngx-device-detector';
 import { CommonModule } from '@angular/common';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
 import { AmbienceService } from '../../services/ambience/ambience';
-
 export const DEFAULT_TITLE = 'N / A';
 
 @Pipe({ name: 'decodeHtmlString', standalone: true })
@@ -29,12 +27,14 @@ export class DecodeHtmlString implements PipeTransform {
   styleUrl: './menu.component.css',
 })
 export class MenuComponent {
-  currentTrack: string = DEFAULT_TITLE;
+  currentTrack: { artist: string; title: string } = {
+    artist: 'N',
+    title: '/ A',
+  };
   constructor(
     private popUpService: PopUpService,
     private winampService: WinampService,
     private metadataService: MetadataService,
-    private deviceService: DeviceDetectorService,
     private ambienceService: AmbienceService,
   ) {}
 
@@ -42,6 +42,11 @@ export class MenuComponent {
     this.metadataService.currentTrack$.subscribe(
       (current) => (this.currentTrack = current),
     );
+  }
+
+  formatTrack(): string {
+    const { artist, title } = this.currentTrack;
+    return title ? `${artist} - ${title}` : artist;
   }
 
   openAbout() {
@@ -58,12 +63,6 @@ export class MenuComponent {
     });
   }
 
-  openAttention() {
-    this.popUpService.open({
-      selector: AppletTypes.Attention,
-      contents: 'This website is best expirienced on a desktop PC.',
-    });
-  }
 
   play() {
     this.winampService.play();
@@ -109,7 +108,4 @@ export class MenuComponent {
     return this.ambienceService.getAmbienceName();
   }
 
-  isMobileRes(): boolean {
-    return this.deviceService.isMobile() || this.deviceService.isTablet();
-  }
 }

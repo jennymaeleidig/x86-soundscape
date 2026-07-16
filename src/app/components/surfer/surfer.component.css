@@ -1,7 +1,10 @@
-@import "@sakun/system.css/style.css";
+@import "@sakun/system.css/dist/system.css";
 
 #surfer {
   font-family: "Chicago";
+  container-type: inline-size;
+  width: min(480px, 90vw);
+  aspect-ratio: 480 / 581;
 }
 
 #video-container {
@@ -17,6 +20,7 @@
 #surf-button-container {
   padding-top: 98%;
   padding-left: 7%;
+  font-size: 2.5cqw;
 }
 
 #surf-info-container {
@@ -24,7 +28,7 @@
   height: 4%;
   margin-top: 94%;
   margin-left: 45%;
-  font-size: 1vw;
+  font-size: 4cqw;
 }
 
 ::ng-deep .om-marquee-content {

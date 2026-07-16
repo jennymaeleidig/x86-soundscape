@@ -1,136 +1,138 @@
-<ul role="menu-bar" class="border-b">
-  <li role="menu-item" tabindex="0" aria-haspopup="false" (click)="openAbout()">
-    About
-  </li>
-  <li
-    role="menu-item"
-    tabindex="0"
-    aria-haspopup="false"
-    (click)="openAnnoucements()"
-  >
-    Latest
-  </li>
-  <li role="menu-item" tabindex="0" aria-haspopup="true">
-    Edit
-    <ul role="menu">
-      <li role="menu-item" (click)="play()"><a>Play</a></li>
-      <li role="menu-item" (click)="pause()"><a>Pause</a></li>
-      <li role="menu-item" (click)="prev()"><a>Previous</a></li>
-      <li role="menu-item" (click)="stop()"><a>Stop</a></li>
-      <li role="menu-item" (click)="next()"><a>Next</a></li>
-    </ul>
-  </li>
-  <li role="menu-item" tabindex="0" aria-haspopup="true">
-    View
-    <ul role="menu">
-      <li role="menu-item" class="divider"><a>Other Spaces</a></li>
-      <li role="menu-item">
-        <a
-          href="https://dj-x86.straw.page/"
-          target="_blank"
-          rel="noopener noreferrer"
-          >DJ x86</a
-        >
+<ul role="menu-bar" class="border-b flex-wrap">
+  <li class="menu-group">
+    <ul class="menu-group-inner flex flex-nowrap">
+      <li
+        role="menu-item"
+        tabindex="0"
+        aria-haspopup="false"
+        (click)="openAbout()"
+      >
+        About
       </li>
-      <li role="menu-item">
-        <a
-          href="https://www.lazysundays.net/authors/jenny-leidig"
-          target="_blank"
-          rel="noopener noreferrer"
-          >the lazy sundays blog</a
-        >
+      <li
+        role="menu-item"
+        tabindex="0"
+        aria-haspopup="false"
+        (click)="openAnnoucements()"
+      >
+        Latest
       </li>
-      <li role="menu-item">
-        <a
-          href="https://jennyleidig.straw.page/"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Portfolio</a
-        >
+      <li role="menu-item" tabindex="0" aria-haspopup="true">
+        Edit
+        <ul role="menu">
+          <li role="menu-item" (click)="play()"><a>Play</a></li>
+          <li role="menu-item" (click)="pause()"><a>Pause</a></li>
+          <li role="menu-item" (click)="prev()"><a>Previous</a></li>
+          <li role="menu-item" (click)="stop()"><a>Stop</a></li>
+          <li role="menu-item" (click)="next()"><a>Next</a></li>
+        </ul>
       </li>
-    </ul>
-  </li>
-  <li role="menu-item" tabindex="0" aria-haspopup="true">
-    Contact
-    <ul role="menu">
-      <li role="menu-item">
-        <a
-          href="mailto:jennymaeleidig@gmail.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          >jennymaeleidig&#64;gmail.com</a
-        >
-      </li>
-      <li role="menu-item">
-        <a
-          href="https://buymeacoffee.com/djx86"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Buy me a coffee</a
-        >
-      </li>
-    </ul>
-  </li>
-  <li role="menu-item" tabindex="0" aria-haspopup="true">
-    Ambience
-    <ul role="menu">
-      <li role="menu-item" class="divider max-w-3xs">
-        <om-marquee
-          [marqueeGap]="'4rem'"
-          [animationDuration]="'15s'"
-          [pauseOnHover]="false"
-        >
-          <ng-template>
-            <div
-              title="{{ getAmbienceName() | decodeHtmlString }}"
-              class="item"
+      <li role="menu-item" tabindex="0" aria-haspopup="true">
+        View
+        <ul role="menu">
+          <li role="menu-item" class="divider"><a>Other Spaces</a></li>
+          <li role="menu-item">
+            <a
+              href="https://dj-x86.straw.page/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >DJ x86</a
             >
-              {{ getAmbienceName() | decodeHtmlString }}
+          </li>
+          <li role="menu-item">
+            <a
+              href="https://www.lazysundays.net/authors/jenny-leidig"
+              target="_blank"
+              rel="noopener noreferrer"
+              >the lazy sundays blog</a
+            >
+          </li>
+          <li role="menu-item">
+            <a
+              href="https://jennyleidig.straw.page/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Portfolio</a
+            >
+          </li>
+        </ul>
+      </li>
+      <li role="menu-item" tabindex="0" aria-haspopup="true">
+        Contact
+        <ul role="menu">
+          <li role="menu-item">
+            <a
+              href="mailto:jennymaeleidig@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              >jennymaeleidig&#64;gmail.com</a
+            >
+          </li>
+          <li role="menu-item">
+            <a
+              href="https://buymeacoffee.com/djx86"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Buy me a coffee</a
+            >
+          </li>
+        </ul>
+      </li>
+      <li role="menu-item" tabindex="0" aria-haspopup="true">
+        Ambience
+        <ul role="menu">
+          <li role="menu-item" class="divider max-w-3xs">
+            <om-marquee
+              [marqueeGap]="'4rem'"
+              [animationDuration]="'15s'"
+              [pauseOnHover]="false"
+            >
+              <ng-template>
+                <div
+                  title="{{ getAmbienceName() | decodeHtmlString }}"
+                  class="item"
+                >
+                  {{ getAmbienceName() | decodeHtmlString }}
+                </div>
+              </ng-template>
+            </om-marquee>
+          </li>
+          <li role="menu-item" (click)="playAmbience()"><a>Play</a></li>
+          <li role="menu-item" (click)="stopAmbience()"><a>Stop</a></li>
+          <li role="menu-item" (click)="shuffleAmbience()"><a>Shuffle</a></li>
+          <li role="menu-item" (click)="volumeUpAmbience()"><a>Volume +</a></li>
+          <li role="menu-item" (click)="volumeDownAmbience()">
+            <a>Volume -</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li class="menu-group">
+    <ul class="menu-group-inner flex flex-nowrap items-center">
+      <li
+        role="menu-item"
+        tabindex="0"
+        aria-haspopup="false"
+        class="!bg-white !text-black !cursor-[url(assets/images/normal.png),_auto]"
+      >
+        Now Playing —
+      </li>
+      <li
+        role="menu-item"
+        tabindex="0"
+        aria-haspopup="false"
+        id="scroll-container"
+        class="max-w-3xs !bg-white !text-black !cursor-text !overflow-hidden !text-nowrap"
+      >
+        <om-marquee [marqueeGap]="'4rem'" [pauseOnHover]="false">
+          <ng-template>
+            <div title="{{ formatTrack() | decodeHtmlString }}" class="item">
+              {{ formatTrack() | decodeHtmlString }}
             </div>
           </ng-template>
         </om-marquee>
       </li>
-      <li role="menu-item" (click)="playAmbience()"><a>Play</a></li>
-      <li role="menu-item" (click)="stopAmbience()"><a>Stop</a></li>
-      <li role="menu-item" (click)="shuffleAmbience()"><a>Shuffle</a></li>
-      <li role="menu-item" (click)="volumeUpAmbience()"><a>Volume +</a></li>
-      <li role="menu-item" (click)="volumeDownAmbience()"><a>Volume -</a></li>
     </ul>
   </li>
-
-  <ng-container *ngIf="!isMobileRes(); else mobileWarning">
-    <li
-      role="menu-item"
-      tabindex="0"
-      aria-haspopup="false"
-      class="!bg-white !text-black !cursor-[url(assets/images/normal.png),_auto] border-l"
-    >
-      Now Playing —
-    </li>
-    <li
-      role="menu-item"
-      tabindex="0"
-      aria-haspopup="false"
-      id="scroll-container"
-      class="max-w-3xs !bg-white !text-black !cursor-text !overflow-hidden !text-nowrap"
-    >
-      <om-marquee [marqueeGap]="'4rem'" [pauseOnHover]="false">
-        <ng-template>
-          <div title="{{ currentTrack | decodeHtmlString }}" class="item">
-            {{ currentTrack | decodeHtmlString }}
-          </div>
-        </ng-template>
-      </om-marquee>
-    </li>
-  </ng-container>
-  <ng-template #mobileWarning>
-    <li
-      role="menu-item"
-      tabindex="0"
-      aria-haspopup="false"
-      (click)="openAttention()"
-    >
-      Attention!
-    </li>
-  </ng-template>
 </ul>

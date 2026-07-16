@@ -1,7 +1,8 @@
 <div [ngSwitch]="selector">
   <div
     *ngSwitchCase="AppletTypes.About"
-    class="window absolute top-25 left-75 w-1/4 h-1/2 resize"
+    class="window absolute w-[min(25%,90vw)] max-h-[50%] resize"
+    [style.--cascade-n]="cascadeIndex"
     [ngClass]="isActive() ? 'z-5' : 'z-0'"
     cdkDragBoundary=".desktop-bounds"
     cdkDrag
@@ -24,7 +25,8 @@
   </div>
   <div
     *ngSwitchCase="AppletTypes.Visualizer"
-    class="window absolute top-20 left-55"
+    class="window absolute max-w-[90vw]"
+    [style.--cascade-n]="cascadeIndex"
     [ngClass]="isActive() ? 'z-5' : 'z-0'"
     cdkDragBoundary=".desktop-bounds"
     cdkDrag
@@ -45,7 +47,8 @@
   </div>
   <div
     *ngSwitchCase="AppletTypes.WeatherStar"
-    class="window absolute top-15 left-25"
+    class="window absolute max-w-[90vw]"
+    [style.--cascade-n]="cascadeIndex"
     [ngClass]="isActive() ? 'z-5' : 'z-0'"
     cdkDragBoundary=".desktop-bounds"
     cdkDrag
@@ -66,7 +69,8 @@
   </div>
   <div
     *ngSwitchCase="AppletTypes.Annoucements"
-    class="window absolute top-10 w-1/4 h-3/4 resize"
+    class="window absolute w-[min(25%,90vw)] max-h-[75%] resize"
+    [style.--cascade-n]="cascadeIndex"
     [ngClass]="isActive() ? 'z-5' : 'z-0'"
     cdkDragBoundary=".desktop-bounds"
     cdkDrag

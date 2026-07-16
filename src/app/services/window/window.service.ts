@@ -19,6 +19,13 @@ export class WindowService {
   openWindows: ComponentRef<WindowComponent>[] = [];
   isOpen: Set<AppletTypes> = new Set<AppletTypes>();
   options!: Options;
+  // Open-order cascade state. openCount reflects currently-open windows
+  // (decremented on close, not lifetime opens) so reopening after a close
+  // doesn't push windows progressively off-screen. cascadeIndex is the
+  // slot assigned to the window being opened; the WindowComponent reads it
+  // at creation time and applies it as the --cascade-n CSS custom property.
+  openCount = 0;
+  cascadeIndex = 0;
   activeWindow: AppletTypes = AppletTypes.Default;
   private renderer: Renderer2;
 
@@ -34,6 +41,8 @@ export class WindowService {
   open(options: Options) {
     if (!this.isOpen.has(options.selector)) {
       this.options = options;
+      this.cascadeIndex = this.openCount;
+      this.openCount++;
       this.openWithComponent();
       this.isOpen.add(this.options.selector);
       this.activeWindow = this.options.selector;
@@ -60,6 +69,7 @@ export class WindowService {
     this.openWindows[selector].location.nativeElement.remove();
     delete this.openWindows[selector];
     this.isOpen.delete(selector);
+    this.openCount = Math.max(0, this.openCount - 1);
   }
 
   setActiveWindow(selector: AppletTypes) {

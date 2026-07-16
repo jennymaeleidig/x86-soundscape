@@ -1,5 +1,55 @@
-@import "@sakun/system.css/style.css";
+@import "@sakun/system.css/dist/system.css";
 
 ::ng-deep .om-marquee-content {
   padding: unset !important;
+}
+
+/*
+ * Two-group menubar: the buttons and the Now-Playing block are each a
+ * self-contained, non-wrapping flex group (a nested <ul class="menu-group-inner">
+ * inside a <li class="menu-group">). The nested <ul> is un-roled so its browser
+ * defaults are reset here. The top-level buttons are no longer direct children of
+ * ul[role=menu-bar], so the system.css menu-item padding/hover/focus is re-applied
+ * here verbatim to keep their appearance byte-identical.
+ */
+.menu-group {
+  list-style: none;
+}
+
+.menu-group-inner {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-group-inner > [role="menu-item"] {
+  padding: 6px 10px;
+  position: relative;
+}
+
+.menu-group-inner > [role="menu-item"]:hover,
+.menu-group-inner > [role="menu-item"]:focus,
+.menu-group-inner > [role="menu-item"]:focus-within {
+  background: #000;
+  color: #fff;
+  outline: none;
+}
+
+.menu-group-inner > [role="menu-item"][aria-haspopup="false"] * {
+  background: inherit;
+  color: inherit;
+  text-decoration: none;
+}
+
+/*
+ * Portrait layout-shrink: below sm (640px) the menubar reduces its layout
+ * footprint (font-size + padding) so that desktop-bounds reclaims content height.
+ * Layout-affecting properties only — transform: scale() is deliberately NOT used
+ * because it is paint-only and would not reclaim height for the flex-column sibling.
+ */
+@media (max-width: 639px) {
+  .menu-group-inner > [role="menu-item"] {
+    font-size: 0.8rem;
+    padding: 3px 6px;
+  }
 }

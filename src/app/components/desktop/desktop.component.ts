@@ -17,8 +17,6 @@ import {
 import AppletDefinitions, {
   AppletDefinition,
 } from '../../../assets/applets/applet-definitions';
-import { DeviceDetectorService } from 'ngx-device-detector';
-
 interface DesktopApplet extends AppletDefinition {
   x: number;
   y: number;
@@ -51,17 +49,26 @@ export class DesktopComponent {
   // Track drag state
   private dragStartPositions: Map<DesktopApplet, Point> = new Map();
   private activelyDraggedApplet: DesktopApplet | null = null;
-
+  dragGestureActive: boolean = false;
   injector = Injector.create({
     providers: [
       {
         provide: 'appletIsMoving',
         useValue: (data: boolean) => this.setAppletIsMoving(data),
       },
+      {
+        provide: 'appletDragState',
+        useValue: {
+          isDragGesture: () => this.dragGestureActive,
+          reset: () => {
+            this.dragGestureActive = false;
+          },
+        },
+      },
     ],
   });
 
-  constructor(private deviceService: DeviceDetectorService) {}
+  constructor() {}
 
   ngOnInit() {
     // Initialize applets with position data
@@ -76,11 +83,9 @@ export class DesktopComponent {
     this.appletIsMoving = data;
   }
 
-  isMobileRes(): boolean {
-    return this.deviceService.isMobile();
-  }
 
   onDragStarted(event: CdkDragStart, applet: DesktopApplet) {
+    this.dragGestureActive = true;
     this.activelyDraggedApplet = applet;
 
     // If the dragged applet is not selected, clear selection and select only this one

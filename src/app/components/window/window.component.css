@@ -1,1 +1,19 @@
-@import "@sakun/system.css/style.css";
+@import "@sakun/system.css/dist/system.css";
+
+/*
+ * Cascade placement: each window is offset by its open-order index (--cascade-n)
+ * times a step that is a percentage of desktop-bounds (container-relative, not device px).
+ * On wide viewports the cascade is diagonal; below sm (640px) it collapses to a single
+ * vertical stack (left:0) so windows never escape the bounds. No transform:scale(),
+ * no imperative viewport-detection signal -- the sm: collapse is a declarative media query.
+ */
+.window {
+  top: calc(var(--cascade-n, 0) * 4%);
+  left: calc(var(--cascade-n, 0) * 4%);
+}
+@media (max-width: 639px) {
+  .window {
+    left: 0;
+    top: calc(var(--cascade-n, 0) * 8%);
+  }
+}

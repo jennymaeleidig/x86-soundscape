@@ -2,14 +2,12 @@ import { Component, ElementRef, HostListener } from '@angular/core';
 import { Options } from '../../services/pop-up/pop-up.options';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { AppletTypes } from '../../../assets/applets/applet-definitions';
-import { NgClass, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { AnnoucementContent } from '../../../assets/applets/applet-content/annoucements';
-import { DeviceDetectorService } from 'ngx-device-detector';
-
 @Component({
   selector: 'app-pop-up',
   standalone: true,
-  imports: [NgClass, CommonModule],
+  imports: [CommonModule],
   templateUrl: './pop-up.component.html',
   styleUrl: './pop-up.component.css',
 })
@@ -20,7 +18,6 @@ export class PopUpComponent {
   constructor(
     private popUpService: PopUpService,
     private element: ElementRef,
-    private deviceService: DeviceDetectorService,
   ) {}
 
   ngAfterContentInit() {
@@ -51,9 +48,5 @@ export class PopUpComponent {
       msg: '',
       date: '',
     };
-  }
-
-  isMobileRes(): boolean {
-    return this.deviceService.isMobile() || this.deviceService.isTablet();
   }
 }

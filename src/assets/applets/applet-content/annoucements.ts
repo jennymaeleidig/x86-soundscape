@@ -7,6 +7,11 @@ export interface AnnoucementContent {
 export default class AnnoucementsInput {
   static accouncementsInput: AnnoucementContent[] = [
     {
+      title: 'Upadates! Updates!! Updates!!!',
+      msg: "updates, updates read all about 'em... Webamp upgraded to latest ver., mobile support ENHANCED, and browser / device media controls. Enjoy :) -- DJ x86",
+      date: '07/15/26',
+    },
+    {
       title: 'New Music and the Weather',
       msg: "I've added some new stations to the mix. I've aslo added a the WeatherStar 4000+ widget by Matt. Some stations are currently unavailable, but I'm working on increasing their uptime! Love y'all. -- DJ x86",
       date: '05/27/26',

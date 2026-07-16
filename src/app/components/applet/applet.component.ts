@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, HostListener, Inject, Input } from '@angular/core';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
 import { WindowService } from '../../services/window/window.service';
 import { AboutContent } from '../../../assets/applets/applet-content/about';
@@ -31,6 +31,11 @@ export class AppletComponent {
     private winampService: WinampService,
     private ambienceAudioService: AmbienceService,
     @Inject('appletIsMoving') public setAppletIsMoving: Function,
+    @Inject('appletDragState')
+    private appletDragState: {
+      isDragGesture: () => boolean;
+      reset: () => void;
+    },
   ) {}
 
   ngOnDestroy(): void {
@@ -40,7 +45,16 @@ export class AppletComponent {
     }
   }
 
+  @HostListener('touchstart')
+  @HostListener('mousedown')
+  onGestureStart() {
+    this.appletDragState.reset();
+  }
+
   openWindowComponent() {
+    if (this.appletDragState.isDragGesture()) {
+      return;
+    }
     this.windowService.open({
       selector: this.selector,
       windowContent: this.windowContent,
@@ -48,10 +62,16 @@ export class AppletComponent {
   }
 
   openWinamp() {
+    if (this.appletDragState.isDragGesture()) {
+      return;
+    }
     this.winampService.reopenWinamp();
   }
 
   playRadio() {
+    if (this.appletDragState.isDragGesture()) {
+      return;
+    }
     this.winampService.playRadio();
   }
 
@@ -73,6 +93,9 @@ export class AppletComponent {
   }
 
   toggleAmbience() {
+    if (this.appletDragState.isDragGesture()) {
+      return;
+    }
     if (this.selector === AppletTypes.Ambience) {
       if (this.ambienceAudioService.isPlaying()) {
         this.ambienceAudioService.stopAmbience();

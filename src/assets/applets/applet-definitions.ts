@@ -10,7 +10,6 @@ export enum AppletTypes {
   Winamp,
   Stream,
   Default,
-  Attention,
   Ambience,
   WeatherStar,
 }

@@ -17,6 +17,7 @@ export class WinampService {
     },
     availableSkins: [{ url: 'assets/skins/Old_Mac-OS.wsz', name: 'MacOS' }],
     zIndex: 15,
+    enableMediaSession: true,
   });
   rootElement!: HTMLElement;
 
@@ -52,7 +53,7 @@ export class WinampService {
   }
 
   renderWinamp() {
-    this.webamp.renderWhenReady(this.rootElement);
+    this.webamp.renderInto(this.rootElement);
   }
 
   closeWinamp() {

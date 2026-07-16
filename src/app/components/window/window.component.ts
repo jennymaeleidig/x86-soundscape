@@ -27,6 +27,7 @@ export class WindowComponent {
   options!: Options | undefined;
   selector!: AppletTypes;
   windowContent!: AboutContent | AnnoucementContent[] | string;
+  cascadeIndex: number = 0;
   AppletTypes = AppletTypes;
 
   constructor(private windowService: WindowService) {}
@@ -46,6 +47,7 @@ export class WindowComponent {
   addOptions() {
     this.selector = this.options!.selector;
     this.windowContent = this.options!.windowContent;
+    this.cascadeIndex = this.windowService.cascadeIndex;
   }
 
   ngAfterContentInit() {
