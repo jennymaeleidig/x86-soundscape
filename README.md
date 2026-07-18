@@ -33,3 +33,5 @@ Deploy:
 - [ookamithewolf1](https://www.smspower.org/forums/19228-SMSBoxTemplate)
 - [winamp skin](https://skins.webamp.org/skin/d4401c823e6ba7e5888519d19dd44d8e/classic_mac_v1.wsz/)
 - [aleclownes](https://aleclownes.com/2017/02/01/crt-display.html)
+- [WeatherStar 4000+ by netbymatt](https://github.com/netbymatt/ws4kp/)
+- [RetroCast by Lee Martin / The Weather Channel](https://weather.com/retro/)

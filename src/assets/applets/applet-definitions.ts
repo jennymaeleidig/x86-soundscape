@@ -59,7 +59,7 @@ export default class AppletDefinitions {
       windowContent: undefined,
     },
     {
-      title: 'WeatherStar by Matt',
+      title: 'Weather',
       icon: 'assets/images/twc.png',
       selector: AppletTypes.WeatherStar,
       windowContent: undefined,

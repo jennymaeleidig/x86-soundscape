@@ -1,0 +1,36 @@
+<div class="ws-location-bar">
+  @if (svc.locationVisible()) {
+    <input
+      type="text"
+      [(ngModel)]="rawLocation"
+      class="weatherstar-location-input"
+      placeholder="Enter location"
+    />
+    <button type="button" (click)="commitLocation()" class="ws-update-btn">
+      Update
+    </button>
+  }
+  <button type="button" (click)="svc.toggle()" class="ws-toggle-btn">
+    -> {{ svc.otherApp().displayName }}
+  </button>
+</div>
+<div class="ws-iframe-container">
+  <div appCrt>
+    @if (loading()) {
+      <img
+        class="ws-offline-placeholder"
+        src="assets/images/offline.gif"
+        alt=""
+      />
+    }
+    <iframe
+      [src]="svc.signedUrl()"
+      allow="geolocation"
+      class="ws-iframe"
+      [class.ws-iframe-overscan]="svc.activeAppId() === 'ws4kp'"
+      [class.ws-iframe-loading]="loading()"
+      (load)="onIframeLoad()"
+      title="WeatherStar 4000+"
+    ></iframe>
+  </div>
+</div>
