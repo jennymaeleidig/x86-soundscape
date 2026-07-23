@@ -2,7 +2,7 @@
 
 An Internet radio and collage.
 
-https://jennymaeleidig.github.io/x86-soundscape/
+https://x86-soundscape.jenny-page.online/
 
 ## Development
 
@@ -20,7 +20,7 @@ Format:
 
 Deploy:
 
-`ng deploy --base-href=/x86-soundscape/`
+`ng deploy`
 
 ## Credits and Shoutouts
 
