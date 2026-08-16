@@ -12,14 +12,14 @@ export type MetadataParser =
   | { kind: 'azuracast'; shortcode: string }
   | { kind: 'none' };
 
-export type TrackWithMeta = URLTrack & {
+export type Station = URLTrack & {
   metadataParser?: MetadataParser;
 };
 
 const DEFAULT_DURATION: number = 5999;
 
-export default class Songs {
-  static songs: TrackWithMeta[] = [
+export default class Stations {
+  static stations: Station[] = [
     {
       metaData: {
         artist: 'WRIR 97.3FM',

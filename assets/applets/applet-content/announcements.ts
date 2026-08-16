@@ -1,11 +1,11 @@
-export interface AnnoucementContent {
+export interface AnnouncementContent {
   title: string;
   msg: string;
   date: string;
 }
 
-export default class AnnoucementsInput {
-  static accouncementsInput: AnnoucementContent[] = [
+export default class AnnouncementsInput {
+  static announcementsInput: AnnouncementContent[] = [
     {
       title: 'Upadates! Updates!! Updates!!!',
       msg: "updates, updates read all about 'em... Webamp upgraded to latest ver., mobile support ENHANCED, and browser / device media controls. Enjoy :) -- DJ x86",
