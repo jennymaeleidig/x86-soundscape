@@ -4,9 +4,9 @@
   >
     <div class="modal-dialog outer-border">
       <div [ngSwitch]="options.selector" class="inner-border center">
-        <div *ngSwitchCase="AppletTypes.About" class="modal-contents">
+        <div *ngSwitchCase="Feature.About" class="modal-contents">
           <h1 class="modal-text text-center">
-            {{ AppletTypes[options.selector] }}
+            {{ Feature[options.selector] }}
           </h1>
           <br />
           <div class="text-justify px-2">{{ $any(options.contents).msg }}</div>
@@ -15,7 +15,7 @@
             <button class="btn" (click)="close()">OK</button>
           </section>
         </div>
-        <div *ngSwitchCase="AppletTypes.Annoucements" class="modal-contents">
+        <div *ngSwitchCase="Feature.Announcements" class="modal-contents">
           <h1 class="modal-text text-center">Latest</h1>
           <br />
           <div class="grid pb-4">

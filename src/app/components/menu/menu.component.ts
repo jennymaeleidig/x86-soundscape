@@ -1,8 +1,8 @@
 import { Component, Pipe, PipeTransform } from '@angular/core';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
-import { AppletTypes } from '../../../assets/applets/applet-definitions';
+import { Feature } from '../../../assets/applets/applet-definitions';
 import AboutInput from '../../../assets/applets/applet-content/about';
-import AnnoucementsInput from '../../../assets/applets/applet-content/annoucements';
+import AnnouncementsInput from '../../../assets/applets/applet-content/announcements';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { MetadataService } from '../../services/metadata/metadata.service';
 import { CommonModule } from '@angular/common';
@@ -51,15 +51,15 @@ export class MenuComponent {
 
   openAbout() {
     this.popUpService.open({
-      selector: AppletTypes.About,
+      selector: Feature.About,
       contents: AboutInput.aboutInput,
     });
   }
 
-  openAnnoucements() {
+  openAnnouncements() {
     this.popUpService.open({
-      selector: AppletTypes.Annoucements,
-      contents: AnnoucementsInput.accouncementsInput,
+      selector: Feature.Announcements,
+      contents: AnnouncementsInput.announcementsInput,
     });
   }
 

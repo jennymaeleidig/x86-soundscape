@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { WindowComponent } from '../../components/window/window.component';
 import { Options } from './window.options';
-import { AppletTypes } from '../../../assets/applets/applet-definitions';
+import { Feature } from '../../../assets/applets/applet-definitions';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ import { AppletTypes } from '../../../assets/applets/applet-definitions';
 export class WindowService {
   //TODO: could combine these two vairables into one
   openWindows: ComponentRef<WindowComponent>[] = [];
-  isOpen: Set<AppletTypes> = new Set<AppletTypes>();
+  isOpen: Set<Feature> = new Set<Feature>();
   options!: Options;
   // Open-order cascade state. openCount reflects currently-open windows
   // (decremented on close, not lifetime opens) so reopening after a close
@@ -26,7 +26,7 @@ export class WindowService {
   // at creation time and applies it as the --cascade-n CSS custom property.
   openCount = 0;
   cascadeIndex = 0;
-  activeWindow: AppletTypes = AppletTypes.Default;
+  activeWindow: Feature = Feature.None;
   private renderer: Renderer2;
 
   constructor(
@@ -64,7 +64,7 @@ export class WindowService {
     this.appRef.attachView(this.openWindows[this.options.selector].hostView);
   }
 
-  close(selector: AppletTypes) {
+  close(selector: Feature) {
     //TODO: Change to use renderer pattern
     this.openWindows[selector].location.nativeElement.remove();
     delete this.openWindows[selector];
@@ -72,7 +72,7 @@ export class WindowService {
     this.openCount = Math.max(0, this.openCount - 1);
   }
 
-  setActiveWindow(selector: AppletTypes) {
+  setActiveWindow(selector: Feature) {
     this.activeWindow = selector;
   }
 

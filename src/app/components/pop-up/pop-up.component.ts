@@ -1,9 +1,9 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { Options } from '../../services/pop-up/pop-up.options';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
-import { AppletTypes } from '../../../assets/applets/applet-definitions';
+import { Feature } from '../../../assets/applets/applet-definitions';
 import { CommonModule } from '@angular/common';
-import { AnnoucementContent } from '../../../assets/applets/applet-content/annoucements';
+import { AnnouncementContent } from '../../../assets/applets/applet-content/announcements';
 @Component({
   selector: 'app-pop-up',
   standalone: true,
@@ -13,7 +13,7 @@ import { AnnoucementContent } from '../../../assets/applets/applet-content/annou
 })
 export class PopUpComponent {
   options!: Options;
-  AppletTypes = AppletTypes;
+  Feature = Feature;
 
   constructor(
     private popUpService: PopUpService,
@@ -39,9 +39,9 @@ export class PopUpComponent {
     this.element.nativeElement.remove();
   }
 
-  getLatest(): AnnoucementContent {
-    if (this.options.selector === AppletTypes.Annoucements) {
-      return (this.options.contents as AnnoucementContent[])[0];
+  getLatest(): AnnouncementContent {
+    if (this.options.selector === Feature.Announcements) {
+      return (this.options.contents as AnnouncementContent[])[0];
     }
     return {
       title: '',

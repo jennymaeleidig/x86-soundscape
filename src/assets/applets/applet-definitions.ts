@@ -1,23 +1,23 @@
 import AboutInput, { AboutContent } from './applet-content/about';
-import AnnoucementsInput, {
-  AnnoucementContent,
-} from './applet-content/annoucements';
+import AnnouncementsInput, {
+  AnnouncementContent,
+} from './applet-content/announcements';
 
-export enum AppletTypes {
+export enum Feature {
   About,
-  Annoucements,
+  Announcements,
   Visualizer,
   Winamp,
-  Stream,
-  Default,
+  Station,
+  None,
   Ambience,
-  WeatherStar,
+  Weather,
 }
 export interface AppletDefinition extends Record<string, unknown> {
   title: string;
   icon: string;
-  selector: AppletTypes;
-  windowContent: AboutContent | AnnoucementContent[] | string | undefined;
+  selector: Feature;
+  windowContent: AboutContent | AnnouncementContent[] | string | undefined;
 }
 
 export default class AppletDefinitions {
@@ -25,43 +25,43 @@ export default class AppletDefinitions {
     {
       title: 'Ambience',
       icon: 'assets/images/ambience_off.png',
-      selector: AppletTypes.Ambience,
+      selector: Feature.Ambience,
       windowContent: undefined,
     },
     {
       title: 'Visualizer',
       icon: 'assets/images/Viz.png',
-      selector: AppletTypes.Visualizer,
+      selector: Feature.Visualizer,
       windowContent: undefined,
     },
     {
       title: 'Webamp',
       icon: 'assets/images/Sound.png',
-      selector: AppletTypes.Winamp,
+      selector: Feature.Winamp,
       windowContent: undefined,
     },
     {
       title: 'About',
       icon: 'assets/images/Note.png',
-      selector: AppletTypes.About,
+      selector: Feature.About,
       windowContent: AboutInput.aboutInput,
     },
     {
-      title: 'Annoucements',
+      title: 'Announcements',
       icon: 'assets/images/Annouce.png',
-      selector: AppletTypes.Annoucements,
-      windowContent: AnnoucementsInput.accouncementsInput,
+      selector: Feature.Announcements,
+      windowContent: AnnouncementsInput.announcementsInput,
     },
     {
       title: 'Play Radio',
       icon: 'assets/images/x86.png',
-      selector: AppletTypes.Stream,
+      selector: Feature.Station,
       windowContent: undefined,
     },
     {
       title: 'Weather',
       icon: 'assets/images/twc.png',
-      selector: AppletTypes.WeatherStar,
+      selector: Feature.Weather,
       windowContent: undefined,
     },
   ];

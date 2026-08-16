@@ -1,15 +1,24 @@
 @import "@sakun/system.css/dist/system.css";
 
 /*
- * Cascade placement: each window is offset by its open-order index (--cascade-n)
- * times a step that is a percentage of desktop-bounds (container-relative, not device px).
- * On wide viewports the cascade is diagonal; below sm (640px) it collapses to a single
- * vertical stack (left:0) so windows never escape the bounds. No transform:scale(),
- * no imperative viewport-detection signal -- the sm: collapse is a declarative media query.
+ * system.css declares flex-direction: column on .window but not display: flex,
+ * so the chrome (title-bar/separator) and the pane never became flex items and
+ * .window-pane's height:100% collapsed to auto -- the pane grew to fit content,
+ * overflow never happened, and nothing scrolled until the window got an explicit
+ * height (e.g. via the native resize handle). Make .window a real flex column and
+ * let the pane fill the leftover space and scroll when it overflows.
  */
 .window {
+  display: flex;
   top: calc(var(--cascade-n, 0) * 4%);
   left: calc(var(--cascade-n, 0) * 4%);
+}
+
+.window-pane {
+  height: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 }
 @media (max-width: 639px) {
   .window {

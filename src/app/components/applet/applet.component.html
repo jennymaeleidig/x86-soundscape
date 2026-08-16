@@ -1,7 +1,7 @@
 <div class="w-fit h-fit grid justify-items-center hover:invert">
   <div [ngSwitch]="selector" cdkDragHandle>
     <button
-      *ngSwitchCase="AppletTypes.Winamp"
+      *ngSwitchCase="Feature.Winamp"
       class="cursor-pointer"
       (dblclick)="openWinamp()"
       (touchend)="openWinamp()"
@@ -11,7 +11,7 @@
       <img src="{{ getIcon() }}" />
     </button>
     <button
-      *ngSwitchCase="AppletTypes.Stream"
+      *ngSwitchCase="Feature.Station"
       class="cursor-pointer"
       (dblclick)="playRadio()"
       (touchend)="playRadio()"
@@ -22,7 +22,7 @@
     </button>
     <button
       title="{{ getAmbienceName() }}"
-      *ngSwitchCase="AppletTypes.Ambience"
+      *ngSwitchCase="Feature.Ambience"
       class="cursor-pointer"
       (dblclick)="toggleAmbience()"
       (touchend)="toggleAmbience()"
@@ -32,7 +32,7 @@
       <img src="{{ getIcon() }}" />
     </button>
     <button
-      *ngSwitchCase="AppletTypes.WeatherStar"
+      *ngSwitchCase="Feature.Weather"
       class="cursor-pointer"
       (dblclick)="openWindowComponent()"
       (touchend)="openWindowComponent()"

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Webamp from 'webamp';
-import Songs, { TrackWithMeta } from '../../../assets/audio/songs';
+import Stations, { Station } from '../../../assets/audio/stations';
 import { MetadataService } from '../metadata/metadata.service';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class WinampService {
    * Initialize webamp
    */
   webamp = new Webamp({
-    initialTracks: Songs.songs,
+    initialTracks: Stations.stations,
     initialSkin: {
       url: 'assets/skins/classic_mac_v1.wsz',
     },
@@ -26,13 +26,12 @@ export class WinampService {
    */
   unsubFromTrackChange = this.webamp.onTrackDidChange((track) => {
     if (track) {
-      const trackWithMeta: TrackWithMeta | undefined = Songs.songs.find(
-        (trackWithMeta: TrackWithMeta) => trackWithMeta.url === track.url,
+      const station: Station | undefined = Stations.stations.find(
+        (station: Station) => station.url === track.url,
       );
-      if (trackWithMeta) {
+      if (station) {
         this.metadataService.stop();
-        this.metadataService.start(trackWithMeta, (metadata: any) => {
-          // console.log(metadata);
+        this.metadataService.start(station, (metadata: any) => {
           this.metadataService.announceTrackUpdate(metadata);
         });
       } else {
@@ -66,7 +65,7 @@ export class WinampService {
 
   playRadio() {
     this.webamp.reopen();
-    this.webamp.setTracksToPlay(Songs.songs);
+    this.webamp.setTracksToPlay(Stations.stations);
     this.webamp.play();
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import IcecastMetadataStats from 'icecast-metadata-stats';
-import type { TrackWithMeta } from '../../../assets/audio/songs';
+import type { Station } from '../../../assets/audio/stations';
 import { BehaviorSubject } from 'rxjs';
 
 type NowPlaying = { artist: string; title: string };
@@ -17,7 +17,7 @@ export class MetadataService {
 
   private statsListener: IcecastMetadataStats | undefined;
   private azuracastTimer: ReturnType<typeof setInterval> | undefined;
-  private trackToListen: TrackWithMeta | undefined;
+  private trackToListen: Station | undefined;
 
   private readonly currentTrackSource = new BehaviorSubject<NowPlaying>(
     MetadataService.STOPPED_TRACK,
@@ -29,7 +29,7 @@ export class MetadataService {
     this.trackToListen = undefined;
   }
 
-  start(track: TrackWithMeta, statsCallback: Function) {
+  start(track: Station, statsCallback: Function) {
     this.trackToListen = track;
     const kind = track.metadataParser?.kind ?? 'icy';
 
@@ -53,7 +53,7 @@ export class MetadataService {
     this.statsListener.start();
   }
 
-  private startAzuracast(track: TrackWithMeta, statsCallback: Function) {
+  private startAzuracast(track: Station, statsCallback: Function) {
     const shortcode =
       track.metadataParser?.kind === 'azuracast'
         ? track.metadataParser.shortcode
@@ -123,7 +123,7 @@ export class MetadataService {
     }
   }
 
-  private parseIcy(metadata: any, track: TrackWithMeta): NowPlaying {
+  private parseIcy(metadata: any, track: Station): NowPlaying {
     const streamTitle: string | undefined = metadata?.icy?.StreamTitle;
     if (streamTitle) {
       const idx = streamTitle.indexOf(' - ');
@@ -141,7 +141,7 @@ export class MetadataService {
     return this.stationDescriptor(track);
   }
 
-  private parseIcestats(metadata: any, track: TrackWithMeta): NowPlaying {
+  private parseIcestats(metadata: any, track: Station): NowPlaying {
     const parser = track.metadataParser;
     if (!parser || parser.kind !== 'icestats') {
       return this.stationDescriptor(track);
@@ -161,7 +161,7 @@ export class MetadataService {
     return { title, artist: artist ?? this.stationDescriptor(track).artist };
   }
 
-  private parseAzuracast(metadata: any, track: TrackWithMeta): NowPlaying {
+  private parseAzuracast(metadata: any, track: Station): NowPlaying {
     const song = metadata?.now_playing?.song;
     const title: string | undefined = song?.title;
     const artist: string | undefined = song?.artist;
@@ -171,7 +171,7 @@ export class MetadataService {
     return { title, artist: artist ?? this.stationDescriptor(track).artist };
   }
 
-  private stationDescriptor(track?: TrackWithMeta): NowPlaying {
+  private stationDescriptor(track?: Station): NowPlaying {
     if (track?.metaData) {
       return {
         artist: track.metaData.artist,

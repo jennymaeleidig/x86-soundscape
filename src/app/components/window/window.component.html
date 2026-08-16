@@ -1,7 +1,7 @@
 <div [ngSwitch]="selector">
   <div
-    *ngSwitchCase="AppletTypes.About"
-    class="window absolute w-[min(25%,90vw)] max-h-[50%] resize"
+    *ngSwitchCase="Feature.About"
+    class="window absolute w-[min(25%,90vw)] h-[50%] resize"
     [style.--cascade-n]="cascadeIndex"
     [ngClass]="isActive() ? 'z-5' : 'z-0'"
     cdkDragBoundary=".desktop-bounds"
@@ -13,18 +13,18 @@
       (mousedown)="setActive()"
     >
       <button aria-label="Close" class="close" (click)="close()"></button>
-      <h1 class="title">{{ AppletTypes[selector] }}</h1>
+      <h1 class="title">{{ Feature[selector] }}</h1>
       <button aria-label="Resize" class="resize hidden"></button>
     </div>
     <div class="separator"></div>
-    <div class="window-pane text-sm overflow-y:scroll relative">
-      <div *ngSwitchCase="AppletTypes.About" class="text-justify text-base">
+    <div class="window-pane text-sm relative">
+      <div *ngSwitchCase="Feature.About" class="text-justify text-base">
         {{ $any(windowContent).msg }}
       </div>
     </div>
   </div>
   <div
-    *ngSwitchCase="AppletTypes.Visualizer"
+    *ngSwitchCase="Feature.Visualizer"
     class="window absolute max-w-[90vw]"
     [style.--cascade-n]="cascadeIndex"
     [ngClass]="isActive() ? 'z-5' : 'z-0'"
@@ -37,7 +37,7 @@
       (mousedown)="setActive()"
     >
       <button aria-label="Close" class="close" (click)="close()"></button>
-      <h1 class="title">{{ AppletTypes[selector] }}</h1>
+      <h1 class="title">{{ Feature[selector] }}</h1>
       <button aria-label="Resize" class="resize hidden"></button>
     </div>
     <div class="separator"></div>
@@ -46,7 +46,7 @@
     </div>
   </div>
   <div
-    *ngSwitchCase="AppletTypes.WeatherStar"
+    *ngSwitchCase="Feature.Weather"
     class="window absolute max-w-[90vw]"
     [style.--cascade-n]="cascadeIndex"
     [ngClass]="isActive() ? 'z-5' : 'z-0'"
@@ -68,8 +68,8 @@
     </div>
   </div>
   <div
-    *ngSwitchCase="AppletTypes.Annoucements"
-    class="window absolute w-[min(25%,90vw)] max-h-[75%] resize"
+    *ngSwitchCase="Feature.Announcements"
+    class="window absolute w-[min(25%,90vw)] h-[75%] resize"
     [style.--cascade-n]="cascadeIndex"
     [ngClass]="isActive() ? 'z-5' : 'z-0'"
     cdkDragBoundary=".desktop-bounds"
@@ -81,11 +81,11 @@
       (mousedown)="setActive()"
     >
       <button aria-label="Close" class="close" (click)="close()"></button>
-      <h1 class="title">{{ AppletTypes[selector] }}</h1>
+      <h1 class="title">{{ Feature[selector] }}</h1>
       <button aria-label="Resize" class="resize hidden"></button>
     </div>
     <div class="separator"></div>
-    <div class="window-pane text-sm overflow-y:scroll relative">
+    <div class="window-pane text-sm relative">
       <div class="grid divide-y-2 pb-4">
         <div class="mt-4 pb-4" *ngFor="let annoucement of $any(windowContent)">
           <div class="flex justify-between items-end mb-2">

@@ -3,9 +3,9 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { WindowService } from '../../services/window/window.service';
 import { Options } from '../../services/window/window.options';
 import { AboutContent } from '../../../assets/applets/applet-content/about';
-import { AnnoucementContent } from '../../../assets/applets/applet-content/annoucements';
+import { AnnouncementContent } from '../../../assets/applets/applet-content/announcements';
 import { NgClass, CommonModule } from '@angular/common';
-import { AppletTypes } from '../../../assets/applets/applet-definitions';
+import { Feature } from '../../../assets/applets/applet-definitions';
 import { SurferComponent } from '../surfer/surfer.component';
 import { WeatherComponent } from '../weather/weather.component';
 import { WeatherStarService } from '../../services/weather-star/weather-star.service';
@@ -26,10 +26,10 @@ import { WeatherStarService } from '../../services/weather-star/weather-star.ser
 })
 export class WindowComponent {
   options!: Options | undefined;
-  selector!: AppletTypes;
-  windowContent!: AboutContent | AnnoucementContent[] | string;
+  selector!: Feature;
+  windowContent!: AboutContent | AnnouncementContent[] | string;
   cascadeIndex: number = 0;
-  AppletTypes = AppletTypes;
+  Feature = Feature;
   protected readonly weatherStar = inject(WeatherStarService);
 
   constructor(private windowService: WindowService) {}
