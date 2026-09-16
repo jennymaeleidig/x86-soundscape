@@ -119,19 +119,24 @@ describe('MenuComponent on Ambience', () => {
       ...submenu().query(By.css('ul[role="menu"]')).nativeElement.children,
     ] as HTMLElement[];
 
-  it('puts the solid rule under the name and the dotted divider under the level', () => {
+  it('leads with the level, breaks it with the dotted divider, and closes the name below the solid rule', () => {
     const rows = menuRows();
     const labels = rows.map((row) => row.textContent.trim() || row.tagName);
     const levelAt = labels.findIndex((text) => text.startsWith('Volume:'));
+    const nameAt = rows.findIndex((row) => row.querySelector('om-marquee'));
 
-    // The name row carries the solid rule (the library's hr).
-    expect(rows[0].querySelector('hr')).toBeTruthy();
-
-    // The level's break is the library's dotted divider row, and the controls
-    // resume after it, so nothing suggests the level is one of them.
+    // The level opens the submenu, and its break is the library's dotted
+    // divider row: the controls resume after it, so nothing suggests the level
+    // is one of them.
+    expect(levelAt).toBe(0);
     expect(rows[levelAt + 1].className).toContain('divider');
     expect(rows[levelAt + 1].querySelector('hr')).toBeFalsy();
     expect(labels[levelAt + 2]).toBe('Unmute');
+
+    // The name closes the submenu, and the library's solid hr is what stands
+    // between it and the controls.
+    expect(rows[nameAt - 1].tagName).toBe('HR');
+    expect(nameAt).toBe(rows.length - 1);
 
     // system.css has no disabled menu row, so the semantics say it instead.
     expect(levelRow().nativeElement.getAttribute('aria-disabled')).toBe('true');

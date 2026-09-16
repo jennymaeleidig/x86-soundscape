@@ -90,6 +90,21 @@
       <li role="menu-item" tabindex="0" aria-haspopup="true">
         Ambience
         <ul role="menu">
+          <li role="menu-item" aria-disabled="true" class="readout">
+            <a>{{ ambienceLevel() }}</a>
+          </li>
+          <li role="menu-item" aria-hidden="true" class="divider"></li>
+          <li role="menu-item" (click)="toggleAmbience()">
+            <a>{{ muteAction() }}</a>
+          </li>
+          <li role="menu-item" (click)="playAmbience()"><a>Play</a></li>
+          <li role="menu-item" (click)="stopAmbience()"><a>Stop</a></li>
+          <li role="menu-item" (click)="shuffleAmbience()"><a>Shuffle</a></li>
+          <li role="menu-item" (click)="volumeUpAmbience()"><a>Volume +</a></li>
+          <li role="menu-item" (click)="volumeDownAmbience()">
+            <a>Volume -</a>
+          </li>
+          <hr />
           <li role="menu-item" class="max-w-3xs">
             <om-marquee
               [marqueeGap]="'4rem'"
@@ -105,21 +120,6 @@
                 </div>
               </ng-template>
             </om-marquee>
-            <hr />
-          </li>
-          <li role="menu-item" aria-disabled="true" class="readout">
-            <a>{{ ambienceLevel() }}</a>
-          </li>
-          <li role="menu-item" aria-hidden="true" class="divider"></li>
-          <li role="menu-item" (click)="toggleAmbience()">
-            <a>{{ muteAction() }}</a>
-          </li>
-          <li role="menu-item" (click)="playAmbience()"><a>Play</a></li>
-          <li role="menu-item" (click)="stopAmbience()"><a>Stop</a></li>
-          <li role="menu-item" (click)="shuffleAmbience()"><a>Shuffle</a></li>
-          <li role="menu-item" (click)="volumeUpAmbience()"><a>Volume +</a></li>
-          <li role="menu-item" (click)="volumeDownAmbience()">
-            <a>Volume -</a>
           </li>
         </ul>
       </li>
