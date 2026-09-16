@@ -43,13 +43,16 @@ describe('MenuComponent on Ambience', () => {
     return found;
   };
 
-  const level = (): string => {
+  /** The level row, which the Menu prints rather than offering as a control. */
+  const levelRow = (): DebugElement => {
     const found = items().find((item) =>
       item.nativeElement.textContent.trim().startsWith('Volume:'),
     );
     if (!found) throw new Error('the Ambience menu shows no level');
-    return found.nativeElement.textContent.trim();
+    return found;
   };
+
+  const level = (): string => levelRow().nativeElement.textContent.trim();
 
   /** The name the marquee shows, which is the first of its four copies. */
   const name = (): string =>
@@ -93,6 +96,17 @@ describe('MenuComponent on Ambience', () => {
 
   afterEach(() => {
     FakeAudio.restore();
+  });
+
+  it('builds the level from the same elements as the controls, so it is indented with them', () => {
+    // system.css indents a row through ul[role=menu] > [role=menu-item] > a
+    // (padding: 5px 20px), so a row without that anchor sits flush left.
+    const row = levelRow();
+    const control = reading('Play');
+
+    expect(row.nativeElement.tagName).toBe(control.nativeElement.tagName);
+    expect(row.children.length).toBe(control.children.length);
+    expect(row.query(By.css('a'))).toBeTruthy();
   });
 
   it('prints the level, and a press of Volume + or Volume − moves it one step while nothing plays', () => {
