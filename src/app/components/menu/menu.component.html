@@ -96,14 +96,15 @@
               [pauseOnHover]="false"
             >
               <ng-template>
-                <div
-                  title="{{ ambienceName() | decodeHtmlString }}"
-                  class="item"
-                >
-                  {{ ambienceName() | decodeHtmlString }}
+                <div title="{{ ambienceName() }}" class="item">
+                  {{ ambienceName() }}
                 </div>
               </ng-template>
             </om-marquee>
+          </li>
+          <li role="menu-item">{{ ambienceLevel() }}</li>
+          <li role="menu-item" (click)="toggleAmbience()">
+            <a>{{ muteAction() }}</a>
           </li>
           <li role="menu-item" (click)="playAmbience()"><a>Play</a></li>
           <li role="menu-item" (click)="stopAmbience()"><a>Stop</a></li>

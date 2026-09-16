@@ -1,4 +1,4 @@
-import { Component, Pipe, PipeTransform } from '@angular/core';
+import { Component, Pipe, PipeTransform, computed } from '@angular/core';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { Feature } from '../../../assets/applets/applet-definitions';
 import AboutInput from '../../../assets/applets/applet-content/about';
@@ -8,7 +8,11 @@ import { MetadataService } from '../../services/metadata/metadata.service';
 import { CommonModule } from '@angular/common';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
 import { AmbienceService } from '../../services/ambience/ambience';
-import { soundName } from '../../services/ambience/ambience-labels';
+import {
+  levelLabel,
+  muteActionLabel,
+  soundName,
+} from '../../services/ambience/ambience-labels';
 export const DEFAULT_TITLE = 'N / A';
 
 @Pipe({ name: 'decodeHtmlString', standalone: true })
@@ -41,6 +45,15 @@ export class MenuComponent {
 
   /** The published Ambience state; the template reads it rather than a mirror of it. */
   readonly ambienceState = this.ambienceService.state;
+
+  /**
+   * The three things the Menu says about Ambience, all derived from that one
+   * state: the Sound's own name, the level the Volume items move, and the mute
+   * item labelled with the action pressing it performs.
+   */
+  readonly ambienceName = computed(() => soundName(this.ambienceState()));
+  readonly ambienceLevel = computed(() => levelLabel(this.ambienceState()));
+  readonly muteAction = computed(() => muteActionLabel(this.ambienceState()));
 
   ngOnInit() {
     this.metadataService.currentTrack$.subscribe(
@@ -107,7 +120,7 @@ export class MenuComponent {
     this.ambienceService.volumeDown();
   }
 
-  ambienceName(): string {
-    return soundName(this.ambienceState());
+  toggleAmbience() {
+    this.ambienceService.toggle();
   }
 }

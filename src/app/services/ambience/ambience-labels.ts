@@ -19,6 +19,16 @@ export function soundName(state: AmbienceState): string {
   return state.sound?.name ?? NOTHING_HELD;
 }
 
+/** The Menu's level, as the number the Volume + and − items move. */
+export function levelLabel(state: AmbienceState): string {
+  return `Volume: ${Math.round(state.volume * 100)}%`;
+}
+
+/** The Menu's mute item, labelled with the action pressing it performs. */
+export function muteActionLabel(state: AmbienceState): string {
+  return isAudible(state) ? 'Mute' : 'Unmute';
+}
+
 /** The Applet's label: which way the sound is going, and which sound it is. */
 export function appletLabel(state: AmbienceState): string {
   return state.muted && state.sound
