@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import Webamp from 'webamp';
 import Stations, { Station } from '../../../assets/audio/stations';
 import { NowPlayingService } from '../now-playing/now-playing.service';
+import { playbackState$ } from './playback-state';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,19 @@ export class WinampService {
     enableMediaSession: true,
   });
   rootElement!: HTMLElement;
+
+  /**
+   * The cache over the engine's own authority on whether audio runs. The
+   * store is the single funnel for every real status change — the element's
+   * own events included, which the public hooks cannot see (a skin's Stop
+   * button lands there as paused → stopped) — so the engine's store
+   * subscription is this one line, with the short status poll inside
+   * `playbackState$` as the fallback if it ever moves.
+   */
+  readonly playbackState$ = playbackState$({
+    status: () => this.webamp.getPlayerMediaStatus(),
+    subscribe: (onChange) => this.webamp.store.subscribe(onChange),
+  });
 
   /**
    * Tune Now Playing to the Station a track plays, and stop it when playback
