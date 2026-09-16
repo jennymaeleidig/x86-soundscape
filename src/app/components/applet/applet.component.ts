@@ -1,4 +1,10 @@
-import { Component, HostListener, Inject, Input } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  Input,
+  computed,
+} from '@angular/core';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
 import { WindowService } from '../../services/window/window.service';
 import { AboutContent } from '../../../assets/applets/applet-content/about';
@@ -7,6 +13,10 @@ import { Feature } from '../../../assets/applets/applet-definitions';
 import { NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { AmbienceService } from '../../services/ambience/ambience';
+import {
+  appletLabel,
+  isAudible,
+} from '../../services/ambience/ambience-labels';
 
 // Define constants for the icon paths
 const AMBIENCE_OFF_ICON = 'assets/images/ambience_off.png';
@@ -40,6 +50,19 @@ export class AppletComponent {
 
   /** The published Ambience state; the template reads it rather than a mirror of it. */
   readonly ambienceState = this.ambienceService.state;
+
+  /**
+   * What the Applet shows for Ambience, derived once from the published state:
+   * OFF for anything inaudible — muted or not playing — beside the name of the
+   * Sound that will come back.
+   */
+  readonly ambienceView = computed(() => {
+    const state = this.ambienceState();
+    return {
+      icon: isAudible(state) ? AMBIENCE_ON_ICON : AMBIENCE_OFF_ICON,
+      label: appletLabel(state),
+    };
+  });
 
   ngOnDestroy(): void {
     // Ensure ambience is stopped if the applet is destroyed
@@ -86,33 +109,12 @@ export class AppletComponent {
     this.setAppletIsMoving(false);
   }
 
-  getIcon(): string {
-    if (this.selector === Feature.Ambience) {
-      return this.ambienceState().playing
-        ? AMBIENCE_ON_ICON
-        : AMBIENCE_OFF_ICON;
-    }
-    return this.icon;
-  }
-
   toggleAmbience() {
     if (this.appletDragState.isDragGesture()) {
       return;
     }
     if (this.selector === Feature.Ambience) {
-      if (this.ambienceState().playing) {
-        this.ambienceService.stop();
-      } else {
-        this.ambienceService.shuffle();
-      }
-    }
-  }
-
-  getAmbienceName(): string {
-    if (this.selector === Feature.Ambience) {
-      return this.ambienceState().sound?.name ?? 'Not Playing';
-    } else {
-      return 'N / A';
+      this.ambienceService.toggle();
     }
   }
 }

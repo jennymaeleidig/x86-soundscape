@@ -8,7 +8,7 @@
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
-      <img src="{{ getIcon() }}" />
+      <img [src]="icon" />
     </button>
     <button
       *ngSwitchCase="Feature.Station"
@@ -18,10 +18,10 @@
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
-      <img src="{{ getIcon() }}" />
+      <img [src]="icon" />
     </button>
     <button
-      title="{{ getAmbienceName() }}"
+      [title]="ambienceView().label"
       *ngSwitchCase="Feature.Ambience"
       class="cursor-pointer"
       (dblclick)="toggleAmbience()"
@@ -29,7 +29,7 @@
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
-      <img src="{{ getIcon() }}" />
+      <img [src]="ambienceView().icon" />
     </button>
     <button
       *ngSwitchCase="Feature.Weather"
@@ -39,7 +39,7 @@
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
-      <img src="{{ getIcon() }}" />
+      <img [src]="icon" />
     </button>
     <button
       *ngSwitchDefault
@@ -49,7 +49,7 @@
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
-      <img src="{{ getIcon() }}" />
+      <img [src]="icon" />
     </button>
   </div>
   <div class="mt-1 bg-white">{{ title }}</div>

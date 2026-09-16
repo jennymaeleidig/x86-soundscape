@@ -8,6 +8,7 @@ import { MetadataService } from '../../services/metadata/metadata.service';
 import { CommonModule } from '@angular/common';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
 import { AmbienceService } from '../../services/ambience/ambience';
+import { soundName } from '../../services/ambience/ambience-labels';
 export const DEFAULT_TITLE = 'N / A';
 
 @Pipe({ name: 'decodeHtmlString', standalone: true })
@@ -107,6 +108,6 @@ export class MenuComponent {
   }
 
   ambienceName(): string {
-    return this.ambienceState().sound?.name ?? 'Not Playing';
+    return soundName(this.ambienceState());
   }
 }
