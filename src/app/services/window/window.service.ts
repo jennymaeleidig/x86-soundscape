@@ -32,9 +32,17 @@ export class WindowService {
     return this.windows.length;
   }
 
-  /** Opens the Feature's Window, or does nothing if it is already open. */
+  /**
+   * Opens the Feature's Window, or — when it is already open — raises it: the
+   * same move a title-bar press makes, so a second activation brings the
+   * Window to the front rather than opening a second one. Raising the
+   * already-active Window is the identity.
+   */
   open(options: Options): void {
-    if (this.isOpen(options.id)) return;
+    if (this.isOpen(options.id)) {
+      this.raise(options.id);
+      return;
+    }
 
     const target = this.bounds.element;
     if (!target) {

@@ -1,5 +1,6 @@
-<div class="absolute min-w-screen min-h-screen">
+<div class="absolute min-w-screen min-h-screen" (click)="onClose.emit()">
   <div
+    (click)="$event.stopPropagation()"
     class="fixed top-0 right-0 left-0 z-50 justify-center content-center m-auto h-[calc(100%-1rem)] md:max-w-1/4 md:max-h-full"
   >
     <div class="modal-dialog outer-border">
@@ -12,7 +13,7 @@
           <div class="text-justify px-2">{{ $any(options.contents) }}</div>
           <br />
           <section class="field-row justify-end gap-2">
-            <button class="btn" (click)="close()">OK</button>
+            <button class="btn" (click)="onClose.emit()">OK</button>
           </section>
         </div>
         <div *ngSwitchCase="FeatureId.Announcements" class="modal-contents">
@@ -27,7 +28,7 @@
             <div class="text-justify px-2">{{ getLatest()?.msg }}</div>
           </div>
           <section class="field-row justify-end gap-2">
-            <button class="btn" (click)="close()">OK</button>
+            <button class="btn" (click)="onClose.emit()">OK</button>
           </section>
         </div>
       </div>

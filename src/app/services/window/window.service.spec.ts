@@ -60,6 +60,41 @@ describe('WindowService', () => {
     expect(bounds.childElementCount).toBe(1);
   });
 
+  it('opening an open Feature raises it instead: same entry, same geometry, now active', () => {
+    service.open(optionsFor(FeatureId.About, 'About'));
+    service.open(optionsFor(FeatureId.Weather, 'Weather'));
+
+    service.open(optionsFor(FeatureId.About, 'About'));
+
+    expect(mount).toHaveBeenCalledTimes(2); // no second Window opened
+    expect(bounds.childElementCount).toBe(2); // no geometry change
+    expect(service.isActive(FeatureId.About)).toBe(true);
+  });
+
+  it('raising through open feeds the recency order, so closing the raised Window activates the survivor', () => {
+    service.open(optionsFor(FeatureId.About, 'About'));
+    service.open(optionsFor(FeatureId.Weather, 'Weather'));
+    service.open(optionsFor(FeatureId.About, 'About'));
+
+    service.close(FeatureId.About);
+
+    expect(service.isActive(FeatureId.Weather)).toBe(true);
+  });
+
+  it('reactivating a Feature whose Window was closed opens a fresh Window, mounted afresh', () => {
+    service.open(optionsFor(FeatureId.About, 'About'));
+    service.open(optionsFor(FeatureId.Weather, 'Weather'));
+    service.close(FeatureId.About);
+
+    service.open(optionsFor(FeatureId.About, 'About'));
+
+    expect(mount).toHaveBeenCalledTimes(3);
+    // The cascade offset depends on how many Windows are open and nothing
+    // else (the spec's invariant), so the reopened Window takes the slot its
+    // position in the open set gives it.
+    expect(cascadeSlots()).toEqual(['1', '1']);
+  });
+
   it('keys on the identity, so two copies of one row still open once', () => {
     // The Desktop copies every row into its own position-carrying object, so
     // this pairs a row with its copy the way the Desktop hands them around.
