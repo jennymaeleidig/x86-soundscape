@@ -46,6 +46,17 @@ describe('The Ambience sound library', () => {
     }
   });
 
+  it('credits the collection each recording came from', () => {
+    // The name is what the listener reads, so the credit lives in it: the folder
+    // a recording sits in is who published it.
+    const uncredited = ambienceSounds.filter((sound) => {
+      const creator = sound.path.split('/').at(-2)!.replaceAll('_', ' ');
+      return !sound.name.endsWith(`, from ${creator}`);
+    });
+
+    expect(uncredited).toEqual([]);
+  });
+
   it('declares every recording in the sounds folder, and nothing else', () => {
     const folder = path.join(
       workspaceRoot(),
