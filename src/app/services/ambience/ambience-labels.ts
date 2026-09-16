@@ -6,14 +6,15 @@ import { levelPercent, type AmbienceState } from './ambience';
  * different about the one Sound Ambience holds.
  */
 
-/** What both surfaces say when Ambience holds nothing. */
-const NOTHING_PLAYING = 'Nothing playing';
+/** What both surfaces say when nothing is held or tuned. */
+export const NOTHING_PLAYING = 'Nothing playing';
 
 /**
  * The separator the player puts between artist and title (`formatTrack`), so a
- * credit trails the name the way a title trails its artist.
+ * credit trails the name the way a title trails its artist, and a track reads
+ * as one line.
  */
-const SEPARATOR = ' - ';
+export const SEPARATOR = ' - ';
 
 /** The one predicate the Applet's icon and the Menu's mute item both answer. */
 export function isAudible(state: AmbienceState): boolean {

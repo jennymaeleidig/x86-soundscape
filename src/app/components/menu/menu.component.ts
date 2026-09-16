@@ -4,24 +4,26 @@ import { FeatureId } from '../../services/feature/feature';
 import { AboutComponent } from '../about/about.component';
 import { AnnouncementsComponent } from '../announcements/announcements.component';
 import { WinampService } from '../../services/winamp/winamp.service';
-import { MetadataService } from '../../services/metadata/metadata.service';
+import { NowPlaying } from '../../services/now-playing/parsers';
+import { NowPlayingService } from '../../services/now-playing/now-playing.service';
 import { CommonModule } from '@angular/common';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
 import { AmbienceService } from '../../services/ambience/ambience';
 import {
+  NOTHING_PLAYING,
+  SEPARATOR,
   levelLabel,
   muteActionLabel,
   soundCredit,
   soundName,
 } from '../../services/ambience/ambience-labels';
-export const DEFAULT_TITLE = 'N / A';
 
 @Pipe({ name: 'decodeHtmlString', standalone: true })
 export class DecodeHtmlString implements PipeTransform {
   transform(value: string) {
     const tempElement = document.createElement('div');
     tempElement.innerHTML = value;
-    return tempElement.innerText;
+    return tempElement.textContent;
   }
 }
 
@@ -33,14 +35,12 @@ export class DecodeHtmlString implements PipeTransform {
   styleUrl: './menu.component.css',
 })
 export class MenuComponent {
-  currentTrack: { artist: string; title: string } = {
-    artist: 'N',
-    title: '/ A',
-  };
+  /** The published Now Playing reading; `undefined` means nothing is tuned. */
+  nowPlaying: NowPlaying | undefined = undefined;
   constructor(
     private popUpService: PopUpService,
     private winampService: WinampService,
-    private metadataService: MetadataService,
+    private nowPlayingService: NowPlayingService,
     private ambienceService: AmbienceService,
   ) {}
 
@@ -58,14 +58,23 @@ export class MenuComponent {
   readonly muteAction = computed(() => muteActionLabel(this.ambienceState()));
 
   ngOnInit() {
-    this.metadataService.currentTrack$.subscribe(
-      (current) => (this.currentTrack = current),
+    this.nowPlayingService.nowPlaying$.subscribe(
+      (nowPlaying) => (this.nowPlaying = nowPlaying),
     );
   }
 
-  formatTrack(): string {
-    const { artist, title } = this.currentTrack;
-    return title ? `${artist} - ${title}` : artist;
+  /**
+   * The bar's whole readout, with no prefix: a track or a Station descriptor
+   * as `artist - title`, and nothing tuned as the shared sentence.
+   */
+  reading(): string {
+    const track = this.nowPlaying;
+    if (!track) {
+      return NOTHING_PLAYING;
+    }
+    return track.artist
+      ? `${track.artist}${SEPARATOR}${track.title}`
+      : track.title;
   }
 
   openAbout() {

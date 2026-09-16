@@ -8,7 +8,6 @@ export type MetadataParser =
       titleField: string;
       artistField?: string;
     }
-  | { kind: 'stats' }
   | { kind: 'azuracast'; shortcode: string }
   | { kind: 'none' };
 

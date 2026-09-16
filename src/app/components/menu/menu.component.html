@@ -30,15 +30,6 @@
       <li role="menu-item" tabindex="0" aria-haspopup="true">
         View
         <ul role="menu">
-          <li role="menu-item">
-            <a
-              href="https://github.com/jennymaeleidig/x86-soundscape"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Source Code</a
-            >
-          </li>
-          <hr />
           <li role="menu-item" class="readout divider"><a>Other Spaces</a></li>
           <li role="menu-item">
             <a
@@ -62,6 +53,15 @@
               target="_blank"
               rel="noopener noreferrer"
               >Portfolio</a
+            >
+          </li>
+          <hr />
+          <li role="menu-item">
+            <a
+              href="https://github.com/jennymaeleidig/x86-soundscape"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Source Code</a
             >
           </li>
         </ul>
@@ -131,21 +131,13 @@
         role="menu-item"
         tabindex="0"
         aria-haspopup="false"
-        class="!bg-white !text-black !cursor-[url(assets/images/normal.png),_auto]"
-      >
-        Now Playing —
-      </li>
-      <li
-        role="menu-item"
-        tabindex="0"
-        aria-haspopup="false"
         id="scroll-container"
         class="max-w-3xs !bg-white !text-black !cursor-text !overflow-hidden !text-nowrap"
       >
         <om-marquee [marqueeGap]="'4rem'" [pauseOnHover]="false">
           <ng-template>
-            <div title="{{ formatTrack() | decodeHtmlString }}" class="item">
-              {{ formatTrack() | decodeHtmlString }}
+            <div title="{{ reading() | decodeHtmlString }}" class="item">
+              {{ reading() | decodeHtmlString }}
             </div>
           </ng-template>
         </om-marquee>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import Webamp from 'webamp';
 import Stations, { Station } from '../../../assets/audio/stations';
-import { MetadataService } from '../metadata/metadata.service';
+import { NowPlayingService } from '../now-playing/now-playing.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,27 +22,21 @@ export class WinampService {
   rootElement!: HTMLElement;
 
   /**
-   * Initialize MetadataService
+   * Tune Now Playing to the Station a track plays, and stop it when playback
+   * holds no Station; `tune` tears the previous tracking down itself.
    */
   unsubFromTrackChange = this.webamp.onTrackDidChange((track) => {
-    if (track) {
-      const station: Station | undefined = Stations.stations.find(
-        (station: Station) => station.url === track.url,
-      );
-      if (station) {
-        this.metadataService.stop();
-        this.metadataService.start(station, (metadata: any) => {
-          this.metadataService.announceTrackUpdate(metadata);
-        });
-      } else {
-        this.metadataService.stop();
-      }
+    const station = track
+      ? Stations.stations.find((station: Station) => station.url === track.url)
+      : undefined;
+    if (station) {
+      this.nowPlayingService.tune(station);
     } else {
-      this.metadataService.stop();
+      this.nowPlayingService.stop();
     }
   });
 
-  constructor(private metadataService: MetadataService) {}
+  constructor(private nowPlayingService: NowPlayingService) {}
 
   /**
    * Must be called before renderWebamp().

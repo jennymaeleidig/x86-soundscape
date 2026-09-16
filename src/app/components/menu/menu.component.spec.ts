@@ -8,12 +8,20 @@ import { AmbienceService } from '../../services/ambience/ambience';
 import { ambienceSounds } from '../../services/ambience/sounds';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { WinampService } from '../../services/winamp/winamp.service';
-import { MetadataService } from '../../services/metadata/metadata.service';
+import { NowPlayingService } from '../../services/now-playing/now-playing.service';
+import { Subject } from 'rxjs';
 import { FakeAudio } from '../../../testing/fake-audio';
 
 describe('MenuComponent on Ambience', () => {
   let fixture: ComponentFixture<MenuComponent>;
   let ambience: AmbienceService;
+  let nowPlaying$: Subject<object | undefined>;
+
+  /** The bar's Now Playing readout, the marquee's one line. */
+  const bar = (): string =>
+    fixture.debugElement
+      .query(By.css('#scroll-container .item'))
+      .nativeElement.textContent.trim();
 
   /** The Ambience submenu, the one place these items live. */
   const submenu = () =>
@@ -86,8 +94,8 @@ describe('MenuComponent on Ambience', () => {
           },
         },
         {
-          provide: MetadataService,
-          useValue: { currentTrack$: of({ artist: 'N', title: '/ A' }) },
+          provide: NowPlayingService,
+          useValue: { nowPlaying$: (nowPlaying$ = new Subject()) },
         },
         AmbienceService,
       ],
@@ -174,6 +182,31 @@ describe('MenuComponent on Ambience', () => {
     });
     // Two presses of the item, one Sound: the second resumed rather than drew.
     expect(FakeAudio.built).toHaveLength(1);
+  });
+
+  it('renders the three readings itself: a track as artist - title, the descriptor as the Station, and nothing tuned as the shared sentence', () => {
+    // Nothing is tuned at startup, and there is no `Now Playing —` prefix:
+    // the marquee is the whole readout.
+    const rows = () =>
+      fixture.debugElement
+        .queryAll(By.css('li[role="menu-item"]'))
+        .map((item) => item.nativeElement.textContent.trim());
+    expect(rows()).not.toContain('Now Playing —');
+    expect(bar()).toBe('Nothing playing');
+
+    nowPlaying$.next({ artist: 'soma fm', title: 'Groove Salad' });
+    fixture.detectChanges();
+    expect(bar()).toBe('soma fm - Groove Salad');
+
+    // A tuned Station with no track yet reads as the Station itself.
+    nowPlaying$.next({ artist: 'Isekoi Radio', title: 'live' });
+    fixture.detectChanges();
+    expect(bar()).toBe('Isekoi Radio - live');
+
+    // Untuned again, the bar says the sentence, never a placeholder.
+    nowPlaying$.next(undefined);
+    fixture.detectChanges();
+    expect(bar()).toBe('Nothing playing');
   });
 
   it("shows the Sound's own name and who recorded it, and the same nothing-held text the Applet shows", () => {
