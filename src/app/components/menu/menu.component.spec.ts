@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 
 import { MenuComponent } from './menu.component';
 import { AmbienceService } from '../../services/ambience/ambience';
+import { ambienceSounds } from '../../services/ambience/sounds';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { MetadataService } from '../../services/metadata/metadata.service';
@@ -138,7 +139,7 @@ describe('MenuComponent on Ambience', () => {
 
   it('keeps Play, Stop, Shuffle and Volume working against the published state, Stop holding the Sound for Play', () => {
     press('Shuffle');
-    const held = ambience.state().sound;
+    const held = ambience.state().sound!;
     expect(held).not.toBeNull();
     FakeAudio.last.currentTime = 42;
 
@@ -149,7 +150,21 @@ describe('MenuComponent on Ambience', () => {
     expect(ambience.state()).toMatchObject({ sound: held, playing: true });
     expect(FakeAudio.last.currentTime).toBe(0);
 
+    // Point the draw at a different Sound, so the assertion below fails for the
+    // right reason instead of once in thirty runs.
+    const elsewhere = ambienceSounds.filter(
+      (sound) => sound.path !== held.path,
+    );
+    jest
+      .spyOn(Math, 'random')
+      .mockReturnValue(
+        (ambienceSounds.indexOf(elsewhere[0]) + 0.5) / ambienceSounds.length,
+      );
+
     press('Shuffle');
-    expect(ambience.state().sound).not.toBe(held);
+    expect(ambience.state().sound).toEqual(elsewhere[0]);
+    expect(ambience.state().sound).not.toEqual(held);
+
+    jest.restoreAllMocks();
   });
 });
