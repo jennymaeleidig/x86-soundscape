@@ -1,8 +1,8 @@
-import { AboutContent } from '../../../assets/applets/applet-content/about';
-import { AnnouncementContent } from '../../../assets/applets/applet-content/announcements';
+import { type AnnouncementContent } from '../../components/announcements/announcements.component';
 import { Feature } from '../../../assets/applets/applet-definitions';
 
 export interface Options {
-  contents: AboutContent | AnnouncementContent[] | string;
+  /** About's text, or the Announcements list the Pop-up shows the latest of. */
+  contents: string | AnnouncementContent[];
   selector: Feature;
 }

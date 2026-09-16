@@ -1,82 +1,103 @@
-import {
-  ApplicationRef,
-  ComponentRef,
-  createComponent,
-  EnvironmentInjector,
-  Injectable,
-  Renderer2,
-  RendererFactory2,
-} from '@angular/core';
+import { Injectable, inputBinding, outputBinding } from '@angular/core';
+import { MountService, type MountHandle } from '../mount/mount';
 import { WindowComponent } from '../../components/window/window.component';
+import { DesktopBounds } from './desktop-bounds';
 import { Options } from './window.options';
-import { Feature } from '../../../assets/applets/applet-definitions';
+import { type Feature } from '../../../assets/applets/applet-definitions';
 
-@Injectable({
-  providedIn: 'root',
-})
+/** One open Window: what it was opened for, where it is mounted, and how it goes away. */
+interface OpenWindow {
+  options: Options;
+  carrier: HTMLElement;
+  handle: MountHandle;
+}
+
+/**
+ * The Window host. It owns the cascade index, the at-most-one-Window-per-Feature
+ * rule and the Active Window, and nothing else: membership of one ordered
+ * collection *is* the open set, and the last entry *is* the Active Window, so
+ * neither fact can drift from the other.
+ */
+@Injectable({ providedIn: 'root' })
 export class WindowService {
-  //TODO: could combine these two vairables into one
-  openWindows: ComponentRef<WindowComponent>[] = [];
-  isOpen: Set<Feature> = new Set<Feature>();
-  options!: Options;
-  // Open-order cascade state. openCount reflects currently-open windows
-  // (decremented on close, not lifetime opens) so reopening after a close
-  // doesn't push windows progressively off-screen. cascadeIndex is the
-  // slot assigned to the window being opened; the WindowComponent reads it
-  // at creation time and applies it as the --cascade-n CSS custom property.
-  openCount = 0;
-  cascadeIndex = 0;
-  activeWindow: Feature = Feature.None;
-  private renderer: Renderer2;
+  private readonly windows: OpenWindow[] = [];
 
   constructor(
-    private appRef: ApplicationRef,
-    private injector: EnvironmentInjector,
-    rendererFactory: RendererFactory2,
-  ) {
-    this.renderer = rendererFactory.createRenderer(null, null);
+    private readonly mount: MountService,
+    private readonly bounds: DesktopBounds,
+  ) {}
+
+  /** How many Windows are open. The cascade offset depends on this and nothing else. */
+  get openCount(): number {
+    return this.windows.length;
   }
 
-  // Function implementation
-  open(options: Options) {
-    if (!this.isOpen.has(options.selector)) {
-      this.options = options;
-      this.cascadeIndex = this.openCount;
-      this.openCount++;
-      this.openWithComponent();
-      this.isOpen.add(this.options.selector);
-      this.activeWindow = this.options.selector;
+  /** Opens the Feature's Window, or does nothing if it is already open. */
+  open(options: Options): void {
+    if (this.isOpen(options.id)) return;
+
+    const target = this.bounds.element;
+    if (!target) {
+      throw new Error('The Desktop bounds are not published yet');
     }
+
+    // The element the host mounts into carries the cascade slot as a custom
+    // property; the Window itself needs no cascade member.
+    const carrier = document.createElement('div');
+    carrier.style.setProperty('--cascade-n', String(this.windows.length));
+    target.appendChild(carrier);
+
+    const handle = this.mount.mount(WindowComponent, carrier, [
+      inputBinding('title', () => options.title),
+      inputBinding('shape', () => options.window.shape),
+      inputBinding('height', () => options.window.height),
+      inputBinding('content', () => options.window.content),
+      inputBinding('isActive', () => this.isActive(options.id)),
+      outputBinding('onActivate', () => this.raise(options.id)),
+      outputBinding('onClose', () => this.close(options.id)),
+    ]);
+
+    this.windows.push({ options, carrier, handle });
   }
 
-  private openWithComponent() {
-    // create the desired component, the content of the window
-    this.openWindows[this.options.selector] = createComponent(WindowComponent, {
-      environmentInjector: this.injector,
-    });
+  /**
+   * Closes the Feature's Window: the handle destroys the component, its view,
+   * its DOM subtree and its listeners, and the entry leaves the collection.
+   * Closing the front Window therefore activates the most recently used
+   * survivor, and closing the last Window leaves nothing active.
+   */
+  close(id: Feature): void {
+    const index = this.indexOf(id);
+    if (index < 0) return;
 
-    this.renderer.appendChild(
-      document.body.querySelector('.desktop-bounds'),
-      this.openWindows[this.options.selector].location.nativeElement,
-    );
-
-    // Attach views to the changeDetection cycle
-    this.appRef.attachView(this.openWindows[this.options.selector].hostView);
+    const [open] = this.windows.splice(index, 1);
+    open.handle.destroy();
+    open.carrier.remove();
   }
 
-  close(selector: Feature) {
-    //TODO: Change to use renderer pattern
-    this.openWindows[selector].location.nativeElement.remove();
-    delete this.openWindows[selector];
-    this.isOpen.delete(selector);
-    this.openCount = Math.max(0, this.openCount - 1);
+  /**
+   * Brings an open Window to the front by moving its entry to the end of the
+   * collection. State only: no re-parenting and no geometry. Raising the
+   * already-active Window is the identity.
+   */
+  raise(id: Feature): void {
+    const index = this.indexOf(id);
+    if (index < 0 || index === this.windows.length - 1) return;
+
+    const [open] = this.windows.splice(index, 1);
+    this.windows.push(open);
   }
 
-  setActiveWindow(selector: Feature) {
-    this.activeWindow = selector;
+  /** Whether the Window belongs to the last entry, which is the Active Window. */
+  isActive(id: Feature): boolean {
+    return this.windows[this.windows.length - 1]?.options.id === id;
   }
 
-  getActiveWindow() {
-    return this.activeWindow;
+  private isOpen(id: Feature): boolean {
+    return this.indexOf(id) >= 0;
+  }
+
+  private indexOf(id: Feature): number {
+    return this.windows.findIndex((open) => open.options.id === id);
   }
 }

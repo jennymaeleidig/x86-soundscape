@@ -1,0 +1,9 @@
+<div class="grid divide-y-2 pb-4">
+  <div class="mt-4 pb-4" *ngFor="let announcement of announcements">
+    <div class="flex justify-between items-end mb-2">
+      <div class="font-bold">{{ announcement.title }}</div>
+      <div class="italic text-base">{{ announcement.date }}</div>
+    </div>
+    <div class="text-base text-justify">{{ announcement.msg }}</div>
+  </div>
+</div>

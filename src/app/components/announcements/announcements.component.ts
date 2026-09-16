@@ -1,11 +1,26 @@
+import { Component } from '@angular/core';
+import { NgFor } from '@angular/common';
+
+/** One entry in the Announcements list. */
 export interface AnnouncementContent {
   title: string;
   msg: string;
   date: string;
 }
 
-export default class AnnouncementsInput {
-  static announcementsInput: AnnouncementContent[] = [
+/**
+ * The Announcements list, owned here rather than in a data file. The Window
+ * renders this component into its pane; the Menu's Pop-up reads the same list,
+ * showing only the latest entry, in its own shape.
+ */
+@Component({
+  selector: 'app-announcements',
+  standalone: true,
+  imports: [NgFor],
+  templateUrl: './announcements.component.html',
+})
+export class AnnouncementsComponent {
+  static readonly announcements: AnnouncementContent[] = [
     {
       title: 'Upadates! Updates!! Updates!!!',
       msg: "updates, updates read all about 'em... Webamp upgraded to latest ver., mobile support ENHANCED, and browser / device media controls. Enjoy :) -- DJ x86",
@@ -37,4 +52,6 @@ export default class AnnouncementsInput {
       date: '03/24/25',
     },
   ];
+
+  readonly announcements = AnnouncementsComponent.announcements;
 }

@@ -9,7 +9,7 @@
             {{ Feature[options.selector] }}
           </h1>
           <br />
-          <div class="text-justify px-2">{{ $any(options.contents).msg }}</div>
+          <div class="text-justify px-2">{{ $any(options.contents) }}</div>
           <br />
           <section class="field-row justify-end gap-2">
             <button class="btn" (click)="close()">OK</button>

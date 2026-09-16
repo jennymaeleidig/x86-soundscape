@@ -1,100 +1,24 @@
-<div [ngSwitch]="selector">
+<div
+  class="window absolute"
+  [ngClass]="[
+    isActive ? 'z-5' : 'z-0',
+    shape === 'text' ? 'w-[min(25%,90vw)] resize' : 'max-w-[90vw]'
+  ]"
+  [style.height]="shape === 'text' ? height : null"
+  cdkDragBoundary=".desktop-bounds"
+  cdkDrag
+>
   <div
-    *ngSwitchCase="Feature.About"
-    class="window absolute w-[min(25%,90vw)] h-[50%] resize"
-    [style.--cascade-n]="cascadeIndex"
-    [ngClass]="isActive() ? 'z-5' : 'z-0'"
-    cdkDragBoundary=".desktop-bounds"
-    cdkDrag
+    [ngClass]="isActive ? 'title-bar' : 'inactive-title-bar'"
+    cdkDragHandle
+    (mousedown)="onActivate.emit()"
   >
-    <div
-      [ngClass]="isActive() ? 'title-bar' : 'inactive-title-bar'"
-      cdkDragHandle
-      (mousedown)="setActive()"
-    >
-      <button aria-label="Close" class="close" (click)="close()"></button>
-      <h1 class="title">{{ Feature[selector] }}</h1>
-      <button aria-label="Resize" class="resize hidden"></button>
-    </div>
-    <div class="separator"></div>
-    <div class="window-pane text-sm relative">
-      <div *ngSwitchCase="Feature.About" class="text-justify text-base">
-        {{ $any(windowContent).msg }}
-      </div>
-    </div>
+    <button aria-label="Close" class="close" (click)="onClose.emit()"></button>
+    <h1 class="title">{{ title }}</h1>
+    <button aria-label="Resize" class="resize hidden"></button>
   </div>
-  <div
-    *ngSwitchCase="Feature.Visualizer"
-    class="window absolute max-w-[90vw]"
-    [style.--cascade-n]="cascadeIndex"
-    [ngClass]="isActive() ? 'z-5' : 'z-0'"
-    cdkDragBoundary=".desktop-bounds"
-    cdkDrag
-  >
-    <div
-      [ngClass]="isActive() ? 'title-bar' : 'inactive-title-bar'"
-      cdkDragHandle
-      (mousedown)="setActive()"
-    >
-      <button aria-label="Close" class="close" (click)="close()"></button>
-      <h1 class="title">{{ Feature[selector] }}</h1>
-      <button aria-label="Resize" class="resize hidden"></button>
-    </div>
-    <div class="separator"></div>
-    <div class="window-pane text-sm !p-px">
-      <app-surfer></app-surfer>
-    </div>
-  </div>
-  <div
-    *ngSwitchCase="Feature.Weather"
-    class="window absolute max-w-[90vw]"
-    [style.--cascade-n]="cascadeIndex"
-    [ngClass]="isActive() ? 'z-5' : 'z-0'"
-    cdkDragBoundary=".desktop-bounds"
-    cdkDrag
-  >
-    <div
-      [ngClass]="isActive() ? 'title-bar' : 'inactive-title-bar'"
-      cdkDragHandle
-      (mousedown)="setActive()"
-    >
-      <button aria-label="Close" class="close" (click)="close()"></button>
-      <h1 class="title">{{ weatherStar.activeApp().displayName }}</h1>
-      <button aria-label="Resize" class="resize hidden"></button>
-    </div>
-    <div class="separator"></div>
-    <div class="window-pane text-sm !p-px">
-      <app-weather></app-weather>
-    </div>
-  </div>
-  <div
-    *ngSwitchCase="Feature.Announcements"
-    class="window absolute w-[min(25%,90vw)] h-[75%] resize"
-    [style.--cascade-n]="cascadeIndex"
-    [ngClass]="isActive() ? 'z-5' : 'z-0'"
-    cdkDragBoundary=".desktop-bounds"
-    cdkDrag
-  >
-    <div
-      [ngClass]="isActive() ? 'title-bar' : 'inactive-title-bar'"
-      cdkDragHandle
-      (mousedown)="setActive()"
-    >
-      <button aria-label="Close" class="close" (click)="close()"></button>
-      <h1 class="title">{{ Feature[selector] }}</h1>
-      <button aria-label="Resize" class="resize hidden"></button>
-    </div>
-    <div class="separator"></div>
-    <div class="window-pane text-sm relative">
-      <div class="grid divide-y-2 pb-4">
-        <div class="mt-4 pb-4" *ngFor="let annoucement of $any(windowContent)">
-          <div class="flex justify-between items-end mb-2">
-            <div class="font-bold">{{ annoucement.title }}</div>
-            <div class="italic text-base">{{ annoucement.date }}</div>
-          </div>
-          <div class="text-base text-justify">{{ annoucement.msg }}</div>
-        </div>
-      </div>
-    </div>
+  <div class="separator"></div>
+  <div class="window-pane text-sm" [ngClass]="shape === 'embed' ? '!p-px' : ''">
+    <ng-container *ngComponentOutlet="content" />
   </div>
 </div>

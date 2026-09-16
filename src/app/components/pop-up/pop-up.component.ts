@@ -3,7 +3,7 @@ import { Options } from '../../services/pop-up/pop-up.options';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { Feature } from '../../../assets/applets/applet-definitions';
 import { CommonModule } from '@angular/common';
-import { AnnouncementContent } from '../../../assets/applets/applet-content/announcements';
+import { AnnouncementContent } from '../../../app/components/announcements/announcements.component';
 @Component({
   selector: 'app-pop-up',
   standalone: true,

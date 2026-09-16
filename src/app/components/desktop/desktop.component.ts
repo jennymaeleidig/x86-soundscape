@@ -1,7 +1,14 @@
-import { Component, Injector, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Injector,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
 import { WinampComponent } from '../winamp/winamp.component';
 import { AppletComponent } from '../applet/applet.component';
+import { DesktopBounds } from '../../services/window/desktop-bounds';
 import {
   DragToSelectModule,
   SelectContainerComponent,
@@ -36,9 +43,10 @@ interface DesktopApplet extends AppletDefinition {
   templateUrl: './desktop.component.html',
   styleUrl: './desktop.component.css',
 })
-export class DesktopComponent {
+export class DesktopComponent implements AfterViewInit {
   @ViewChild('container') selectContainer!: SelectContainerComponent;
   @ViewChild('container', { read: ElementRef }) containerRef!: ElementRef;
+  @ViewChild('bounds') bounds!: ElementRef<HTMLElement>;
 
   selectedApplets: Array<DesktopApplet> = [];
   AppletComponent = AppletComponent;
@@ -68,7 +76,13 @@ export class DesktopComponent {
     ],
   });
 
-  constructor() {}
+  constructor(private readonly desktopBounds: DesktopBounds) {}
+
+  ngAfterViewInit() {
+    // The Window host is root-provided, so the bounds travel as a value rather
+    // than as a provider in the Desktop's own injector scope.
+    this.desktopBounds.element = this.bounds.nativeElement;
+  }
 
   ngOnInit() {
     // Initialize applets with position data

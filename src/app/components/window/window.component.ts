@@ -1,59 +1,42 @@
-import { Component, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  type Type,
+} from '@angular/core';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
-import { WindowService } from '../../services/window/window.service';
-import { Options } from '../../services/window/window.options';
-import { AboutContent } from '../../../assets/applets/applet-content/about';
-import { AnnouncementContent } from '../../../assets/applets/applet-content/announcements';
-import { NgClass, CommonModule } from '@angular/common';
-import { Feature } from '../../../assets/applets/applet-definitions';
-import { SurferComponent } from '../surfer/surfer.component';
-import { WeatherComponent } from '../weather/weather.component';
-import { WeatherStarService } from '../../services/weather-star/weather-star.service';
+import { NgClass, NgComponentOutlet } from '@angular/common';
+import { type WindowDescription } from '../../services/feature/feature';
 
+/**
+ * One chrome in front of a given title, shape and content. It injects nothing
+ * and knows nothing about Features: everything it needs arrives as an input,
+ * and its whole conversation with its host is `isActive`, `onActivate` and
+ * `onClose`.
+ */
 @Component({
   selector: 'app-window',
   standalone: true,
-  imports: [
-    CommonModule,
-    CdkDrag,
-    CdkDragHandle,
-    NgClass,
-    SurferComponent,
-    WeatherComponent,
-  ],
+  imports: [CdkDrag, CdkDragHandle, NgClass, NgComponentOutlet],
   templateUrl: './window.component.html',
   styleUrl: './window.component.css',
 })
 export class WindowComponent {
-  options!: Options | undefined;
-  selector!: Feature;
-  windowContent!: AboutContent | AnnouncementContent[] | string;
-  cascadeIndex: number = 0;
-  Feature = Feature;
-  protected readonly weatherStar = inject(WeatherStarService);
+  /** Printed exactly as given. */
+  @Input({ required: true }) title!: string;
 
-  constructor(private windowService: WindowService) {}
+  /** Which of the two frames to build. */
+  @Input({ required: true }) shape!: WindowDescription['shape'];
 
-  setActive() {
-    this.windowService.setActiveWindow(this.selector);
-  }
+  /** The `text` shape's fractional height. */
+  @Input() height?: string;
 
-  isActive() {
-    return this.selector === this.windowService.getActiveWindow();
-  }
+  /** The component rendered once into the pane. */
+  @Input({ required: true }) content!: Type<unknown>;
 
-  close() {
-    this.windowService.close(this.selector);
-  }
+  @Input() isActive = false;
 
-  addOptions() {
-    this.selector = this.options!.selector;
-    this.windowContent = this.options!.windowContent;
-    this.cascadeIndex = this.windowService.cascadeIndex;
-  }
-
-  ngAfterContentInit() {
-    this.options = this.windowService.options;
-    this.addOptions();
-  }
+  @Output() readonly onActivate = new EventEmitter<void>();
+  @Output() readonly onClose = new EventEmitter<void>();
 }

@@ -7,9 +7,8 @@ import {
 } from '@angular/core';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
 import { WindowService } from '../../services/window/window.service';
-import { AboutContent } from '../../../assets/applets/applet-content/about';
-import { AnnouncementContent } from '../../../assets/applets/applet-content/announcements';
 import { Feature } from '../../../assets/applets/applet-definitions';
+import { type WindowDescription } from '../../services/feature/feature';
 import { NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { AmbienceService } from '../../services/ambience/ambience';
@@ -33,7 +32,7 @@ export class AppletComponent {
   @Input() title!: string;
   @Input() icon!: string;
   @Input() selector!: Feature;
-  @Input() windowContent!: AboutContent | AnnouncementContent[] | string;
+  @Input() window!: WindowDescription;
   Feature = Feature;
 
   constructor(
@@ -82,8 +81,9 @@ export class AppletComponent {
       return;
     }
     this.windowService.open({
-      selector: this.selector,
-      windowContent: this.windowContent,
+      id: this.selector,
+      title: this.title,
+      window: this.window,
     });
   }
 
