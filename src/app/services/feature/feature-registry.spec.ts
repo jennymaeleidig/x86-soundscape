@@ -1,31 +1,45 @@
 import { TestBed } from '@angular/core/testing';
+import { signal, type WritableSignal } from '@angular/core';
 
 import { FeatureRegistry } from './feature-registry';
 import { FeatureId } from './feature';
 import { WindowService } from '../window/window.service';
 import { WinampService } from '../winamp/winamp.service';
-import { AmbienceService } from '../ambience/ambience';
+import { AmbienceService, type AmbienceState } from '../ambience/ambience';
 
 describe('FeatureRegistry', () => {
   let open: jest.Mock;
   let reopenWinamp: jest.Mock;
   let playRadio: jest.Mock;
   let toggleAmbience: jest.Mock;
+  let ambienceState: WritableSignal<AmbienceState>;
+
+  const IDLE: AmbienceState = {
+    sound: null,
+    volume: 0.5,
+    muted: false,
+    playing: false,
+  };
 
   const registry = () => TestBed.inject(FeatureRegistry);
   const row = (id: FeatureId) => registry().features.find((f) => f.id === id)!;
+  const ambienceAppearance = () => row(FeatureId.Ambience).appearance();
 
   beforeEach(() => {
     open = jest.fn();
     reopenWinamp = jest.fn();
     playRadio = jest.fn();
     toggleAmbience = jest.fn();
+    ambienceState = signal(IDLE);
 
     TestBed.configureTestingModule({
       providers: [
         { provide: WindowService, useValue: { open } },
         { provide: WinampService, useValue: { reopenWinamp, playRadio } },
-        { provide: AmbienceService, useValue: { toggle: toggleAmbience } },
+        {
+          provide: AmbienceService,
+          useValue: { toggle: toggleAmbience, state: ambienceState },
+        },
       ],
     });
   });
@@ -97,5 +111,37 @@ describe('FeatureRegistry', () => {
     for (const feature of registry().features) {
       expect(() => feature.activate()).not.toThrow();
     }
+  });
+
+  it("computes the Ambience row's appearance over the published state: audible shows the on icon, muted or stopped the off", () => {
+    const appearance = ambienceAppearance;
+
+    ambienceState.set({ ...IDLE, playing: true });
+    expect(appearance().icon).toBe('assets/images/ambience_on.png');
+
+    ambienceState.set({ ...IDLE, playing: true, muted: true });
+    expect(appearance().icon).toBe('assets/images/ambience_off.png');
+
+    ambienceState.set(IDLE);
+    expect(appearance().icon).toBe('assets/images/ambience_off.png');
+  });
+
+  it("names the held Sound in the Ambience row's tooltip, with the mute when a Sound is latched quiet", () => {
+    const appearance = ambienceAppearance;
+
+    const rain: AmbienceState['sound'] = {
+      name: 'Rain',
+      creator: 'someone',
+      path: 'x',
+    };
+
+    ambienceState.set(IDLE);
+    expect(appearance().tooltip).toBe('Nothing playing');
+
+    ambienceState.set({ ...IDLE, playing: true, sound: rain });
+    expect(appearance().tooltip).toBe('Rain - someone');
+
+    ambienceState.set({ ...IDLE, muted: true, playing: true, sound: rain });
+    expect(appearance().tooltip).toBe('Muted — Rain - someone');
   });
 });

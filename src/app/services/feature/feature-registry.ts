@@ -1,12 +1,16 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { FeatureId, type Feature, type WindowDescription } from './feature';
 import { WindowService } from '../window/window.service';
 import { WinampService } from '../winamp/winamp.service';
 import { AmbienceService } from '../ambience/ambience';
+import { appletLabel, isAudible } from '../ambience/ambience-labels';
 import { AboutComponent } from '../../components/about/about.component';
 import { AnnouncementsComponent } from '../../components/announcements/announcements.component';
 import { SurferComponent } from '../../components/surfer/surfer.component';
 import { WeatherComponent } from '../../components/weather/weather.component';
+
+const AMBIENCE_ON_ICON = 'assets/images/ambience_on.png';
+const AMBIENCE_OFF_ICON = 'assets/images/ambience_off.png';
 
 /**
  * The seven rows, built once, by the only thing that builds them. It is not a
@@ -56,15 +60,22 @@ export class FeatureRegistry {
         'assets/images/x86.png',
         () => this.winamp.playRadio(),
       ),
-      // Ticket 03 replaces both the fixed appearance and the toggle with the
-      // computation over Ambience's published state, so the Applet's icon and
-      // the Menu cannot disagree about audibility.
-      this.actionFeature(
-        FeatureId.Ambience,
-        'Ambience',
-        'assets/images/ambience_off.png',
-        () => this.ambience.toggle(),
-      ),
+      // The one row whose appearance is computed rather than static: the icon
+      // answers isAudible over the published state — the same predicate the
+      // Menu's mute item reads — and the tooltip names the held Sound through
+      // the shared wording module, so the Applet and the Menu cannot disagree.
+      {
+        id: FeatureId.Ambience,
+        title: 'Ambience',
+        appearance: computed(() => {
+          const state = this.ambience.state();
+          return {
+            icon: isAudible(state) ? AMBIENCE_ON_ICON : AMBIENCE_OFF_ICON,
+            tooltip: appletLabel(state),
+          };
+        }),
+        activate: () => this.ambience.toggle(),
+      },
       this.windowFeature(
         FeatureId.Weather,
         'Weather',
