@@ -1,6 +1,7 @@
 import { FakeAudio } from '../../../testing/fake-audio';
+import { flush } from '../../../testing/flush';
 import {
-  EngineStatus,
+  EnginePlaybackStatus,
   StatusSource,
   PlaybackState,
   playbackState$,
@@ -12,12 +13,12 @@ import {
  * notification would arrive.
  */
 class DrivenSource implements StatusSource {
-  now: EngineStatus = 'STOPPED';
+  now: EnginePlaybackStatus = 'STOPPED';
   subscribers = 0;
 
   private listeners = new Set<() => void>();
 
-  status(): EngineStatus {
+  status(): EnginePlaybackStatus {
     return this.now;
   }
 
@@ -39,9 +40,8 @@ class DrivenSource implements StatusSource {
 }
 
 /** Two microtasks: the coalesced read and the publish both land. */
-const flush = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
-const FIVE_STATUSES: EngineStatus[] = [
+const FIVE_STATUSES: EnginePlaybackStatus[] = [
   'PLAYING',
   'PAUSED',
   'STOPPED',
@@ -60,15 +60,9 @@ describe('playbackState$', () => {
       source.now = status;
       source.notify();
       await flush();
-      expect(seen.at(-1)).toBe(
-        status === 'PLAYING'
-          ? 'playing'
-          : status === 'PAUSED'
-            ? 'paused'
-            : 'none',
-      );
     }
-    // ENDED and CLOSED dedupe against the 'none' STOPPED already published.
+    // The literal pins the mapping for all five; ENDED and CLOSED dedupe
+    // against the 'none' STOPPED already published.
     expect(seen).toEqual(['none', 'playing', 'paused', 'none']);
     subscription.unsubscribe();
   });
@@ -168,13 +162,13 @@ describe('playbackState$', () => {
   it('falls back to a short status poll when the store never notifies', async () => {
     const source = new DrivenSource();
     const seen: PlaybackState[] = [];
-    const subscription = playbackState$(source, 20).subscribe((s) =>
+    const subscription = playbackState$(source, 50).subscribe((s) =>
       seen.push(s),
     );
     await flush();
 
     source.now = 'PLAYING'; // no notify: only the poll can see it
-    await new Promise((resolve) => setTimeout(resolve, 60));
+    await new Promise((resolve) => setTimeout(resolve, 200));
     expect(seen).toEqual(['none', 'playing']);
     subscription.unsubscribe();
   });

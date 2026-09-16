@@ -1,4 +1,5 @@
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
+
 /** The playback state, in the OS media widget's own three words. */
 export type PlaybackState = 'playing' | 'paused' | 'none';
 /**
@@ -6,7 +7,7 @@ export type PlaybackState = 'playing' | 'paused' | 'none';
  * `'none'` — "stopped" and "untuned" are one state, not two kept in sync, so
  * a Station is tuned iff playback is playing or paused.
  */
-export type EngineStatus =
+export type EnginePlaybackStatus =
   | 'PLAYING'
   | 'PAUSED'
   | 'STOPPED'
@@ -18,11 +19,11 @@ export type EngineStatus =
  * whether audio runs; this is the cache's view of it.
  */
 export interface StatusSource {
-  status(): EngineStatus;
+  status(): EnginePlaybackStatus;
   subscribe(onChange: () => void): () => void;
 }
 /** The engine's word for a status becomes the published word for the state. */
-export function toState(status: EngineStatus): PlaybackState {
+export function toState(status: EnginePlaybackStatus): PlaybackState {
   switch (status) {
     case 'PLAYING':
       return 'playing';
@@ -76,7 +77,7 @@ export function playbackState$(
     };
     subscriber.add(source.subscribe(request));
     subscriber.add(() => clearInterval(poll));
-    const poll = setInterval(read, pollMs);
+    const poll = setInterval(request, pollMs);
     subscriber.add(current.subscribe(subscriber));
   }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 }
