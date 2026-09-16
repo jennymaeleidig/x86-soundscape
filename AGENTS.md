@@ -11,3 +11,8 @@ Five canonical roles, each with a label string equal to its name. See `docs/agen
 ### Domain docs
 
 Single-context — one `CONTEXT.md` + `docs/adr/` at repo root. See `docs/agents/domain.md`.
+
+### Coding standards
+
+Read `CODING_STANDARDS.md` before writing or reviewing code — formatting, the system.css markup rules, and
+the Angular and test conventions.
