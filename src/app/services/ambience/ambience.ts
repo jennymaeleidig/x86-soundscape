@@ -7,6 +7,11 @@ const MAX_VOLUME = 1.0;
 const VOLUME_STEP = 0.1;
 const DEFAULT_VOLUME = 0.5;
 
+/** The level as the percentage the Applet's Menu prints — the number a listener reads. */
+export function levelPercent(volume: number): number {
+  return Math.round(volume * 100);
+}
+
 /**
  * Everything the module is: the Sound it holds, the listener's level, the mute
  * flag and whether playback is running. The audio element holds none of it —
@@ -77,7 +82,7 @@ export class AmbienceService {
   /** Clear the mute and raise one step: louder always produces sound. */
   volumeUp(): void {
     this.publish({
-      volume: this.stepped(this.currentState().volume + VOLUME_STEP),
+      volume: this.clampedLevel(this.currentState().volume + VOLUME_STEP),
       muted: false,
     });
   }
@@ -85,7 +90,7 @@ export class AmbienceService {
   /** Lower one step, floor 0.10 — mute is the only silence, so this never mutes. */
   volumeDown(): void {
     this.publish({
-      volume: this.stepped(this.currentState().volume - VOLUME_STEP),
+      volume: this.clampedLevel(this.currentState().volume - VOLUME_STEP),
     });
   }
 
@@ -132,9 +137,10 @@ export class AmbienceService {
     this.element = null;
   }
 
-  private stepped(volume: number): number {
-    const step = Math.round(volume * 100) / 100;
-    return Math.min(MAX_VOLUME, Math.max(MIN_VOLUME, step));
+  /** Round to the hundredths a level is kept in, then hold it inside the floor and ceiling. */
+  private clampedLevel(volume: number): number {
+    const level = Math.round(volume * 100) / 100;
+    return Math.min(MAX_VOLUME, Math.max(MIN_VOLUME, level));
   }
 
   /** The state is the truth: the element's volume is derived here and nowhere else. */

@@ -63,3 +63,7 @@ _Avoid_: Video player, viewer, browser
 **Ambience**:
 An Action that plays a randomly selected looping background sound from a library of vintage-computer recordings.
 _Avoid_: Background audio, sound effect, ambient (that's a Station title, not this concept)
+
+**Held** (the held Sound):
+The Sound Ambience keeps for the listener — what resumes after Stop, a refused load, or the mute being released. Ambience holds one Sound at a time, and only a Shuffle replaces it.
+_Avoid_: current sound, last played, selection

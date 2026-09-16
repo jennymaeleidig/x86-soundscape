@@ -1,4 +1,4 @@
-import type { AmbienceState } from './ambience';
+import { levelPercent, type AmbienceState } from './ambience';
 
 /**
  * The words the Applet and the Menu show, derived from the one published state.
@@ -7,7 +7,7 @@ import type { AmbienceState } from './ambience';
  */
 
 /** What both surfaces say when Ambience holds nothing. */
-const NOTHING_HELD = 'Nothing playing';
+const NOTHING_PLAYING = 'Nothing playing';
 
 /** The one predicate the Applet's icon and the Menu's mute item both answer. */
 export function isAudible(state: AmbienceState): boolean {
@@ -16,12 +16,12 @@ export function isAudible(state: AmbienceState): boolean {
 
 /** The held Sound's name, or the shared sentence for holding nothing. */
 export function soundName(state: AmbienceState): string {
-  return state.sound?.name ?? NOTHING_HELD;
+  return state.sound?.name ?? NOTHING_PLAYING;
 }
 
 /** The Menu's level, as the number the Volume + and − items move. */
 export function levelLabel(state: AmbienceState): string {
-  return `Volume: ${Math.round(state.volume * 100)}%`;
+  return `Volume: ${levelPercent(state.volume)}%`;
 }
 
 /** The Menu's mute item, labelled with the action pressing it performs. */
@@ -29,7 +29,11 @@ export function muteActionLabel(state: AmbienceState): string {
   return isAudible(state) ? 'Mute' : 'Unmute';
 }
 
-/** The Applet's label: which way the sound is going, and which sound it is. */
+/**
+ * The Applet's label: the mute, and the Sound it is holding. The icon answers
+ * the other question — is any sound coming out — so a latched mute shows here
+ * while the icon has already gone dark.
+ */
 export function appletLabel(state: AmbienceState): string {
   return state.muted && state.sound
     ? `Muted — ${state.sound.name}`
