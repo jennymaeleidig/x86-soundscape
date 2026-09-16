@@ -9,12 +9,28 @@ An internet radio stream a listener tunes into, identified by a static descripto
 _Avoid_: Song, Track, Stream, Radio
 
 **Now Playing**:
-The live artist + title currently airing on a Station, derived from stream metadata.
+The live artist + title currently airing on a Station, derived from stream metadata while that Station is tuned.
 _Avoid_: Song, Track, current track
 
 **Station descriptor**:
 A Station's static identity — its artist and title (e.g. "soma fm / Groove Salad") — shown in the menu bar when no Now Playing is available.
 _Avoid_: fallback metadata, track metadata
+
+**Tune** / **tuned**:
+The Station the player is streaming. A Station that is merely listed in the playlist is not tuned. A Station
+stays tuned while playback is paused, and stops being tuned when playback stops.
+_Avoid_: play, select, load, current track
+
+**Playback state**:
+Whether audio is running: playing, paused, or none. Distinct from Tune — a paused player is still tuned, and a
+player that has stopped is not tuned at all.
+_Avoid_: transport state, media status, player status
+
+**Suspend / Resume** (Now Playing):
+Parking the metadata poll chain while a tuned Station keeps streaming: `suspend` stops further attempts and
+keeps the last published Now Playing; `resume` restarts the chain with an immediate attempt. Distinct from
+Playback state — suspending follows the player's gate, not the audio.
+_Avoid_: pause (that's Playback state), sleep
 
 **Feature**:
 An actionable unit in the system. A Feature may have a desktop Applet, open a Window, and/or trigger an Action.
@@ -41,8 +57,20 @@ The retro desktop surface that hosts Applets, Windows, and the Menu bar. Applets
 _Avoid_: Background, workspace
 
 **Window**:
-A draggable OS-style container opened by a Feature. Each Feature has at most one Window open at a time. Windows cascade (offset by open count) and constrain to the Desktop bounds.
+A draggable OS-style container opened by a Feature. Each Feature has at most one Window open at a time, and a Window exists only while it is open: closing it destroys it, and activating the Feature again opens a new one. Activating a Feature whose Window is already open raises it. Windows cascade (offset by open count) and constrain to the Desktop bounds.
 _Avoid_: Dialog, frame, box
+
+**Chrome**:
+A Window's non-content furniture: its title bar, close button, resize affordance and separator.
+_Avoid_: Trim, shell
+
+**Pane**:
+The area inside a Window's chrome, where the Feature's content is shown.
+_Avoid_: Canvas, viewport
+
+**Active Window**:
+The Window the user last opened or raised. At most one is active — the frontmost — and closing it makes the most recently used surviving Window active.
+_Avoid_: focused Window, selected Window, current Window
 
 **Pop-up**:
 A modal dialog shown from the Menu bar (About, Announcements). Not an Applet; distinct from a Window.
@@ -67,3 +95,7 @@ _Avoid_: Background audio, sound effect, ambient (that's a Station title, not th
 **Held** (the held Sound):
 The Sound Ambience keeps for the listener — what resumes after Stop, a refused load, or the mute being released. Ambience holds one Sound at a time, and only a Shuffle replaces it.
 _Avoid_: current sound, last played, selection
+
+**Sound**:
+One recording in Ambience's library, with an asset path and the name shown to the listener.
+_Avoid_: Track (that's a Station's), clip, sample

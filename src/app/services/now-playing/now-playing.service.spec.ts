@@ -56,6 +56,30 @@ const icestatsPayload = (entry: unknown) => ({
   icestats: { source: entry },
 });
 
+/** The plain-icy Station most cadence specs tune. */
+const plainStation = () =>
+  Stations.stations.find((candidate) => !candidate.metadataParser)!;
+
+/**
+ * Run a body under jest's fake timers: the chain's rest timer is jest's, so
+ * only promises are drained inside and the spec advances the clock by hand.
+ */
+async function withFakeTimers(body: () => Promise<void>): Promise<void> {
+  jest.useFakeTimers();
+  try {
+    await body();
+  } finally {
+    jest.useRealTimers();
+  }
+}
+
+/** Run the chain's microtasks; its timer is jest's, advanced by hand. */
+const drainMicrotasks = async () => {
+  for (let i = 0; i < 20; i++) {
+    await Promise.resolve();
+  }
+};
+
 describe('NowPlayingService', () => {
   let service: NowPlayingService;
   let transport: FakeTransport;
@@ -181,6 +205,94 @@ describe('NowPlayingService', () => {
     late.resolve(icyPayload('Late - Track'));
     await flush();
     expect(seen.at(-1)).toBeUndefined();
+  });
+
+  it('the first attempt is immediate, the next one gap after the settle, and never two in flight', async () => {
+    await withFakeTimers(async () => {
+      const station = plainStation();
+      const slow = transport.deferred();
+      transport.queue(slow.promise);
+      service.tune(station);
+      expect(transport.sources.length).toBe(1); // immediate, before any clock
+
+      jest.advanceTimersByTime(60_000);
+      await drainMicrotasks();
+      expect(transport.sources.length).toBe(1); // a settled attempt starts the clock
+
+      slow.resolve(icyPayload('First - Track'));
+      await drainMicrotasks();
+      jest.advanceTimersByTime(14_999);
+      await drainMicrotasks();
+      expect(transport.sources.length).toBe(1);
+
+      jest.advanceTimersByTime(1);
+      await drainMicrotasks();
+      expect(transport.sources.length).toBe(2); // one gap later
+    });
+  });
+
+  it('suspend parks the chain and keeps the value; resume restarts with an immediate attempt', async () => {
+    await withFakeTimers(async () => {
+      const station = plainStation();
+      const seen = await readings();
+      transport.queue(icyPayload('Artist - Title'));
+      service.tune(station);
+      await drainMicrotasks();
+      expect(seen.at(-1)).toEqual({ artist: 'Artist', title: 'Title' });
+
+      service.suspend();
+      expect(transport.cancelled).toBeGreaterThan(0);
+      jest.advanceTimersByTime(60_000);
+      await drainMicrotasks();
+      expect(transport.sources.length).toBe(1); // parked: no further attempts
+      expect(seen.at(-1)).toEqual({ artist: 'Artist', title: 'Title' });
+
+      transport.queue(icyPayload('Fresh - Track'));
+      service.resume();
+      expect(transport.sources.length).toBe(2); // immediate on resume
+      await drainMicrotasks();
+      expect(seen.at(-1)).toEqual({ artist: 'Fresh', title: 'Track' });
+    });
+  });
+
+  it('a run of failures logs its literal line once, a success re-arms the log, and no failure publishes', async () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    await withFakeTimers(async () => {
+      const station = plainStation();
+      const seen = await readings();
+      transport.queue(
+        icyPayload('Artist - Title'),
+        undefined,
+        undefined,
+        icyPayload('Back - Track'),
+        undefined,
+      );
+      service.tune(station);
+      await drainMicrotasks();
+      expect(seen.at(-1)).toEqual({ artist: 'Artist', title: 'Title' });
+
+      jest.advanceTimersByTime(15_000);
+      await drainMicrotasks(); // first failure: logged once, nothing published
+      expect(warn).toHaveBeenCalledWith(
+        'Now Playing: attempt for ' +
+          station.metaData!.artist +
+          ' failed; holding the last track until one succeeds.',
+      );
+      expect(seen.at(-1)).toEqual({ artist: 'Artist', title: 'Title' });
+
+      jest.advanceTimersByTime(15_000);
+      await drainMicrotasks(); // second failure: still one line for the run
+      expect(warn).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(15_000);
+      await drainMicrotasks(); // a success re-arms the log
+      expect(seen.at(-1)).toEqual({ artist: 'Back', title: 'Track' });
+
+      jest.advanceTimersByTime(15_000);
+      await drainMicrotasks(); // a fresh run of failures: logged once again
+      expect(warn).toHaveBeenCalledTimes(2);
+    });
+    warn.mockRestore();
   });
 
   it('a re-tune tears the previous tracking down itself and always restarts', async () => {
