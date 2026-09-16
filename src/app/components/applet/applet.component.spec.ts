@@ -21,8 +21,7 @@ const SOUND: Sound = {
 };
 
 /** What the Applet says the Sound is, with the credit the listener owes it. */
-const CREDITED =
-  'Macintosh Classic II — startup chime and floppy drive, from ARNO';
+const CREDITED = 'Macintosh Classic II — startup chime and floppy drive - ARNO';
 
 const AMBIENCE_OFF_ICON = 'assets/images/ambience_off.png';
 const AMBIENCE_ON_ICON = 'assets/images/ambience_on.png';

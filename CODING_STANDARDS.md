@@ -134,7 +134,8 @@ the model: the Applet and the Menu read the same functions, so they cannot descr
 
 **A credit is data, not prose.** Who published or recorded something is a field on the thing it belongs to
 (`Sound.creator`), spelled for a listener rather than for a filesystem, and shown beside the name through the
-shared wording module — so it can be rendered anywhere, and a list of contributors can be read off the data
+shared wording module — joined with the player's own ` - `, the separator `formatTrack` puts between artist
+and title — so a credit reads the way metadata does, and a list of contributors can be read off the data
 instead of being typed out a second time.
 
 **One change per commit, and only your files.** This checkout is shared, so stage the files your change

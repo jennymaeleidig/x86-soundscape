@@ -9,6 +9,12 @@ import { levelPercent, type AmbienceState } from './ambience';
 /** What both surfaces say when Ambience holds nothing. */
 const NOTHING_PLAYING = 'Nothing playing';
 
+/**
+ * The separator the player puts between artist and title (`formatTrack`), so a
+ * credit trails the name the way a title trails its artist.
+ */
+const SEPARATOR = ' - ';
+
 /** The one predicate the Applet's icon and the Menu's mute item both answer. */
 export function isAudible(state: AmbienceState): boolean {
   return state.playing && !state.muted;
@@ -21,13 +27,12 @@ export function soundName(state: AmbienceState): string {
 
 /** The held Sound's creator, as the credit both surfaces show beside the name. */
 export function soundCredit(state: AmbienceState): string {
-  return state.sound ? `from ${state.sound.creator}` : '';
+  return state.sound ? `${SEPARATOR}${state.sound.creator}` : '';
 }
 
 /** The name with its credit, for the places that read as one line. */
 export function creditedName(state: AmbienceState): string {
-  const credit = soundCredit(state);
-  return credit ? `${soundName(state)}, ${credit}` : soundName(state);
+  return `${soundName(state)}${soundCredit(state)}`;
 }
 
 /** The Menu's level, as the number the Volume + and − items move. */

@@ -30,7 +30,7 @@
       <li role="menu-item" tabindex="0" aria-haspopup="true">
         View
         <ul role="menu">
-          <li role="menu-item" class="divider">
+          <li role="menu-item">
             <a
               href="https://github.com/jennymaeleidig/x86-soundscape"
               target="_blank"
@@ -38,8 +38,8 @@
               >Source Code</a
             >
           </li>
-          <li role="menu-item" class="readout"><a>Other Spaces</a></li>
           <hr />
+          <li role="menu-item" class="readout divider"><a>Other Spaces</a></li>
           <li role="menu-item">
             <a
               href="https://dj-x86.straw.page/"
@@ -99,9 +99,9 @@
               <ng-template>
                 <div [title]="ambienceName()" class="item">
                   <span class="name">{{ ambienceName() }}</span>
-                  <span *ngIf="ambienceCredit()" class="credit ml-2">
-                    {{ ambienceCredit() }}
-                  </span>
+                  <span *ngIf="ambienceCredit()" class="credit">{{
+                    ambienceCredit()
+                  }}</span>
                 </div>
               </ng-template>
             </om-marquee>

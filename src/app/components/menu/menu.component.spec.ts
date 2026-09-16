@@ -181,7 +181,7 @@ describe('MenuComponent on Ambience', () => {
     press('Unmute');
     expect(name()).toBe(ambience.state().sound?.name);
     expect(name()).not.toBe('Nothing playing');
-    expect(credit()).toBe(`from ${ambience.state().sound?.creator}`);
+    expect(credit()).toBe(`- ${ambience.state().sound?.creator}`);
   });
 
   it('keeps Play, Stop, Shuffle and Volume working against the published state, Stop holding the Sound for Play', () => {
