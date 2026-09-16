@@ -38,6 +38,9 @@ export class MenuComponent {
     private ambienceService: AmbienceService,
   ) {}
 
+  /** The published Ambience state; the template reads it rather than a mirror of it. */
+  readonly ambienceState = this.ambienceService.state;
+
   ngOnInit() {
     this.metadataService.currentTrack$.subscribe(
       (current) => (this.currentTrack = current),
@@ -84,15 +87,15 @@ export class MenuComponent {
   }
 
   playAmbience() {
-    this.ambienceService.playAmbience();
+    this.ambienceService.play();
   }
 
   stopAmbience() {
-    this.ambienceService.stopAmbience();
+    this.ambienceService.stop();
   }
 
   shuffleAmbience() {
-    this.ambienceService.playRandomAmbience();
+    this.ambienceService.shuffle();
   }
 
   volumeUpAmbience() {
@@ -103,7 +106,7 @@ export class MenuComponent {
     this.ambienceService.volumeDown();
   }
 
-  getAmbienceName(): string {
-    return this.ambienceService.getAmbienceName();
+  ambienceName(): string {
+    return this.ambienceState().sound?.name ?? 'Not Playing';
   }
 }

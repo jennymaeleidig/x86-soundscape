@@ -29,7 +29,7 @@ export class AppletComponent {
   constructor(
     private windowService: WindowService,
     private winampService: WinampService,
-    private ambienceAudioService: AmbienceService,
+    private ambienceService: AmbienceService,
     @Inject('appletIsMoving') public setAppletIsMoving: Function,
     @Inject('appletDragState')
     private appletDragState: {
@@ -38,10 +38,13 @@ export class AppletComponent {
     },
   ) {}
 
+  /** The published Ambience state; the template reads it rather than a mirror of it. */
+  readonly ambienceState = this.ambienceService.state;
+
   ngOnDestroy(): void {
     // Ensure ambience is stopped if the applet is destroyed
     if (this.selector === Feature.Ambience) {
-      this.ambienceAudioService.stopAmbience();
+      this.ambienceService.stop();
     }
   }
 
@@ -85,7 +88,7 @@ export class AppletComponent {
 
   getIcon(): string {
     if (this.selector === Feature.Ambience) {
-      return this.ambienceAudioService.isPlaying()
+      return this.ambienceState().playing
         ? AMBIENCE_ON_ICON
         : AMBIENCE_OFF_ICON;
     }
@@ -97,17 +100,17 @@ export class AppletComponent {
       return;
     }
     if (this.selector === Feature.Ambience) {
-      if (this.ambienceAudioService.isPlaying()) {
-        this.ambienceAudioService.stopAmbience();
+      if (this.ambienceState().playing) {
+        this.ambienceService.stop();
       } else {
-        this.ambienceAudioService.playRandomAmbience();
+        this.ambienceService.shuffle();
       }
     }
   }
 
   getAmbienceName(): string {
     if (this.selector === Feature.Ambience) {
-      return this.ambienceAudioService.getAmbienceName();
+      return this.ambienceState().sound?.name ?? 'Not Playing';
     } else {
       return 'N / A';
     }

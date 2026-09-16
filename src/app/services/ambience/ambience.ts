@@ -1,96 +1,147 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { ambienceSounds, type Sound } from './sounds';
 
+/** The listener's level never reaches zero: mute is the only silence. */
+const MIN_VOLUME = 0.1;
+const MAX_VOLUME = 1.0;
+const VOLUME_STEP = 0.1;
 const DEFAULT_VOLUME = 0.5;
+
+/**
+ * Everything the module is: the Sound it holds, the listener's level, the mute
+ * flag and whether playback is running. The audio element holds none of it —
+ * it outlives neither the flag nor a level set while nothing plays.
+ */
+export interface AmbienceState {
+  sound: Sound | null;
+  volume: number;
+  muted: boolean;
+  playing: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AmbienceService {
-  private currentVolume: number = DEFAULT_VOLUME;
-  private currentAudio: HTMLAudioElement | null = null;
-  private currentSound: Sound | null = null;
-  private ambienceSounds: Sound[] = ambienceSounds;
+  private readonly sounds: Sound[] = ambienceSounds;
+  private readonly currentState = signal<AmbienceState>({
+    sound: null,
+    volume: DEFAULT_VOLUME,
+    muted: false,
+    playing: false,
+  });
 
-  constructor() {}
+  /** The one value the Applet and the Menu read. */
+  readonly state = this.currentState.asReadonly();
 
-  /**
-   * Selects a random ambience sound and plays it in a loop.
-   * Stops any currently playing ambience sound first.
-   */
-  playRandomAmbience(): void {
-    this.stopAmbience(); // Stop current sound before playing a new one
+  /** The element, built from the state at one place and never handed out. */
+  private element: HTMLAudioElement | null = null;
 
-    if (this.ambienceSounds.length === 0) {
+  /** Resume the held Sound; a random one if none is held. */
+  play(): void {
+    const { sound } = this.currentState();
+    if (sound) {
+      this.start(sound);
+    } else {
+      this.shuffle();
+    }
+  }
+
+  /** Halt and release the element; keep the held Sound. */
+  stop(): void {
+    this.releaseElement();
+    this.publish({ playing: false });
+  }
+
+  /** Pick a new random Sound and play it — the only thing that replaces the held one. */
+  shuffle(): void {
+    if (this.sounds.length === 0) {
       console.warn('No ambience sounds available.');
+      this.releaseElement();
+      this.publish({ sound: null, playing: false });
       return;
     }
 
-    const randomIndex = Math.floor(Math.random() * this.ambienceSounds.length);
-    const selectedSound = this.ambienceSounds[randomIndex];
-
-    this.currentSound = selectedSound;
-    this.currentAudio = new Audio(selectedSound.path);
-    this.currentAudio.loop = true; // Set the sound to loop
-    this.currentAudio.volume = this.currentVolume;
-
-    // Handle potential errors
-    this.currentAudio.onerror = (e) => {
-      console.error('Error playing ambience sound:', selectedSound.path, e);
-      this.stopAmbience();
-    };
-
-    this.currentAudio.play().catch((error) => {
-      console.warn('Audio playback prevented:', error);
-    });
-    console.log('Playing ambience:', selectedSound.name);
+    this.start(this.sounds[Math.floor(Math.random() * this.sounds.length)]);
   }
 
-  /**
-   * Stops the currently playing ambience sound and cleans up.
-   */
-  stopAmbience(): void {
-    if (this.currentAudio) {
-      this.currentAudio.pause();
-      this.currentAudio.currentTime = 0;
-      this.currentAudio = null;
+  /** Audible → mute; silent → clear the mute and make sure playback is running. */
+  toggle(): void {
+    const { muted, playing, sound } = this.currentState();
+    if (!muted && playing) {
+      this.publish({ muted: true });
+      return;
     }
-    this.currentSound = null;
-  }
 
-  playAmbience() {
-    if (this.currentAudio) {
-      this.currentAudio.play();
-    } else {
-      this.playRandomAmbience();
+    this.publish({ muted: false });
+    if (!playing) {
+      if (sound) {
+        this.start(sound);
+      } else {
+        this.shuffle();
+      }
     }
   }
 
-  getAmbienceName(): string {
-    return this.currentSound?.name ?? 'Not Playing';
-  }
-
+  /** Clear the mute and raise one step: louder always produces sound. */
   volumeUp(): void {
-    if (this.currentAudio && this.currentAudio.volume < 1.0) {
-      this.currentAudio.volume = Math.min(1.0, this.currentAudio.volume + 0.1);
-      this.currentVolume = this.currentAudio.volume;
-    }
+    this.publish({
+      volume: this.stepped(this.currentState().volume + VOLUME_STEP),
+      muted: false,
+    });
   }
 
+  /** Lower one step, floor 0.10 — mute is the only silence, so this never mutes. */
   volumeDown(): void {
-    if (this.currentAudio && this.currentAudio.volume > 0.0) {
-      this.currentAudio.volume = Math.max(0.0, this.currentAudio.volume - 0.1);
-      this.currentVolume = this.currentAudio.volume;
-    }
+    this.publish({
+      volume: this.stepped(this.currentState().volume - VOLUME_STEP),
+    });
   }
 
-  mute(): void {
-    if (this.currentAudio) {
-      this.currentAudio.volume = 0.0;
-    }
+  /** One play path, so a refusal is caught wherever playback begins. */
+  private start(sound: Sound): void {
+    this.releaseElement();
+
+    const element = new Audio(sound.path);
+    element.loop = true;
+    this.element = element;
+    this.publish({ sound, playing: true });
+
+    // A refused load or play leaves the Sound held and playback stopped.
+    element.onerror = () => {
+      if (this.element !== element) {
+        return;
+      }
+      this.releaseElement();
+      this.publish({ playing: false });
+    };
+    element.play().catch(() => {
+      if (this.element === element) {
+        this.publish({ playing: false });
+      }
+    });
   }
 
-  isPlaying(): boolean {
-    return this.currentAudio !== null && !this.currentAudio.paused;
+  private releaseElement(): void {
+    if (!this.element) {
+      return;
+    }
+    this.element.pause();
+    this.element.currentTime = 0;
+    this.element = null;
+  }
+
+  private stepped(volume: number): number {
+    const step = Math.round(volume * 100) / 100;
+    return Math.min(MAX_VOLUME, Math.max(MIN_VOLUME, step));
+  }
+
+  /** The state is the truth: the element's volume is derived here and nowhere else. */
+  private publish(patch: Partial<AmbienceState>): void {
+    const next = { ...this.currentState(), ...patch };
+    this.currentState.set(next);
+    if (this.element) {
+      this.element.volume = next.muted ? 0 : next.volume;
+    }
   }
 }
