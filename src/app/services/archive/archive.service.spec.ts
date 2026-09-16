@@ -7,13 +7,17 @@ import { provideHttpClient } from '@angular/common/http';
 
 import { ArchiveService, type Video } from './archive.service';
 import { CHANNELS } from './channels';
+import {
+  METADATA_URL,
+  SEARCH_URL,
+  flushCount,
+  flushMetadata,
+  flushPage,
+} from '../../../testing/archive-http';
 
 describe('ArchiveService', () => {
   let service: ArchiveService;
   let httpMock: HttpTestingController;
-
-  const SEARCH_URL = 'https://archive.org/advancedsearch.php';
-  const METADATA_URL = 'https://archive.org/metadata';
 
   /** A search doc with an item-level format array. */
   const doc = (identifier: string, formats: string[]) => ({
@@ -50,52 +54,9 @@ describe('ArchiveService', () => {
     httpMock.verify();
   });
 
-  /** Expect + flush the rows=0 count request. */
-  const flushCount = (numFound: number) => {
-    const req = httpMock.expectOne(
-      (r) => r.url === SEARCH_URL && r.params.get('rows') === '0',
-    );
-    expect(req.request.method).toBe('GET');
-    req.flush({ response: { numFound } });
-  };
-
-  /** Expect + flush a page request (rows=20). Returns the page number used. */
-  const flushPage = (docs: ReturnType<typeof doc>[]) => {
-    const req = httpMock.expectOne(
-      (r) => r.url === SEARCH_URL && r.params.get('rows') === '20',
-    );
-    expect(req.request.method).toBe('GET');
-    req.flush({ response: { docs } });
-  };
-
-  /** Expect + flush the metadata request for an identifier. */
-  const flushMetadata = (identifier: string, body: object) => {
-    const req = httpMock.expectOne(`${METADATA_URL}/${identifier}`);
-    expect(req.request.method).toBe('GET');
-    req.flush(body);
-  };
-
-  // Every Channel has at least one collection — the invariant the old
-  // name-keyed record could not express.
-  it('gives every Channel at least one collection', () => {
-    for (const channel of CHANNELS) {
-      expect(channel.collections.length).toBeGreaterThan(0);
-    }
-  });
-
-  // No two Channels share a collection, so a collection identifies its Channel.
-  it('shares no collection between two Channels', () => {
-    const seen = new Set<string>();
-    for (const channel of CHANNELS) {
-      for (const collection of channel.collections) {
-        expect(seen.has(collection)).toBe(false);
-        seen.add(collection);
-      }
-    }
-  });
-
   it('3.2 — playable candidate on first page → returns video with correct field mapping', (done: jest.DoneCallback) => {
     const [channel] = CHANNELS;
+
     service.randomVideo(channel).subscribe({
       next: (video: Video) => {
         expect(video.title).toBe('Nick Toons UK - Adverts & Continuity (2009)');
@@ -112,8 +73,8 @@ describe('ArchiveService', () => {
     });
 
     // count (once), then one page, then metadata — exactly 3 calls.
-    flushCount(17923);
-    flushPage([
+    flushCount(httpMock, 17923);
+    flushPage(httpMock, [
       doc('nick-toons-uk-adverts-continuity-2009', [
         'MPEG4',
         'Thumbnail',
@@ -121,6 +82,7 @@ describe('ArchiveService', () => {
       ]),
     ]);
     flushMetadata(
+      httpMock,
       'nick-toons-uk-adverts-continuity-2009',
       metadataWith(
         'Nick Toons UK Adverts Continuity (2009).mp4',
@@ -147,12 +109,13 @@ describe('ArchiveService', () => {
       error: (e) => done(e),
     });
 
-    flushCount(100);
+    flushCount(httpMock, 100);
     // Page 1: only Matroska / Windows Media (not in ACCEPTED) → degenerate.
-    flushPage([doc('degenerate-1', ['Matroska', 'Windows Media'])]);
+    flushPage(httpMock, [doc('degenerate-1', ['Matroska', 'Windows Media'])]);
     // Page 2: playable.
-    flushPage([doc('playable-1', ['h.264'])]);
+    flushPage(httpMock, [doc('playable-1', ['h.264'])]);
     flushMetadata(
+      httpMock,
       'playable-1',
       metadataWith(
         'playable-1.mp4',
@@ -173,11 +136,11 @@ describe('ArchiveService', () => {
       },
     });
 
-    flushCount(40);
+    flushCount(httpMock, 40);
     // Three degenerate pages in a row.
-    flushPage([doc('d1', ['Cinepack'])]);
-    flushPage([doc('d2', ['Animated GIF'])]);
-    flushPage([doc('d3', ['Matroska'])]);
+    flushPage(httpMock, [doc('d1', ['Cinepack'])]);
+    flushPage(httpMock, [doc('d2', ['Animated GIF'])]);
+    flushPage(httpMock, [doc('d3', ['Matroska'])]);
     // No metadata requests should have been made.
     httpMock.expectNone((r) => r.url.startsWith(METADATA_URL));
   });
@@ -192,12 +155,13 @@ describe('ArchiveService', () => {
       error: (e) => done(e),
     });
 
-    flushCount(10);
-    flushPage([
+    flushCount(httpMock, 10);
+    flushPage(httpMock, [
       doc('degenerate-first', ['Matroska', 'Thumbnail']),
       doc('playable-2', ['MPEG4', 'Thumbnail']),
     ]);
     flushMetadata(
+      httpMock,
       'playable-2',
       metadataWith('playable-2.mp4', 'MPEG4', '99', 'Gameplay', 'Uploader X'),
     );

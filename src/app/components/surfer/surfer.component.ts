@@ -18,12 +18,9 @@ export type VideoData = Video;
   styleUrl: './surfer.component.css',
 })
 export class SurferComponent {
-  // The Surfer holds the Channel itself, so the label it prints is the
-  // Channel it is showing and cannot go stale.
+  // The Surfer holds the Channel itself — no index beside it — so the label
+  // it prints is the Channel it is showing and cannot go stale.
   currentChannel: Channel = CHANNELS[0];
-
-  // Position in CHANNELS, whose order is the cycle order.
-  private channelIndex = 0;
 
   // Define an Observable property for the video data
   video$: Observable<VideoData> | null;
@@ -39,8 +36,8 @@ export class SurferComponent {
   }
 
   changeChannel() {
-    this.channelIndex = (this.channelIndex + 1) % CHANNELS.length;
-    this.currentChannel = CHANNELS[this.channelIndex];
+    const next = CHANNELS.indexOf(this.currentChannel) + 1;
+    this.currentChannel = CHANNELS[next % CHANNELS.length];
     this.video$ = this.fetchVideo();
   }
 

@@ -1,5 +1,8 @@
 <div id="surfer" class="relative">
-  <img class="w-full h-full object-contain" src="assets/images/macintosh.png" />
+  <img
+    class="w-full h-full object-contain"
+    src="assets/images/macintosh.png"
+  />
   <div *ngIf="video$ | async as videoData; else loading">
     <div id="video-container" class="absolute z-10 inset-0">
       <div class="crt grayscale">

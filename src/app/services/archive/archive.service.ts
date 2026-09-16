@@ -68,9 +68,10 @@ export class ArchiveService {
    * fixed Solr permutation and `start` is silently ignored by advancedsearch.php.
    */
   randomVideo(channel: Channel): Observable<Video> {
-    const collections = channel.collections;
     const collection =
-      collections[Math.floor(Math.random() * collections.length)];
+      channel.collections[
+        Math.floor(Math.random() * channel.collections.length)
+      ];
     const query = `mediatype:movies AND collection:${collection}`;
 
     // Fetch the count once per subscribe; page retries reuse it.
