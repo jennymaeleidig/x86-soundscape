@@ -109,6 +109,30 @@ describe('MenuComponent on Ambience', () => {
     expect(row.query(By.css('a'))).toBeTruthy();
   });
 
+  /** The dropdown's own rows, in the order the listener reads them. */
+  const menuRows = (): HTMLElement[] =>
+    [
+      ...submenu().query(By.css('ul[role="menu"]')).nativeElement.children,
+    ] as HTMLElement[];
+
+  it('puts the solid rule under the name and the dotted divider under the level', () => {
+    const rows = menuRows();
+    const labels = rows.map((row) => row.textContent.trim() || row.tagName);
+    const levelAt = labels.findIndex((text) => text.startsWith('Volume:'));
+
+    // The name row carries the solid rule (the library's hr).
+    expect(rows[0].querySelector('hr')).toBeTruthy();
+
+    // The level's break is the library's dotted divider row, and the controls
+    // resume after it, so nothing suggests the level is one of them.
+    expect(rows[levelAt + 1].className).toContain('divider');
+    expect(rows[levelAt + 1].querySelector('hr')).toBeFalsy();
+    expect(labels[levelAt + 2]).toBe('Unmute');
+
+    // system.css has no disabled menu row, so the semantics say it instead.
+    expect(levelRow().nativeElement.getAttribute('aria-disabled')).toBe('true');
+  });
+
   it('prints the level, and a press of Volume + or Volume − moves it one step while nothing plays', () => {
     expect(level()).toBe('Volume: 50%');
     expect(ambience.state().sound).toBeNull();

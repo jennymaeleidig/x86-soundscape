@@ -59,6 +59,16 @@ carries a comment and stays next to the component that owns the markup (`menu.co
 **Use the library's tokens for spacing**, not new numbers: `--box-shadow`, `--element-spacing`,
 `--grouped-element-spacing` and friends are defined in `src/styles.css`.
 
+**A row that is not a control says so.** system.css ships no disabled or readout menu row — `.btn:disabled`
+and disabled checkboxes are its only disabled looks — so a readout row in a dropdown keeps the documented
+`<a>` for the row's padding, carries `aria-disabled="true"`, and drops the hover invert with one scoped
+rule in the component's CSS that names what it is undoing (`menu.component.css`, the level).
+
+**Dividers come from the library too.** A dotted divider is `class="divider"` on the row it closes (the
+library's `:after` line), and a solid rule is an `<hr>`; an empty `[role="menu-item"].divider` row with
+`aria-hidden="true"` is a divider between rows rather than under one. Both are the library's own styles, so
+choosing one is a choice of weight, not new CSS.
+
 ## Angular
 
 **Standalone components, no NgModules.** One component per folder:

@@ -89,7 +89,7 @@
       <li role="menu-item" tabindex="0" aria-haspopup="true">
         Ambience
         <ul role="menu">
-          <li role="menu-item" class="divider max-w-3xs">
+          <li role="menu-item" class="max-w-3xs">
             <om-marquee
               [marqueeGap]="'4rem'"
               [animationDuration]="'15s'"
@@ -101,8 +101,12 @@
                 </div>
               </ng-template>
             </om-marquee>
+            <hr />
           </li>
-          <li role="menu-item"><a>{{ ambienceLevel() }}</a></li>
+          <li role="menu-item" aria-disabled="true" class="readout">
+            <a>{{ ambienceLevel() }}</a>
+          </li>
+          <li role="menu-item" aria-hidden="true" class="divider"></li>
           <li role="menu-item" (click)="toggleAmbience()">
             <a>{{ muteAction() }}</a>
           </li>

@@ -5,6 +5,18 @@
 }
 
 /*
+ * system.css styles no readout row, and no disabled menu item at all: its hover
+ * invert lands on every `ul[role=menu] > [role=menu-item] > a` (the library's
+ * only disabled state is `.btn:disabled`). The level keeps that anchor for the
+ * row's padding, but it is what the listener reads rather than presses, so the
+ * invert that promises a click is dropped here.
+ */
+ul[role="menu"] > [role="menu-item"].readout > a:hover {
+  background: inherit;
+  color: inherit;
+}
+
+/*
  * Two-group menubar: the buttons and the Now-Playing block are each a
  * self-contained, non-wrapping flex group (a nested <ul class="menu-group-inner">
  * inside a <li class="menu-group">). The nested <ul> is un-roled so its browser
