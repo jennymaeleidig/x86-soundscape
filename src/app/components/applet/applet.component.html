@@ -1,56 +1,15 @@
 <div class="w-fit h-fit grid justify-items-center hover:invert">
-  <div [ngSwitch]="selector" cdkDragHandle>
+  <div cdkDragHandle>
     <button
-      *ngSwitchCase="Feature.Winamp"
       class="cursor-pointer"
-      (dblclick)="openWinamp()"
-      (touchend)="openWinamp()"
+      [title]="feature.appearance().tooltip ?? null"
+      (dblclick)="activate()"
+      (touchend)="activate()"
       (mousedown)="setMoving()"
       (mouseup)="unsetMoving()"
     >
-      <img [src]="icon" />
-    </button>
-    <button
-      *ngSwitchCase="Feature.Station"
-      class="cursor-pointer"
-      (dblclick)="playRadio()"
-      (touchend)="playRadio()"
-      (mousedown)="setMoving()"
-      (mouseup)="unsetMoving()"
-    >
-      <img [src]="icon" />
-    </button>
-    <button
-      [title]="ambienceView().label"
-      *ngSwitchCase="Feature.Ambience"
-      class="cursor-pointer"
-      (dblclick)="toggleAmbience()"
-      (touchend)="toggleAmbience()"
-      (mousedown)="setMoving()"
-      (mouseup)="unsetMoving()"
-    >
-      <img [src]="ambienceView().icon" />
-    </button>
-    <button
-      *ngSwitchCase="Feature.Weather"
-      class="cursor-pointer"
-      (dblclick)="openWindowComponent()"
-      (touchend)="openWindowComponent()"
-      (mousedown)="setMoving()"
-      (mouseup)="unsetMoving()"
-    >
-      <img [src]="icon" />
-    </button>
-    <button
-      *ngSwitchDefault
-      class="cursor-pointer"
-      (dblclick)="openWindowComponent()"
-      (touchend)="openWindowComponent()"
-      (mousedown)="setMoving()"
-      (mouseup)="unsetMoving()"
-    >
-      <img [src]="icon" />
+      <img [src]="feature.appearance().icon" />
     </button>
   </div>
-  <div class="mt-1 bg-white">{{ title }}</div>
+  <div class="mt-1 bg-white">{{ feature.title }}</div>
 </div>

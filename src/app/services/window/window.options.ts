@@ -1,4 +1,4 @@
-import { type Feature } from '../../../assets/applets/applet-definitions';
+import { type FeatureId } from '../feature/feature';
 import { type WindowDescription } from '../feature/feature';
 
 /**
@@ -10,7 +10,7 @@ import { type WindowDescription } from '../feature/feature';
  * close — is unrepresentable.
  */
 export interface Options {
-  id: Feature;
+  id: FeatureId;
   title: string;
   window: WindowDescription;
 }

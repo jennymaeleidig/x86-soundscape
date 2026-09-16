@@ -21,7 +21,7 @@ An actionable unit in the system. A Feature may have a desktop Applet, open a Wi
 _Avoid_: Applet type, selector kind
 
 **Applet**:
-A desktop icon that represents a Feature. Has a title, icon, and position on the Desktop.
+A desktop icon that represents a Feature, taking its title and icon from it. Has a position on the Desktop.
 _Avoid_: (none — this is the narrowed definition)
 
 **Action**:

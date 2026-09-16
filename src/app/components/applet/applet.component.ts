@@ -1,44 +1,23 @@
-import {
-  Component,
-  HostListener,
-  Inject,
-  Input,
-  computed,
-} from '@angular/core';
+import { Component, HostListener, Inject, Input } from '@angular/core';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
-import { WindowService } from '../../services/window/window.service';
-import { Feature } from '../../../assets/applets/applet-definitions';
-import { type WindowDescription } from '../../services/feature/feature';
-import { NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
-import { WinampService } from '../../services/winamp/winamp.service';
-import { AmbienceService } from '../../services/ambience/ambience';
-import {
-  appletLabel,
-  isAudible,
-} from '../../services/ambience/ambience-labels';
+import { type Feature } from '../../services/feature/feature';
 
-// Define constants for the icon paths
-const AMBIENCE_OFF_ICON = 'assets/images/ambience_off.png';
-const AMBIENCE_ON_ICON = 'assets/images/ambience_on.png';
-
+/**
+ * A desktop icon that represents one Feature: it shows the row's appearance and
+ * asks the row to activate. No Feature is special here — adding one is a
+ * component and a row in the registry, never a branch in this component.
+ */
 @Component({
   selector: 'app-applet',
   standalone: true,
-  imports: [CdkDragHandle, NgSwitch, NgSwitchCase, NgSwitchDefault],
+  imports: [CdkDragHandle],
   templateUrl: './applet.component.html',
   styleUrl: './applet.component.css',
 })
 export class AppletComponent {
-  @Input() title!: string;
-  @Input() icon!: string;
-  @Input() selector!: Feature;
-  @Input() window!: WindowDescription;
-  Feature = Feature;
+  @Input({ required: true }) feature!: Feature;
 
   constructor(
-    private windowService: WindowService,
-    private winampService: WinampService,
-    private ambienceService: AmbienceService,
     @Inject('appletIsMoving') public setAppletIsMoving: Function,
     @Inject('appletDragState')
     private appletDragState: {
@@ -47,58 +26,18 @@ export class AppletComponent {
     },
   ) {}
 
-  /** The published Ambience state; the template reads it rather than a mirror of it. */
-  readonly ambienceState = this.ambienceService.state;
-
-  /**
-   * What the Applet shows for Ambience, derived once from the published state:
-   * OFF for anything inaudible — muted or not playing — beside the name of the
-   * Sound that will come back.
-   */
-  readonly ambienceView = computed(() => {
-    const state = this.ambienceState();
-    return {
-      icon: isAudible(state) ? AMBIENCE_ON_ICON : AMBIENCE_OFF_ICON,
-      label: appletLabel(state),
-    };
-  });
-
-  ngOnDestroy(): void {
-    // Ensure ambience is stopped if the applet is destroyed
-    if (this.selector === Feature.Ambience) {
-      this.ambienceService.stop();
-    }
-  }
-
   @HostListener('touchstart')
   @HostListener('mousedown')
   onGestureStart() {
     this.appletDragState.reset();
   }
 
-  openWindowComponent() {
+  /** Activates the Feature, unless the gesture was a drag across the Desktop. */
+  activate() {
     if (this.appletDragState.isDragGesture()) {
       return;
     }
-    this.windowService.open({
-      id: this.selector,
-      title: this.title,
-      window: this.window,
-    });
-  }
-
-  openWinamp() {
-    if (this.appletDragState.isDragGesture()) {
-      return;
-    }
-    this.winampService.reopenWinamp();
-  }
-
-  playRadio() {
-    if (this.appletDragState.isDragGesture()) {
-      return;
-    }
-    this.winampService.playRadio();
+    this.feature.activate();
   }
 
   setMoving() {
@@ -107,14 +46,5 @@ export class AppletComponent {
 
   unsetMoving() {
     this.setAppletIsMoving(false);
-  }
-
-  toggleAmbience() {
-    if (this.appletDragState.isDragGesture()) {
-      return;
-    }
-    if (this.selector === Feature.Ambience) {
-      this.ambienceService.toggle();
-    }
   }
 }

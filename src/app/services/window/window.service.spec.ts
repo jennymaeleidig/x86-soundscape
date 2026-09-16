@@ -6,7 +6,7 @@ import { MountService } from '../mount/mount';
 import { WindowComponent } from '../../components/window/window.component';
 import { DesktopBounds } from './desktop-bounds';
 import { type Options } from './window.options';
-import { Feature } from '../../../assets/applets/applet-definitions';
+import { FeatureId } from '../../services/feature/feature';
 
 @Component({
   selector: 'app-window-host-stub',
@@ -21,7 +21,7 @@ describe('WindowService', () => {
   let mount: jest.Mock;
   let service: WindowService;
 
-  const optionsFor = (id: Feature, title: string): Options => ({
+  const optionsFor = (id: FeatureId, title: string): Options => ({
     id,
     title,
     window: { shape: 'text', height: '50%', content: WindowStubContent },
@@ -51,7 +51,7 @@ describe('WindowService', () => {
   });
 
   it('mounts once when the same Feature is opened twice', () => {
-    const options = optionsFor(Feature.About, 'About');
+    const options = optionsFor(FeatureId.About, 'About');
 
     service.open(options);
     service.open(options);
@@ -61,8 +61,8 @@ describe('WindowService', () => {
   });
 
   it('mounts twice when two Features are opened', () => {
-    service.open(optionsFor(Feature.About, 'About'));
-    service.open(optionsFor(Feature.Weather, 'Weather'));
+    service.open(optionsFor(FeatureId.About, 'About'));
+    service.open(optionsFor(FeatureId.Weather, 'Weather'));
 
     expect(mount).toHaveBeenCalledTimes(2);
     expect(bounds.childElementCount).toBe(2);
@@ -70,8 +70,8 @@ describe('WindowService', () => {
   });
 
   it('mounts the Window into the Desktop bounds, with the cascade slot on the element it mounts into', () => {
-    service.open(optionsFor(Feature.About, 'About'));
-    service.open(optionsFor(Feature.Weather, 'Weather'));
+    service.open(optionsFor(FeatureId.About, 'About'));
+    service.open(optionsFor(FeatureId.Weather, 'Weather'));
 
     expect(cascadeSlots()).toEqual(['0', '1']);
     expect(mount.mock.calls[0][0]).toBe(WindowComponent);
@@ -80,9 +80,9 @@ describe('WindowService', () => {
   });
 
   it('destroys the handle and removes the Window on close', () => {
-    service.open(optionsFor(Feature.About, 'About'));
+    service.open(optionsFor(FeatureId.About, 'About'));
 
-    service.close(Feature.About);
+    service.close(FeatureId.About);
 
     expect(destroy).toHaveBeenCalledTimes(1);
     expect(bounds.childElementCount).toBe(0);
@@ -90,49 +90,49 @@ describe('WindowService', () => {
   });
 
   it('closes the front Window onto the most recently used survivor', () => {
-    service.open(optionsFor(Feature.About, 'About'));
-    service.open(optionsFor(Feature.Visualizer, 'Visualizer'));
-    service.open(optionsFor(Feature.Weather, 'Weather'));
+    service.open(optionsFor(FeatureId.About, 'About'));
+    service.open(optionsFor(FeatureId.Visualizer, 'Visualizer'));
+    service.open(optionsFor(FeatureId.Weather, 'Weather'));
 
-    service.raise(Feature.About); // a title-bar press
-    expect(service.isActive(Feature.About)).toBe(true);
+    service.raise(FeatureId.About); // a title-bar press
+    expect(service.isActive(FeatureId.About)).toBe(true);
 
-    service.close(Feature.About);
+    service.close(FeatureId.About);
 
-    expect(service.isActive(Feature.Weather)).toBe(true);
-    expect(service.isActive(Feature.Visualizer)).toBe(false);
+    expect(service.isActive(FeatureId.Weather)).toBe(true);
+    expect(service.isActive(FeatureId.Visualizer)).toBe(false);
   });
 
   it('leaves nothing active when the last Window closes', () => {
-    service.open(optionsFor(Feature.About, 'About'));
-    service.close(Feature.About);
+    service.open(optionsFor(FeatureId.About, 'About'));
+    service.close(FeatureId.About);
 
-    expect(service.isActive(Feature.About)).toBe(false);
-    expect(service.isActive(Feature.Weather)).toBe(false);
+    expect(service.isActive(FeatureId.About)).toBe(false);
+    expect(service.isActive(FeatureId.Weather)).toBe(false);
   });
 
   it('raises by moving the entry and nothing else, and raising the active Window is the identity', () => {
-    service.open(optionsFor(Feature.About, 'About'));
-    service.open(optionsFor(Feature.Weather, 'Weather'));
-    service.open(optionsFor(Feature.Visualizer, 'Visualizer'));
+    service.open(optionsFor(FeatureId.About, 'About'));
+    service.open(optionsFor(FeatureId.Weather, 'Weather'));
+    service.open(optionsFor(FeatureId.Visualizer, 'Visualizer'));
 
-    service.raise(Feature.About);
+    service.raise(FeatureId.About);
 
     expect(service.openCount).toBe(3);
     expect(mount).toHaveBeenCalledTimes(3);
     expect(cascadeSlots()).toEqual(['0', '1', '2']);
-    expect(service.isActive(Feature.About)).toBe(true);
+    expect(service.isActive(FeatureId.About)).toBe(true);
 
-    service.raise(Feature.About);
+    service.raise(FeatureId.About);
 
-    expect(service.isActive(Feature.About)).toBe(true);
+    expect(service.isActive(FeatureId.About)).toBe(true);
     expect(service.openCount).toBe(3);
   });
 
   it('ignores a close for a Feature that has no Window open', () => {
-    service.open(optionsFor(Feature.About, 'About'));
+    service.open(optionsFor(FeatureId.About, 'About'));
 
-    service.close(Feature.Weather);
+    service.close(FeatureId.Weather);
 
     expect(service.openCount).toBe(1);
     expect(destroy).not.toHaveBeenCalled();

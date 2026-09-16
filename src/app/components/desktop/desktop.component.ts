@@ -21,10 +21,12 @@ import {
   CdkDragEnd,
   Point,
 } from '@angular/cdk/drag-drop';
-import AppletDefinitions, {
-  AppletDefinition,
-} from '../../../assets/applets/applet-definitions';
-interface DesktopApplet extends AppletDefinition {
+import { type Feature } from '../../services/feature/feature';
+import { FeatureRegistry } from '../../services/feature/feature-registry';
+
+/** One row plus the position the Desktop carries for it. */
+interface DesktopApplet {
+  feature: Feature;
   x: number;
   y: number;
 }
@@ -76,7 +78,10 @@ export class DesktopComponent implements AfterViewInit {
     ],
   });
 
-  constructor(private readonly desktopBounds: DesktopBounds) {}
+  constructor(
+    private readonly desktopBounds: DesktopBounds,
+    private readonly features: FeatureRegistry,
+  ) {}
 
   ngAfterViewInit() {
     // The Window host is root-provided, so the bounds travel as a value rather
@@ -85,9 +90,10 @@ export class DesktopComponent implements AfterViewInit {
   }
 
   ngOnInit() {
-    // Initialize applets with position data
-    this.applets = AppletDefinitions.appletDefinitions.map((def) => ({
-      ...def,
+    // Every row gets a position of its own; the row itself is passed through
+    // untouched, so the identity the Window host keys on survives the copy.
+    this.applets = this.features.features.map((feature) => ({
+      feature,
       x: 0,
       y: 0,
     }));
@@ -177,9 +183,7 @@ export class DesktopComponent implements AfterViewInit {
     return this.selectedApplets.includes(applet);
   }
 
-  getAppletInputs(applet: DesktopApplet): AppletDefinition {
-    // Extract only AppletDefinition properties, excluding position data
-    const { x, y, ...appletDefinition } = applet;
-    return appletDefinition as AppletDefinition;
+  getAppletInputs(applet: DesktopApplet) {
+    return { feature: applet.feature };
   }
 }

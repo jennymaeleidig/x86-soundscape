@@ -3,7 +3,7 @@ import { MountService, type MountHandle } from '../mount/mount';
 import { WindowComponent } from '../../components/window/window.component';
 import { DesktopBounds } from './desktop-bounds';
 import { Options } from './window.options';
-import { type Feature } from '../../../assets/applets/applet-definitions';
+import { type FeatureId } from '../feature/feature';
 
 /** One open Window: what it was opened for, where it is mounted, and how it goes away. */
 interface OpenWindow {
@@ -66,7 +66,7 @@ export class WindowService {
    * Closing the front Window therefore activates the most recently used
    * survivor, and closing the last Window leaves nothing active.
    */
-  close(id: Feature): void {
+  close(id: FeatureId): void {
     const index = this.indexOf(id);
     if (index < 0) return;
 
@@ -80,7 +80,7 @@ export class WindowService {
    * collection. State only: no re-parenting and no geometry. Raising the
    * already-active Window is the identity.
    */
-  raise(id: Feature): void {
+  raise(id: FeatureId): void {
     const index = this.indexOf(id);
     if (index < 0 || index === this.windows.length - 1) return;
 
@@ -89,15 +89,15 @@ export class WindowService {
   }
 
   /** Whether the Window belongs to the last entry, which is the Active Window. */
-  isActive(id: Feature): boolean {
+  isActive(id: FeatureId): boolean {
     return this.windows[this.windows.length - 1]?.options.id === id;
   }
 
-  private isOpen(id: Feature): boolean {
+  private isOpen(id: FeatureId): boolean {
     return this.indexOf(id) >= 0;
   }
 
-  private indexOf(id: Feature): number {
+  private indexOf(id: FeatureId): number {
     return this.windows.findIndex((open) => open.options.id === id);
   }
 }

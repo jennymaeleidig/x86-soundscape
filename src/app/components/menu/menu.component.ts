@@ -1,6 +1,6 @@
 import { Component, Pipe, PipeTransform, computed } from '@angular/core';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
-import { Feature } from '../../../assets/applets/applet-definitions';
+import { FeatureId } from '../../services/feature/feature';
 import { AboutComponent } from '../about/about.component';
 import { AnnouncementsComponent } from '../announcements/announcements.component';
 import { WinampService } from '../../services/winamp/winamp.service';
@@ -70,14 +70,14 @@ export class MenuComponent {
 
   openAbout() {
     this.popUpService.open({
-      selector: Feature.About,
+      id: FeatureId.About,
       contents: AboutComponent.text,
     });
   }
 
   openAnnouncements() {
     this.popUpService.open({
-      selector: Feature.Announcements,
+      id: FeatureId.Announcements,
       contents: AnnouncementsComponent.announcements,
     });
   }

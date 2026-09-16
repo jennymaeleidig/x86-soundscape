@@ -5,109 +5,93 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { AppletComponent } from './applet.component';
-import {
-  AmbienceService,
-  type AmbienceState,
-} from '../../services/ambience/ambience';
-import { type Sound } from '../../services/ambience/sounds';
-import { Feature } from '../../../assets/applets/applet-definitions';
-import { WindowService } from '../../services/window/window.service';
-import { WinampService } from '../../services/winamp/winamp.service';
+import { FeatureId, type Feature } from '../../services/feature/feature';
 
-const SOUND: Sound = {
-  path: 'assets/audio/sounds/ARNO/some-recording.mp3',
-  name: 'Macintosh Classic II — startup chime and floppy drive',
-  creator: 'ARNO',
-};
+const ICON = 'assets/images/ambience_off.png';
+const TOOLTIP = 'Nothing playing';
 
-/** What the Applet says the Sound is, with the credit the listener owes it. */
-const CREDITED = 'Macintosh Classic II — startup chime and floppy drive - ARNO';
-
-const AMBIENCE_OFF_ICON = 'assets/images/ambience_off.png';
-const AMBIENCE_ON_ICON = 'assets/images/ambience_on.png';
-
-describe('AppletComponent on Ambience', () => {
-  const state = signal<AmbienceState>({
-    sound: null,
-    volume: 0.5,
-    muted: false,
-    playing: false,
-  });
-  const ambience = {
-    state,
-    toggle: jest.fn(),
-    play: jest.fn(),
-    stop: jest.fn(),
-  };
-
+describe('AppletComponent', () => {
   let fixture: ComponentFixture<AppletComponent>;
+  let activate: jest.Mock;
+  let setMoving: jest.Mock;
+  let dragging: boolean;
 
-  /** Puts the applet in a state and re-renders it. */
-  const show = (next: AmbienceState) => {
-    state.set(next);
-    fixture.detectChanges();
-  };
+  const feature = (): Feature => ({
+    id: FeatureId.Ambience,
+    title: 'Ambience',
+    appearance: signal({ icon: ICON, tooltip: TOOLTIP }),
+    activate,
+  });
 
   const button = () => fixture.debugElement.query(By.css('button'));
   const icon = () => button().query(By.css('img')).nativeElement.src;
-  const label = () => button().nativeElement.title;
+
+  /** The host's own mousedown, which a press inside the applet bubbles into. */
+  const press = () => fixture.debugElement.triggerEventHandler('mousedown', {});
 
   beforeEach(() => {
-    state.set({ sound: null, volume: 0.5, muted: false, playing: false });
-    ambience.toggle.mockClear();
-    ambience.stop.mockClear();
+    activate = jest.fn();
+    setMoving = jest.fn();
+    dragging = false;
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: AmbienceService, useValue: ambience },
-        { provide: WindowService, useValue: {} },
-        { provide: WinampService, useValue: {} },
-        { provide: 'appletIsMoving', useValue: () => {} },
+        { provide: 'appletIsMoving', useValue: setMoving },
         {
           provide: 'appletDragState',
-          useValue: { isDragGesture: () => false, reset: () => {} },
+          useValue: {
+            isDragGesture: () => dragging,
+            reset: () => {
+              dragging = false;
+            },
+          },
         },
       ],
     });
 
     fixture = TestBed.createComponent(AppletComponent);
-    fixture.componentInstance.selector = Feature.Ambience;
-    fixture.componentInstance.title = 'Ambience';
+    fixture.componentInstance.feature = feature();
     fixture.detectChanges();
   });
 
-  it('reports OFF and names nothing held while it holds nothing', () => {
-    expect(icon()).toContain(AMBIENCE_OFF_ICON);
-    expect(label()).toBe('Nothing playing');
+  it('is one button showing the row it was handed, and nothing about the Feature is special-cased', () => {
+    expect(fixture.debugElement.queryAll(By.css('button')).length).toBe(1);
+    expect(icon()).toContain(ICON);
+    expect(button().nativeElement.title).toBe(TOOLTIP);
+    expect(fixture.nativeElement.textContent).toContain('Ambience');
   });
 
-  it('reports ON and names the Sound, crediting it, while the Sound is audible', () => {
-    show({ sound: SOUND, volume: 0.5, muted: false, playing: true });
+  it('activates the Feature exactly once on a double click', () => {
+    button().triggerEventHandler('dblclick', {});
 
-    expect(icon()).toContain(AMBIENCE_ON_ICON);
-    expect(label()).toBe(CREDITED);
+    expect(activate).toHaveBeenCalledTimes(1);
   });
 
-  it('reports OFF for silence by mute, keeps the name, and says which way the sound is going', () => {
-    show({ sound: SOUND, volume: 0.5, muted: true, playing: true });
-
-    expect(icon()).toContain(AMBIENCE_OFF_ICON);
-    expect(label()).toBe(`Muted — ${CREDITED}`);
-  });
-
-  it('reports OFF for silence by a stopped element, and still names the Sound', () => {
-    show({ sound: SOUND, volume: 0.5, muted: false, playing: false });
-
-    expect(icon()).toContain(AMBIENCE_OFF_ICON);
-    expect(label()).toBe(CREDITED);
-  });
-
-  it('clicks the audibility toggle, never the stop it used to be', () => {
-    show({ sound: SOUND, volume: 0.5, muted: true, playing: true });
+  it('does not activate on a drag across the Desktop', () => {
+    press(); // the gesture starts
+    dragging = true; // and the Desktop marks it a drag
 
     button().triggerEventHandler('dblclick', {});
 
-    expect(ambience.toggle).toHaveBeenCalledTimes(1);
-    expect(ambience.stop).not.toHaveBeenCalled();
+    expect(activate).not.toHaveBeenCalled();
+  });
+
+  it('clears the drag state the moment a new gesture starts, so the next click works', () => {
+    press();
+    dragging = true;
+    button().triggerEventHandler('dblclick', {});
+
+    press();
+    button().triggerEventHandler('dblclick', {});
+
+    expect(activate).toHaveBeenCalledTimes(1);
+  });
+
+  it('tells the Desktop the applet is moving on press and release', () => {
+    button().triggerEventHandler('mousedown', {});
+    button().triggerEventHandler('mouseup', {});
+
+    expect(setMoving).toHaveBeenNthCalledWith(1, true);
+    expect(setMoving).toHaveBeenNthCalledWith(2, false);
   });
 });

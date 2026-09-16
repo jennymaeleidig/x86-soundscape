@@ -3,10 +3,10 @@
     class="fixed top-0 right-0 left-0 z-50 justify-center content-center m-auto h-[calc(100%-1rem)] md:max-w-1/4 md:max-h-full"
   >
     <div class="modal-dialog outer-border">
-      <div [ngSwitch]="options.selector" class="inner-border center">
-        <div *ngSwitchCase="Feature.About" class="modal-contents">
+      <div [ngSwitch]="options.id" class="inner-border center">
+        <div *ngSwitchCase="FeatureId.About" class="modal-contents">
           <h1 class="modal-text text-center">
-            {{ Feature[options.selector] }}
+            {{ FeatureId[options.id] }}
           </h1>
           <br />
           <div class="text-justify px-2">{{ $any(options.contents) }}</div>
@@ -15,7 +15,7 @@
             <button class="btn" (click)="close()">OK</button>
           </section>
         </div>
-        <div *ngSwitchCase="Feature.Announcements" class="modal-contents">
+        <div *ngSwitchCase="FeatureId.Announcements" class="modal-contents">
           <h1 class="modal-text text-center">Latest</h1>
           <br />
           <div class="grid pb-4">

@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { Options } from '../../services/pop-up/pop-up.options';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
-import { Feature } from '../../../assets/applets/applet-definitions';
+import { FeatureId } from '../../services/feature/feature';
 import { CommonModule } from '@angular/common';
 import { AnnouncementContent } from '../../../app/components/announcements/announcements.component';
 @Component({
@@ -13,7 +13,7 @@ import { AnnouncementContent } from '../../../app/components/announcements/annou
 })
 export class PopUpComponent {
   options!: Options;
-  Feature = Feature;
+  FeatureId = FeatureId;
 
   constructor(
     private popUpService: PopUpService,
@@ -40,7 +40,7 @@ export class PopUpComponent {
   }
 
   getLatest(): AnnouncementContent {
-    if (this.options.selector === Feature.Announcements) {
+    if (this.options.id === FeatureId.Announcements) {
       return (this.options.contents as AnnouncementContent[])[0];
     }
     return {
