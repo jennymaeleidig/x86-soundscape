@@ -1,10 +1,16 @@
-import { Component, Pipe, PipeTransform, computed } from '@angular/core';
+import {
+  Component,
+  Pipe,
+  PipeTransform,
+  computed,
+  inject,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { FeatureId } from '../../services/feature/feature';
 import { AboutComponent } from '../about/about.component';
 import { AnnouncementsComponent } from '../announcements/announcements.component';
 import { WinampService } from '../../services/winamp/winamp.service';
-import { NowPlaying } from '../../services/now-playing/parsers';
 import { NowPlayingService } from '../../services/now-playing/now-playing.service';
 import { CommonModule } from '@angular/common';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
@@ -35,14 +41,18 @@ export class DecodeHtmlString implements PipeTransform {
   styleUrl: './menu.component.css',
 })
 export class MenuComponent {
-  /** The published Now Playing reading; `undefined` means nothing is tuned. */
-  nowPlaying: NowPlaying | undefined = undefined;
   constructor(
     private popUpService: PopUpService,
     private winampService: WinampService,
-    private nowPlayingService: NowPlayingService,
     private ambienceService: AmbienceService,
   ) {}
+
+  private readonly nowPlayingService = inject(NowPlayingService);
+
+  /** The published Now Playing reading; `undefined` means nothing is tuned. */
+  private readonly nowPlaying = toSignal(this.nowPlayingService.nowPlaying$, {
+    initialValue: undefined,
+  });
 
   /** The published Ambience state; the template reads it rather than a mirror of it. */
   readonly ambienceState = this.ambienceService.state;
@@ -57,25 +67,19 @@ export class MenuComponent {
   readonly ambienceLevel = computed(() => levelLabel(this.ambienceState()));
   readonly muteAction = computed(() => muteActionLabel(this.ambienceState()));
 
-  ngOnInit() {
-    this.nowPlayingService.nowPlaying$.subscribe(
-      (nowPlaying) => (this.nowPlaying = nowPlaying),
-    );
-  }
-
   /**
    * The bar's whole readout, with no prefix: a track or a Station descriptor
    * as `artist - title`, and nothing tuned as the shared sentence.
    */
-  reading(): string {
-    const track = this.nowPlaying;
+  readonly reading = computed(() => {
+    const track = this.nowPlaying();
     if (!track) {
       return NOTHING_PLAYING;
     }
     return track.artist
       ? `${track.artist}${SEPARATOR}${track.title}`
       : track.title;
-  }
+  });
 
   openAbout() {
     this.popUpService.open({

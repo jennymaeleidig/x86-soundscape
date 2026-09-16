@@ -1,4 +1,4 @@
-import type { MetadataParser, Station } from '../../../assets/audio/stations';
+import type { MetadataParser } from '../../../assets/audio/stations';
 
 /**
  * The per-kind read of a Now Playing payload. Each adapter is table-driven,
@@ -88,14 +88,14 @@ function readIcy(raw: unknown): NowPlaying | undefined {
   if (!streamTitle) {
     return undefined;
   }
-  const separator = streamTitle.indexOf(' - ');
+  const separator = streamTitle.indexOf(STREAM_TITLE_SEPARATOR);
   if (separator < 0) {
     // No artist in the stream title; Now Playing fills it from the descriptor.
     return { artist: '', title: streamTitle };
   }
   return {
     artist: streamTitle.slice(0, separator),
-    title: streamTitle.slice(separator + 3),
+    title: streamTitle.slice(separator + STREAM_TITLE_SEPARATOR.length),
   };
 }
 
@@ -135,31 +135,5 @@ function readAzuracast(
   return { artist: asString(song?.['artist']) ?? '', title };
 }
 
-/** The source one attempt reads, built from the Station and its parser. */
-export function sourceFor(
-  station: Station,
-  kind: ResolvedParser['kind'],
-): NowPlayingSource {
-  const parser = station.metadataParser;
-  if (parser?.kind === 'azuracast') {
-    return {
-      via: 'fetch',
-      endpoint: `${originOf(station.url)}/api/nowplaying/${parser.shortcode}`,
-    };
-  }
-  return { via: 'library', url: station.url, source: kind };
-}
-
-function originOf(url: string): string {
-  try {
-    const parsed = new URL(url);
-    return `${parsed.protocol}//${parsed.host}`;
-  } catch {
-    return '';
-  }
-}
-
-/** Where one attempt reads from: the dependency's own read, or our own fetch. */
-export type NowPlayingSource =
-  | { via: 'library'; url: string; source: string }
-  | { via: 'fetch'; endpoint: string };
+/** How a stream title carries its artist and its title. */
+const STREAM_TITLE_SEPARATOR = ' - ';

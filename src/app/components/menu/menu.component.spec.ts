@@ -1,7 +1,8 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { of } from 'rxjs';
+import { Subject } from 'rxjs';
+import { NowPlaying } from '../../services/now-playing/parsers';
 
 import { MenuComponent } from './menu.component';
 import { AmbienceService } from '../../services/ambience/ambience';
@@ -9,7 +10,6 @@ import { ambienceSounds } from '../../services/ambience/sounds';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { NowPlayingService } from '../../services/now-playing/now-playing.service';
-import { Subject } from 'rxjs';
 import { FakeAudio } from '../../../testing/fake-audio';
 
 describe('MenuComponent on Ambience', () => {

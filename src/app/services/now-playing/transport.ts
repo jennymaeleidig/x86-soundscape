@@ -1,6 +1,35 @@
 import { Injectable } from '@angular/core';
 import IcecastMetadataStats from 'icecast-metadata-stats';
-import { NowPlayingSource } from './parsers';
+import type { Station } from '../../../assets/audio/stations';
+
+/** Where one attempt reads from: the dependency's own read, or our own fetch. */
+export type NowPlayingSource =
+  | { via: 'library'; url: string; source: string }
+  | { via: 'fetch'; endpoint: string };
+
+/** The source one attempt reads, built from the Station and its parser kind. */
+export function sourceFor(
+  station: Station,
+  kind: 'icy' | 'icestats' | 'azuracast',
+): NowPlayingSource {
+  const parser = station.metadataParser;
+  if (parser?.kind === 'azuracast') {
+    return {
+      via: 'fetch',
+      endpoint: `${originOf(station.url)}/api/nowplaying/${parser.shortcode}`,
+    };
+  }
+  return { via: 'library', url: station.url, source: kind };
+}
+
+function originOf(url: string): string {
+  try {
+    const parsed = new URL(url);
+    return `${parsed.protocol}//${parsed.host}`;
+  } catch {
+    return '';
+  }
+}
 
 /**
  * The transport seam beneath Now Playing: one attempt per call, no timer, no
@@ -15,7 +44,6 @@ export abstract class NowPlayingTransport {
   /** Releases the socket now, when the tune changes or stops. */
   abstract cancel(): void;
 }
-
 /** How long one attempt may take; the library has no deadline of its own. */
 const DEADLINE_MS = 10_000;
 
@@ -88,7 +116,15 @@ export class HttpNowPlayingTransport extends NowPlayingTransport {
           (stats) => resolve(stats),
           () => resolve(undefined),
         )
-        .finally(() => clearTimeout(deadline));
+        .finally(() => {
+          // One instance, one read, then the instance's own stop() — whatever
+          // the read did, nothing of it outlives the attempt.
+          clearTimeout(deadline);
+          library.stop();
+          if (this.library === library) {
+            this.library = undefined;
+          }
+        });
     });
   }
 }

@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import type { Station } from '../../../assets/audio/stations';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NowPlaying, ResolvedParser, parserFor, sourceFor } from './parsers';
-import { NowPlayingTransport } from './transport';
+import { NowPlaying, ResolvedParser, parserFor } from './parsers';
+import { NowPlayingTransport, sourceFor } from './transport';
 
 /** How long the module rests between attempts; the transport owns no cadence. */
 const POLL_INTERVAL_MS = 15_000;
@@ -29,6 +29,7 @@ export class NowPlayingService {
   /** Bumped on every tune and every stop; a stale generation's payloads drop. */
   private generation = 0;
   private pollTimer: ReturnType<typeof setTimeout> | undefined;
+  private wake: (() => void) | undefined;
 
   /** Tears any previous tracking down itself, and always restarts. */
   tune(station: Station): void {
@@ -56,6 +57,9 @@ export class NowPlayingService {
       clearTimeout(this.pollTimer);
       this.pollTimer = undefined;
     }
+    // The waiting chain wakes, sees its generation is stale, and ends.
+    this.wake?.();
+    this.wake = undefined;
     this.transport.cancel();
   }
 
@@ -85,10 +89,14 @@ export class NowPlayingService {
     }
   }
 
-  /** Wait the interval; teardown clears the timer, so the chain stops here. */
+  /** Wait the interval; teardown wakes the chain, which then ends. */
   private rest(): Promise<void> {
     return new Promise((resolve) => {
-      this.pollTimer = setTimeout(resolve, POLL_INTERVAL_MS);
+      this.wake = resolve;
+      this.pollTimer = setTimeout(() => {
+        this.wake = undefined;
+        resolve();
+      }, POLL_INTERVAL_MS);
     });
   }
 

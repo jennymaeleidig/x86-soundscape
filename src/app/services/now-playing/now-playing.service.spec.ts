@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
 import Stations from '../../../assets/audio/stations';
 import { NowPlayingService } from './now-playing.service';
-import { NowPlayingSource } from './parsers';
+import { NowPlaying } from './parsers';
+import { NowPlayingSource } from './transport';
 import { NowPlayingTransport } from './transport';
 
 /**
@@ -60,8 +61,8 @@ describe('NowPlayingService', () => {
   let transport: FakeTransport;
 
   /** The readings the listener sees, collected as they are announced. */
-  async function readings(): Promise<(object | undefined)[]> {
-    const seen: (object | undefined)[] = [];
+  async function readings(): Promise<(NowPlaying | undefined)[]> {
+    const seen: (NowPlaying | undefined)[] = [];
     const done = firstValueFrom(service.nowPlaying$).then(() => seen);
     service.nowPlaying$.subscribe((reading) => seen.push(reading));
     return done;
