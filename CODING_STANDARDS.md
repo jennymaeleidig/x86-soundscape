@@ -111,9 +111,11 @@ Play')`, not `it('should call stop')`.
 `'Nothing playing'` rather than importing the constant that produces it, so changing the wording fails a
 test instead of passing tautologically.
 
-**Component specs import `../../../testing/jsdom-globals` first.** The webamp bundle and `ngx-marquee` read
-browser globals at module-evaluation time, so the shim must be the first import in the file; the jsdom
-environment supplies no media playback, so `FakeAudio` replaces `globalThis.Audio`.
+**The browser shim is the test target's polyfill.** `src/testing/jsdom-globals.ts` is listed in the test
+target's `polyfills`, so it runs before any spec module: the webamp bundle and `ngx-marquee` read browser
+globals at module-evaluation time, and a side-effect import at the top of a spec does not survive the
+bundler's shared chunks when the whole suite builds at once. The jsdom environment supplies no media
+playback, so `FakeAudio` replaces `globalThis.Audio`.
 
 **No probabilistic assertions.** A test that asserts a random draw picked something different must point
 `Math.random` at a known value first — otherwise it fails once in thirty runs and teaches nothing.

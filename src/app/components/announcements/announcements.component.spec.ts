@@ -9,8 +9,9 @@ describe('AnnouncementsComponent', () => {
     fixture.detectChanges();
 
     const entries = fixture.nativeElement.querySelectorAll('.grid > div');
-    expect(entries.length).toBe(AnnouncementsComponent.announcements.length);
+    expect(entries.length).toBe(6);
     expect(entries[0].textContent).toContain('Upadates! Updates!! Updates!!!');
+    expect(entries[5].textContent).toContain('Welcome');
     expect(fixture.nativeElement.querySelector('.window')).toBeNull();
   });
 });

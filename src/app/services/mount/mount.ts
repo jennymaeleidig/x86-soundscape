@@ -51,8 +51,9 @@ export class MountService {
 
     return {
       destroy: () => {
-        this.appRef.detachView(ref.hostView);
         const element: Element = ref.location.nativeElement;
+        // ViewRef.destroy() detaches the view from the ApplicationRef itself,
+        // so there is nothing to detach first and nothing to retain.
         ref.destroy();
         element.remove();
       },

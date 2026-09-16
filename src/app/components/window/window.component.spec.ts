@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { WindowComponent } from './window.component';
-import { type WindowDescription } from '../../services/feature/feature';
 
 @Component({
   selector: 'app-window-stub',
@@ -18,7 +17,7 @@ describe('WindowComponent', () => {
   /** Renders the Window with everything handed in, the way a host hands it in. */
   const show = (
     title: string,
-    shape: WindowDescription['shape'],
+    shape: 'text' | 'embed',
     height?: string,
     isActive = false,
   ) => {

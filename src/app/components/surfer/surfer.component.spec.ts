@@ -1,4 +1,3 @@
-import '../../../testing/jsdom-globals';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import {
   HttpTestingController,

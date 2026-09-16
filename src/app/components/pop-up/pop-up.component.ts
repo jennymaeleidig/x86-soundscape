@@ -3,7 +3,8 @@ import { Options } from '../../services/pop-up/pop-up.options';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { FeatureId } from '../../services/feature/feature';
 import { CommonModule } from '@angular/common';
-import { AnnouncementContent } from '../../../app/components/announcements/announcements.component';
+import { AnnouncementContent } from '../announcements/announcements.component';
+
 @Component({
   selector: 'app-pop-up',
   standalone: true,
@@ -39,14 +40,10 @@ export class PopUpComponent {
     this.element.nativeElement.remove();
   }
 
-  getLatest(): AnnouncementContent {
-    if (this.options.id === FeatureId.Announcements) {
-      return (this.options.contents as AnnouncementContent[])[0];
-    }
-    return {
-      title: '',
-      msg: '',
-      date: '',
-    };
+  /** The latest announcement, for the Announcements shape — which is the only one that asks. */
+  getLatest(): AnnouncementContent | undefined {
+    return this.options.id === FeatureId.Announcements
+      ? this.options.contents[0]
+      : undefined;
   }
 }

@@ -8,7 +8,7 @@ import { type FeatureId } from '../feature/feature';
 /** One open Window: what it was opened for, where it is mounted, and how it goes away. */
 interface OpenWindow {
   options: Options;
-  carrier: HTMLElement;
+  mountedElement: HTMLElement;
   handle: MountHandle;
 }
 
@@ -41,13 +41,19 @@ export class WindowService {
       throw new Error('The Desktop bounds are not published yet');
     }
 
-    // The element the host mounts into carries the cascade slot as a custom
-    // property; the Window itself needs no cascade member.
-    const carrier = document.createElement('div');
-    carrier.style.setProperty('--cascade-n', String(this.windows.length));
-    target.appendChild(carrier);
+    // The host mounts into one element of its own per Window, so the cascade
+    // slot travels as a custom property on the element the host mounts into
+    // and the Window itself needs no cascade member. The mount module creates
+    // the component's own element inside this one, because Angular clears the
+    // element it is handed as a host.
+    const mountedElement = document.createElement('div');
+    mountedElement.style.setProperty(
+      '--cascade-n',
+      String(this.windows.length),
+    );
+    target.appendChild(mountedElement);
 
-    const handle = this.mount.mount(WindowComponent, carrier, [
+    const handle = this.mount.mount(WindowComponent, mountedElement, [
       inputBinding('title', () => options.title),
       inputBinding('shape', () => options.window.shape),
       inputBinding('height', () => options.window.height),
@@ -57,7 +63,7 @@ export class WindowService {
       outputBinding('onClose', () => this.close(options.id)),
     ]);
 
-    this.windows.push({ options, carrier, handle });
+    this.windows.push({ options, mountedElement, handle });
   }
 
   /**
@@ -72,7 +78,7 @@ export class WindowService {
 
     const [open] = this.windows.splice(index, 1);
     open.handle.destroy();
-    open.carrier.remove();
+    open.mountedElement.remove();
   }
 
   /**

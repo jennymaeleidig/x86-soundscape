@@ -1,5 +1,4 @@
-import { type FeatureId } from '../feature/feature';
-import { type WindowDescription } from '../feature/feature';
+import { type FeatureId, type WindowDescription } from '../feature/feature';
 
 /**
  * What a Feature's activation hands the Window host: the identity the host keys

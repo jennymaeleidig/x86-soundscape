@@ -60,6 +60,18 @@ describe('WindowService', () => {
     expect(bounds.childElementCount).toBe(1);
   });
 
+  it('keys on the identity, so two copies of one row still open once', () => {
+    // The Desktop copies every row into its own position-carrying object, so
+    // this pairs a row with its copy the way the Desktop hands them around.
+    const copy = { id: FeatureId.About, title: 'About', x: 40, y: 80 };
+
+    service.open(optionsFor(FeatureId.About, 'About'));
+    service.open(optionsFor(copy.id, copy.title));
+
+    expect(mount).toHaveBeenCalledTimes(1);
+    expect(service.isActive(copy.id)).toBe(true);
+  });
+
   it('mounts twice when two Features are opened', () => {
     service.open(optionsFor(FeatureId.About, 'About'));
     service.open(optionsFor(FeatureId.Weather, 'Weather'));

@@ -5,5 +5,9 @@
     "outDir": "./out-tsc/spec",
     "types": ["jest", "node"]
   },
-  "include": ["src/**/*.spec.ts", "src/**/*.d.ts"]
+  "include": [
+    "src/**/*.spec.ts",
+    "src/**/*.d.ts",
+    "src/testing/jsdom-globals.ts"
+  ]
 }

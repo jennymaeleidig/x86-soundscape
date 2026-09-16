@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { NgClass, NgComponentOutlet } from '@angular/common';
-import { type WindowDescription } from '../../services/feature/feature';
 
 /**
  * One chrome in front of a given title, shape and content. It injects nothing
@@ -27,7 +26,7 @@ export class WindowComponent {
   @Input({ required: true }) title!: string;
 
   /** Which of the two frames to build. */
-  @Input({ required: true }) shape!: WindowDescription['shape'];
+  @Input({ required: true }) shape!: 'text' | 'embed';
 
   /** The `text` shape's fractional height. */
   @Input() height?: string;
