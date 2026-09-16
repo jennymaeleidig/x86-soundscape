@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ambienceSoundPaths } from '../../../assets/audio/ambience-sounds';
+import { ambienceSounds, type Sound } from './sounds';
 
 const DEFAULT_VOLUME = 0.5;
 
@@ -9,7 +9,8 @@ const DEFAULT_VOLUME = 0.5;
 export class AmbienceService {
   private currentVolume: number = DEFAULT_VOLUME;
   private currentAudio: HTMLAudioElement | null = null;
-  private ambienceSounds: string[] = ambienceSoundPaths;
+  private currentSound: Sound | null = null;
+  private ambienceSounds: Sound[] = ambienceSounds;
 
   constructor() {}
 
@@ -21,27 +22,28 @@ export class AmbienceService {
     this.stopAmbience(); // Stop current sound before playing a new one
 
     if (this.ambienceSounds.length === 0) {
-      console.warn('No ambience sound paths available.');
+      console.warn('No ambience sounds available.');
       return;
     }
 
     const randomIndex = Math.floor(Math.random() * this.ambienceSounds.length);
-    const selectedSoundPath = this.ambienceSounds[randomIndex];
+    const selectedSound = this.ambienceSounds[randomIndex];
 
-    this.currentAudio = new Audio(selectedSoundPath);
+    this.currentSound = selectedSound;
+    this.currentAudio = new Audio(selectedSound.path);
     this.currentAudio.loop = true; // Set the sound to loop
     this.currentAudio.volume = this.currentVolume;
 
     // Handle potential errors
     this.currentAudio.onerror = (e) => {
-      console.error('Error playing ambience sound:', selectedSoundPath, e);
+      console.error('Error playing ambience sound:', selectedSound.path, e);
       this.stopAmbience();
     };
 
     this.currentAudio.play().catch((error) => {
       console.warn('Audio playback prevented:', error);
     });
-    console.log('Playing ambience:', selectedSoundPath);
+    console.log('Playing ambience:', selectedSound.name);
   }
 
   /**
@@ -53,6 +55,7 @@ export class AmbienceService {
       this.currentAudio.currentTime = 0;
       this.currentAudio = null;
     }
+    this.currentSound = null;
   }
 
   playAmbience() {
@@ -64,15 +67,7 @@ export class AmbienceService {
   }
 
   getAmbienceName(): string {
-    if (this.currentAudio) {
-      // Extract the filename from the path
-      var path: string[] = this.currentAudio.src
-        .replaceAll('_', ' ')
-        .split('/');
-      return `${path.pop() || 'Unknown'} from ${path.pop() || 'Unknown'}`;
-    } else {
-      return 'Not Playing';
-    }
+    return this.currentSound?.name ?? 'Not Playing';
   }
 
   volumeUp(): void {
