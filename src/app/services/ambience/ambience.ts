@@ -39,12 +39,7 @@ export class AmbienceService {
 
   /** Resume the held Sound; a random one if none is held. */
   play(): void {
-    const { sound } = this.currentState();
-    if (sound) {
-      this.start(sound);
-    } else {
-      this.shuffle();
-    }
+    this.resume();
   }
 
   /** Halt and release the element; keep the held Sound. */
@@ -67,7 +62,7 @@ export class AmbienceService {
 
   /** Audible → mute; silent → clear the mute and make sure playback is running. */
   toggle(): void {
-    const { muted, playing, sound } = this.currentState();
+    const { muted, playing } = this.currentState();
     if (!muted && playing) {
       this.publish({ muted: true });
       return;
@@ -75,11 +70,7 @@ export class AmbienceService {
 
     this.publish({ muted: false });
     if (!playing) {
-      if (sound) {
-        this.start(sound);
-      } else {
-        this.shuffle();
-      }
+      this.resume();
     }
   }
 
@@ -96,6 +87,16 @@ export class AmbienceService {
     this.publish({
       volume: this.stepped(this.currentState().volume - VOLUME_STEP),
     });
+  }
+
+  /** Playback for a silent state: the held Sound, or a freshly drawn one. */
+  private resume(): void {
+    const { sound } = this.currentState();
+    if (sound) {
+      this.start(sound);
+    } else {
+      this.shuffle();
+    }
   }
 
   /** One play path, so a refusal is caught wherever playback begins. */

@@ -96,7 +96,7 @@
               [pauseOnHover]="false"
             >
               <ng-template>
-                <div title="{{ ambienceName() }}" class="item">
+                <div [title]="ambienceName()" class="item">
                   {{ ambienceName() }}
                 </div>
               </ng-template>

@@ -7,7 +7,7 @@ import type { AmbienceState } from './ambience';
  */
 
 /** What both surfaces say when Ambience holds nothing. */
-export const NOTHING_HELD = 'Nothing playing';
+const NOTHING_HELD = 'Nothing playing';
 
 /** The one predicate the Applet's icon and the Menu's mute item both answer. */
 export function isAudible(state: AmbienceState): boolean {
