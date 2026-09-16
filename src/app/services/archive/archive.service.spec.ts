@@ -75,10 +75,27 @@ describe('ArchiveService', () => {
     req.flush(body);
   };
 
-  it('3.2 — playable candidate on first page → returns video with correct field mapping', (done: jest.DoneCallback) => {
-    const channel = 'Somewhat Commercial';
-    expect(CHANNELS[channel]).toBeDefined();
+  // Every Channel has at least one collection — the invariant the old
+  // name-keyed record could not express.
+  it('gives every Channel at least one collection', () => {
+    for (const channel of CHANNELS) {
+      expect(channel.collections.length).toBeGreaterThan(0);
+    }
+  });
 
+  // No two Channels share a collection, so a collection identifies its Channel.
+  it('shares no collection between two Channels', () => {
+    const seen = new Set<string>();
+    for (const channel of CHANNELS) {
+      for (const collection of channel.collections) {
+        expect(seen.has(collection)).toBe(false);
+        seen.add(collection);
+      }
+    }
+  });
+
+  it('3.2 — playable candidate on first page → returns video with correct field mapping', (done: jest.DoneCallback) => {
+    const [channel] = CHANNELS;
     service.randomVideo(channel).subscribe({
       next: (video: Video) => {
         expect(video.title).toBe('Nick Toons UK - Adverts & Continuity (2009)');
@@ -118,7 +135,7 @@ describe('ArchiveService', () => {
   it('3.5 — count is fetched exactly once per subscribe across retries', (done: jest.DoneCallback) => {
     // Page 1 is degenerate (no playable format), forcing a re-roll.
     // Page 2 is playable. Count is fetched only ONCE despite two page fetches.
-    service.randomVideo('VHS Vault').subscribe({
+    service.randomVideo(CHANNELS[1]).subscribe({
       next: (video) => {
         expect(video.url).toContain('archive.org/download/');
         // Assert exactly one count request was made by the end.
@@ -148,7 +165,7 @@ describe('ArchiveService', () => {
   });
 
   it('3.3 & 3.4 — 3 degenerate pages → emits an error', (done: jest.DoneCallback) => {
-    service.randomVideo('Anime All Access').subscribe({
+    service.randomVideo(CHANNELS[2]).subscribe({
       next: () => done(new Error('expected an error, got a video')),
       error: (err: Error) => {
         expect(err.message).toContain('No playable video found');
@@ -165,19 +182,8 @@ describe('ArchiveService', () => {
     httpMock.expectNone((r) => r.url.startsWith(METADATA_URL));
   });
 
-  it('unknown channel → errors without any http calls', (done: jest.DoneCallback) => {
-    service.randomVideo('Not A Real Channel').subscribe({
-      next: () => done(new Error('expected an error')),
-      error: (err: Error) => {
-        expect(err.message).toContain('Unknown channel');
-        done();
-      },
-    });
-    httpMock.expectNone(SEARCH_URL);
-  });
-
   it('item-level format prefilter selects only playable candidates', (done: jest.DoneCallback) => {
-    service.randomVideo('Gamer Nation').subscribe({
+    service.randomVideo(CHANNELS[3]).subscribe({
       next: (video) => {
         // The SECOND doc is the playable one (MPEG4); the first is not.
         expect(video.url).toContain('playable-2');

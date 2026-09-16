@@ -6,6 +6,7 @@ import {
   ArchiveService,
   type Video,
 } from '../../services/archive/archive.service';
+import { CHANNELS, type Channel } from '../../services/archive/channels';
 
 // Re-export the service's Video shape so the template binds unchanged.
 export type VideoData = Video;
@@ -17,15 +18,12 @@ export type VideoData = Video;
   styleUrl: './surfer.component.css',
 })
 export class SurferComponent {
-  channels: Array<string> = [
-    'Somewhat Commercial',
-    'VHS Vault',
-    'Anime All Access',
-    'Gamer Nation',
-    'Kids Korner',
-  ];
+  // The Surfer holds the Channel itself, so the label it prints is the
+  // Channel it is showing and cannot go stale.
+  currentChannel: Channel = CHANNELS[0];
 
-  currentChannel: number = 0;
+  // Position in CHANNELS, whose order is the cycle order.
+  private channelIndex = 0;
 
   // Define an Observable property for the video data
   video$: Observable<VideoData> | null;
@@ -41,26 +39,19 @@ export class SurferComponent {
   }
 
   changeChannel() {
-    if (this.currentChannel === this.channels.length - 1) {
-      this.currentChannel = 0;
-    } else {
-      this.currentChannel += 1;
-    }
+    this.channelIndex = (this.channelIndex + 1) % CHANNELS.length;
+    this.currentChannel = CHANNELS[this.channelIndex];
     this.video$ = this.fetchVideo();
   }
 
-  getChannel() {
-    return this.channels[this.currentChannel];
-  }
-
   getTooltip(title: string, uploader: string): string {
-    return `Now Playing: ${title} by ${uploader} on the ${this.getChannel()} channel.`;
+    return `Now Playing: ${title} by ${uploader} on the ${this.currentChannel.name} channel.`;
   }
 
   private fetchVideo(): Observable<VideoData> {
     // Fetch a random video directly from archive.org via ArchiveService.
     // retry(5) handles transient network failures; degenerate-page retries
     // are absorbed inside the service (up to 3 page attempts).
-    return this.archive.randomVideo(this.getChannel()).pipe(retry(5));
+    return this.archive.randomVideo(this.currentChannel).pipe(retry(5));
   }
 }

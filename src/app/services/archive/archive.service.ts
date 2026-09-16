@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { type Observable, throwError, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
-import { CHANNELS } from './channels';
+import { type Channel } from './channels';
 import { ACCEPTED_VIDEO_FORMATS } from './archive-formats';
 
 /**
@@ -67,11 +67,8 @@ export class ArchiveService {
    * Uses archive.org's `page` parameter for randomness — `sort[]=random` is a
    * fixed Solr permutation and `start` is silently ignored by advancedsearch.php.
    */
-  randomVideo(channel: string): Observable<Video> {
-    const collections = CHANNELS[channel];
-    if (!collections) {
-      return throwError(() => new Error(`Unknown channel: ${channel}`));
-    }
+  randomVideo(channel: Channel): Observable<Video> {
+    const collections = channel.collections;
     const collection =
       collections[Math.floor(Math.random() * collections.length)];
     const query = `mediatype:movies AND collection:${collection}`;
