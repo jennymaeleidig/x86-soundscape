@@ -39,19 +39,21 @@ function recordingsIn(dir: string, prefix = ''): string[] {
 }
 
 describe('The Ambience sound library', () => {
-  it('declares a path and a name for every Sound', () => {
+  it('declares a path, a name and a creator for every Sound', () => {
     for (const sound of ambienceSounds) {
       expect(sound.path.trim()).not.toBe('');
       expect(sound.name.trim()).not.toBe('');
+      expect(sound.creator.trim()).not.toBe('');
     }
   });
 
   it('credits the collection each recording came from', () => {
-    // The name is what the listener reads, so the credit lives in it: the folder
-    // a recording sits in is who published it.
+    // The creator is a credit, so it is written by hand and spelled for a
+    // listener; the folder it sits in is still where the recording came from,
+    // so the two must agree.
     const uncredited = ambienceSounds.filter((sound) => {
-      const creator = sound.path.split('/').at(-2)!.replaceAll('_', ' ');
-      return !sound.name.endsWith(`, from ${creator}`);
+      const collection = sound.path.split('/').at(-2)!.replaceAll('_', ' ');
+      return sound.creator !== collection;
     });
 
     expect(uncredited).toEqual([]);

@@ -38,7 +38,8 @@
               >Source Code</a
             >
           </li>
-          <li role="menu-item" class="divider"><a>Other Spaces</a></li>
+          <li role="menu-item" class="readout"><a>Other Spaces</a></li>
+          <hr />
           <li role="menu-item">
             <a
               href="https://dj-x86.straw.page/"
@@ -97,7 +98,10 @@
             >
               <ng-template>
                 <div [title]="ambienceName()" class="item">
-                  {{ ambienceName() }}
+                  <span class="name">{{ ambienceName() }}</span>
+                  <span *ngIf="ambienceCredit()" class="credit ml-2">
+                    {{ ambienceCredit() }}
+                  </span>
                 </div>
               </ng-template>
             </om-marquee>

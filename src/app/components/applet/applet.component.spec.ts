@@ -17,7 +17,12 @@ import { WinampService } from '../../services/winamp/winamp.service';
 const SOUND: Sound = {
   path: 'assets/audio/sounds/ARNO/some-recording.mp3',
   name: 'Macintosh Classic II — startup chime and floppy drive',
+  creator: 'ARNO',
 };
+
+/** What the Applet says the Sound is, with the credit the listener owes it. */
+const CREDITED =
+  'Macintosh Classic II — startup chime and floppy drive, from ARNO';
 
 const AMBIENCE_OFF_ICON = 'assets/images/ambience_off.png';
 const AMBIENCE_ON_ICON = 'assets/images/ambience_on.png';
@@ -77,25 +82,25 @@ describe('AppletComponent on Ambience', () => {
     expect(label()).toBe('Nothing playing');
   });
 
-  it('reports ON and names the Sound while the Sound is audible', () => {
+  it('reports ON and names the Sound, crediting it, while the Sound is audible', () => {
     show({ sound: SOUND, volume: 0.5, muted: false, playing: true });
 
     expect(icon()).toContain(AMBIENCE_ON_ICON);
-    expect(label()).toBe(SOUND.name);
+    expect(label()).toBe(CREDITED);
   });
 
   it('reports OFF for silence by mute, keeps the name, and says which way the sound is going', () => {
     show({ sound: SOUND, volume: 0.5, muted: true, playing: true });
 
     expect(icon()).toContain(AMBIENCE_OFF_ICON);
-    expect(label()).toBe(`Muted — ${SOUND.name}`);
+    expect(label()).toBe(`Muted — ${CREDITED}`);
   });
 
   it('reports OFF for silence by a stopped element, and still names the Sound', () => {
     show({ sound: SOUND, volume: 0.5, muted: false, playing: false });
 
     expect(icon()).toContain(AMBIENCE_OFF_ICON);
-    expect(label()).toBe(SOUND.name);
+    expect(label()).toBe(CREDITED);
   });
 
   it('clicks the audibility toggle, never the stop it used to be', () => {

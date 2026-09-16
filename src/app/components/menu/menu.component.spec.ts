@@ -57,8 +57,14 @@ describe('MenuComponent on Ambience', () => {
   /** The name the marquee shows, which is the first of its four copies. */
   const name = (): string =>
     fixture.debugElement
-      .query(By.css('om-marquee .item'))
+      .query(By.css('om-marquee .item .name'))
       .nativeElement.textContent.trim();
+
+  /** The credit beside the name, when a Sound is held. */
+  const credit = (): string | null => {
+    const shown = fixture.debugElement.query(By.css('om-marquee .credit'));
+    return shown ? shown.nativeElement.textContent.trim() : null;
+  };
 
   const press = (text: string) => {
     reading(text).triggerEventHandler('click', {});
@@ -167,12 +173,15 @@ describe('MenuComponent on Ambience', () => {
     expect(FakeAudio.built).toHaveLength(1);
   });
 
-  it("shows the Sound's own name, and the same nothing-held text the Applet shows", () => {
+  it("shows the Sound's own name and who recorded it, and the same nothing-held text the Applet shows", () => {
     expect(name()).toBe('Nothing playing');
+    // Nothing held, nothing to credit.
+    expect(credit()).toBeNull();
 
     press('Unmute');
     expect(name()).toBe(ambience.state().sound?.name);
     expect(name()).not.toBe('Nothing playing');
+    expect(credit()).toBe(`from ${ambience.state().sound?.creator}`);
   });
 
   it('keeps Play, Stop, Shuffle and Volume working against the published state, Stop holding the Sound for Play', () => {

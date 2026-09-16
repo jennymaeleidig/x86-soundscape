@@ -11,6 +11,7 @@ import { AmbienceService } from '../../services/ambience/ambience';
 import {
   levelLabel,
   muteActionLabel,
+  soundCredit,
   soundName,
 } from '../../services/ambience/ambience-labels';
 export const DEFAULT_TITLE = 'N / A';
@@ -47,11 +48,12 @@ export class MenuComponent {
   readonly ambienceState = this.ambienceService.state;
 
   /**
-   * The three things the Menu says about Ambience, all derived from that one
-   * state: the Sound's own name, the level the Volume items move, and the mute
-   * item labelled with the action pressing it performs.
+   * What the Menu says about Ambience, all derived from that one state: the
+   * Sound's own name and who recorded it, the level the Volume items move, and
+   * the mute item labelled with the action pressing it performs.
    */
   readonly ambienceName = computed(() => soundName(this.ambienceState()));
+  readonly ambienceCredit = computed(() => soundCredit(this.ambienceState()));
   readonly ambienceLevel = computed(() => levelLabel(this.ambienceState()));
   readonly muteAction = computed(() => muteActionLabel(this.ambienceState()));
 

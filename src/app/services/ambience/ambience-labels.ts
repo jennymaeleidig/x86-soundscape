@@ -19,6 +19,17 @@ export function soundName(state: AmbienceState): string {
   return state.sound?.name ?? NOTHING_PLAYING;
 }
 
+/** The held Sound's creator, as the credit both surfaces show beside the name. */
+export function soundCredit(state: AmbienceState): string {
+  return state.sound ? `from ${state.sound.creator}` : '';
+}
+
+/** The name with its credit, for the places that read as one line. */
+export function creditedName(state: AmbienceState): string {
+  const credit = soundCredit(state);
+  return credit ? `${soundName(state)}, ${credit}` : soundName(state);
+}
+
 /** The Menu's level, as the number the Volume + and − items move. */
 export function levelLabel(state: AmbienceState): string {
   return `Volume: ${levelPercent(state.volume)}%`;
@@ -30,12 +41,12 @@ export function muteActionLabel(state: AmbienceState): string {
 }
 
 /**
- * The Applet's label: the mute, and the Sound it is holding. The icon answers
- * the other question — is any sound coming out — so a latched mute shows here
- * while the icon has already gone dark.
+ * The Applet's label: the mute, and the Sound it is holding, credited. The icon
+ * answers the other question — is any sound coming out — so a latched mute shows
+ * here while the icon has already gone dark.
  */
 export function appletLabel(state: AmbienceState): string {
   return state.muted && state.sound
-    ? `Muted — ${state.sound.name}`
-    : soundName(state);
+    ? `Muted — ${creditedName(state)}`
+    : creditedName(state);
 }
