@@ -5,6 +5,11 @@
   "projects": {
     "x86-soundscape": {
       "projectType": "application",
+      "cli": {
+        "cache": {
+          "enabled": false
+        }
+      },
       "schematics": {},
       "root": "",
       "sourceRoot": "src",
