@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import Webamp from 'webamp';
-import Stations, { Station } from '../../../assets/audio/stations';
+import Stations from '../../../assets/audio/stations';
 import { NowPlayingService } from '../now-playing/now-playing.service';
 import { playbackState$ } from './playback-state';
+import { wireTuneGate } from './tune-gate';
 
 @Injectable({
   providedIn: 'root',
@@ -36,21 +37,29 @@ export class WinampService {
   });
 
   /**
-   * Tune Now Playing to the Station a track plays, and stop it when playback
-   * holds no Station; `tune` tears the previous tracking down itself.
+   * The player drives Now Playing: a track change tunes the Station it
+   * carries, and the playback state gates the tune — playing resumes the
+   * poller, pausing suspends it with the reading standing, and none (stop,
+   * close, the stream's end) stops it and clears the bar. The hook's "no
+   * track" fires for a pause and a stop alike, so it decides nothing here.
+   *
+   * This is the wiring's release handle: it unsubscribes the playback state
+   * and the engine's track-change hook together. Kept, not dropped — what
+   * the service owns, it can take back.
    */
-  unsubFromTrackChange = this.webamp.onTrackDidChange((track) => {
-    const station = track
-      ? Stations.stations.find((station: Station) => station.url === track.url)
-      : undefined;
-    if (station) {
-      this.nowPlayingService.tune(station);
-    } else {
-      this.nowPlayingService.stop();
-    }
-  });
+  private unsubTuneGate: { unsubscribe(): void };
 
-  constructor(private nowPlayingService: NowPlayingService) {}
+  constructor(private nowPlayingService: NowPlayingService) {
+    // Wired in the body, not a field initializer: the gate is handed the
+    // `nowPlayingService` parameter property, and the body runs after the
+    // emit assigns it — safe under either class-field semantics.
+    this.unsubTuneGate = wireTuneGate(
+      this.webamp,
+      this.playbackState$,
+      Stations.stations,
+      this.nowPlayingService,
+    );
+  }
 
   /**
    * Must be called before renderWebamp().

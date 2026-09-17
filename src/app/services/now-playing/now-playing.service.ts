@@ -37,14 +37,19 @@ export class NowPlayingService {
   private generation = 0;
   private pollTimer: ReturnType<typeof setTimeout> | undefined;
   private wake: (() => void) | undefined;
-  /** What the chain polls; set by tune, kept across suspend. */
-  private run: Run | undefined;
+  /**
+   * The live chain: what it polls, and whether it is parked. No chain is
+   * `undefined` — there is nothing to park, and a parked chain is never
+   * restarted by anything but resume.
+   */
+  private chain: { run: Run; parked: boolean } | undefined;
   /** Whether the current run's attempts have been failing, for the one log. */
   private failing = false;
 
   /** Tears any previous tracking down itself, and always restarts. */
   tune(station: Station): void {
     this.teardown();
+    this.chain = undefined; // whatever replaces it runs, parked or not
     const generation = ++this.generation;
     // Published immediately, for every kind: the descriptor is the reading
     // until a payload yields a track.
@@ -53,33 +58,46 @@ export class NowPlayingService {
     if (!parser) {
       // 'none' means never polls: descriptor forever, no request.
       this.endRun();
-      this.run = undefined;
       return;
     }
-    this.run = { station, parser };
+    this.chain = { run: { station, parser }, parked: false };
     this.failing = false;
     void this.track(generation, station, parser);
   }
 
   stop(): void {
     this.endRun();
-    this.run = undefined; // a stopped tune is not resumed
+    this.chain = undefined; // a stopped tune is not resumed
     this.current.next(undefined);
   }
 
-  /** Parks the chain: no more attempts, last published value stands. */
+  /**
+   * Parks the chain: no more attempts, last published value stands. Nothing
+   * tuned holds no chain, and there is nothing to park.
+   */
   suspend(): void {
+    if (!this.chain) {
+      return;
+    }
     this.endRun();
+    this.chain.parked = true;
   }
 
-  /** Restarts a suspended tune with an immediate attempt, so nothing is stale. */
+  /**
+   * Restarts a parked tune with an immediate attempt, so nothing is stale
+   * at the moment it matters. A chain that is running is left alone: in the
+   * common gesture the hook tunes and the state lands on playing right after,
+   * and the fresh tune's own immediate attempt is the fresh tick — a restart
+   * here would cancel it and send a duplicate request.
+   */
   resume(): void {
-    const run = this.run;
-    if (!run) {
+    const { chain } = this;
+    if (!chain || !chain.parked) {
       return;
     }
     const generation = this.endRun();
-    void this.track(generation, run.station, run.parser);
+    chain.parked = false;
+    void this.track(generation, chain.run.station, chain.run.parser);
   }
 
   /**

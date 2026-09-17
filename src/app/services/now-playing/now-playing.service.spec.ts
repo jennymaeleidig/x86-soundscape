@@ -1,84 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
 import Stations from '../../../assets/audio/stations';
+import { FakeTransport } from '../../../testing/fake-transport';
+import { drainMicrotasks, flush, withFakeTimers } from '../../../testing/flush';
+import { icyPayload, plainStation } from '../../../testing/icy';
 import { NowPlayingService } from './now-playing.service';
 import { NowPlaying } from './parsers';
-import { NowPlayingSource } from './transport';
 import { NowPlayingTransport } from './transport';
 
-/**
- * The transport doubles the spec hands responses to: each queued answer is
- * handed out in turn, and a pending answer can be resolved by hand, so a
- * payload can be made to land after its tune ended.
- */
-class FakeTransport extends NowPlayingTransport {
-  sources: NowPlayingSource[] = [];
-  cancelled = 0;
-  private answers: Promise<unknown | undefined>[] = [];
-
-  queue(...answers: (unknown | undefined)[] | Promise<unknown | undefined>[]) {
-    this.answers.push(
-      ...answers.map((answer) =>
-        answer instanceof Promise ? answer : Promise.resolve(answer),
-      ),
-    );
-  }
-
-  /** An answer the spec resolves by hand, so a payload can land late. */
-  deferred(): {
-    promise: Promise<unknown | undefined>;
-    resolve: (value: unknown) => void;
-  } {
-    let resolve!: (value: unknown) => void;
-    return {
-      promise: new Promise((settled) => (resolve = settled)),
-      resolve,
-    };
-  }
-
-  fetch(source: NowPlayingSource): Promise<unknown | undefined> {
-    this.sources.push(source);
-    return this.answers.shift() ?? Promise.resolve(undefined);
-  }
-
-  cancel(): void {
-    this.cancelled++;
-  }
-}
-
-const icyPayload = (streamTitle: string) => ({
-  icy: { StreamTitle: streamTitle },
-});
 const azuracastPayload = (artist: string, title: string) => ({
   now_playing: { song: { artist, title } },
 });
 const icestatsPayload = (entry: unknown) => ({
   icestats: { source: entry },
 });
-
-/** The plain-icy Station most cadence specs tune. */
-const plainStation = () =>
-  Stations.stations.find((candidate) => !candidate.metadataParser)!;
-
-/**
- * Run a body under jest's fake timers: the chain's rest timer is jest's, so
- * only promises are drained inside and the spec advances the clock by hand.
- */
-async function withFakeTimers(body: () => Promise<void>): Promise<void> {
-  jest.useFakeTimers();
-  try {
-    await body();
-  } finally {
-    jest.useRealTimers();
-  }
-}
-
-/** Run the chain's microtasks; its timer is jest's, advanced by hand. */
-const drainMicrotasks = async () => {
-  for (let i = 0; i < 20; i++) {
-    await Promise.resolve();
-  }
-};
 
 describe('NowPlayingService', () => {
   let service: NowPlayingService;
@@ -99,9 +34,6 @@ describe('NowPlayingService', () => {
     });
     service = TestBed.inject(NowPlayingService);
   });
-
-  /** Let the attempt's promise, and the chain reading it, run to the end. */
-  const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
   it('shows the Station descriptor at once, for every kind, before any payload arrives', async () => {
     const kinds = Stations.stations.filter((station) => station.metadataParser);
@@ -252,6 +184,43 @@ describe('NowPlayingService', () => {
       expect(transport.sources.length).toBe(2); // immediate on resume
       await drainMicrotasks();
       expect(seen.at(-1)).toEqual({ artist: 'Fresh', title: 'Track' });
+    });
+  });
+
+  it('resume restarts only a parked chain: a running chain is left alone, and an untuned service stays quiet', async () => {
+    await withFakeTimers(async () => {
+      // Nothing tuned: the gate's resume on a playing state adds no attempt.
+      service.resume();
+      expect(transport.sources).toEqual([]);
+
+      // The common gesture: the hook tunes, then the state lands on playing.
+      // The tune's own immediate attempt is the fresh tick; resume adds none.
+      const station = plainStation();
+      transport.queue(icyPayload('Artist - Title'));
+      service.tune(station);
+      await drainMicrotasks();
+
+      service.resume();
+      expect(transport.sources.length).toBe(1);
+    });
+  });
+
+  it('a tune that follows a suspension runs on its own: the playing state that lands after adds nothing', async () => {
+    await withFakeTimers(async () => {
+      const station = plainStation();
+      const seen = await readings();
+      transport.queue(icyPayload('First - Track'));
+      service.tune(station);
+      await drainMicrotasks();
+
+      service.suspend();
+      transport.queue(icyPayload('Second - Track'));
+      service.tune(station); // the skip re-tunes
+      await drainMicrotasks();
+      expect(seen.at(-1)).toEqual({ artist: 'Second', title: 'Track' });
+
+      service.resume(); // the playing state the skip produced
+      expect(transport.sources.length).toBe(2); // the re-tune's attempt, not a third
     });
   });
 

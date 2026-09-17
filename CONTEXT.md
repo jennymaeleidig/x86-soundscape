@@ -28,9 +28,16 @@ _Avoid_: transport state, media status, player status
 
 **Suspend / Resume** (Now Playing):
 Parking the metadata poll chain while a tuned Station keeps streaming: `suspend` stops further attempts and
-keeps the last published Now Playing; `resume` restarts the chain with an immediate attempt. Distinct from
-Playback state — suspending follows the player's gate, not the audio.
+keeps the last published Now Playing; `resume` restarts only a parked chain, with an immediate attempt — a
+chain that is already running is left alone. Distinct from Playback state — suspending follows the player's
+gate, not the audio.
 _Avoid_: pause (that's Playback state), sleep
+
+**Tune gate**:
+The one wiring by which the player drives Now Playing: the track-change hook tunes the Station it carries,
+and the playback state gates the tune — playing resumes, pausing suspends, none stops. The gate is
+suspend/resume and nothing else; Now Playing holds no reference to the player.
+_Avoid_: sync, binding, observer
 
 **Feature**:
 An actionable unit in the system. A Feature may have a desktop Applet, open a Window, and/or trigger an Action.
