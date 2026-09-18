@@ -1,26 +1,38 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, InjectionToken } from '@angular/core';
 import Webamp from 'webamp';
 import Stations from '../../../assets/audio/stations';
 import { NowPlayingService } from '../now-playing/now-playing.service';
+import { ensurePaused, ensurePlaying } from './ensure';
 import { playbackState$ } from './playback-state';
 import { wireTuneGate } from './tune-gate';
+
+/**
+ * The engine, as the wrapper and the wiring see it: the Webamp instance and
+ * everything it publishes. Built by the token's factory in the app; a spec
+ * provides its own double, so the transport guard can be asserted against a
+ * recorded engine rather than a real one.
+ */
+export const WEBAMP_ENGINE = new InjectionToken<Engine>('webamp engine', {
+  providedIn: 'root',
+  factory: () =>
+    new Webamp({
+      initialTracks: Stations.stations,
+      initialSkin: {
+        url: 'assets/skins/classic_mac_v1.wsz',
+      },
+      availableSkins: [{ url: 'assets/skins/Old_Mac-OS.wsz', name: 'MacOS' }],
+      zIndex: 15,
+      enableMediaSession: true,
+    }),
+});
+
+/** The player's engine: one Webamp instance, the only authority on audio. */
+type Engine = InstanceType<typeof Webamp>;
 
 @Injectable({
   providedIn: 'root',
 })
 export class WinampService {
-  /**
-   * Initialize webamp
-   */
-  webamp = new Webamp({
-    initialTracks: Stations.stations,
-    initialSkin: {
-      url: 'assets/skins/classic_mac_v1.wsz',
-    },
-    availableSkins: [{ url: 'assets/skins/Old_Mac-OS.wsz', name: 'MacOS' }],
-    zIndex: 15,
-    enableMediaSession: true,
-  });
   rootElement!: HTMLElement;
 
   /**
@@ -49,7 +61,10 @@ export class WinampService {
    */
   private unsubTuneGate: { unsubscribe(): void };
 
-  constructor(private nowPlayingService: NowPlayingService) {
+  constructor(
+    @Inject(WEBAMP_ENGINE) private readonly webamp: Engine,
+    private nowPlayingService: NowPlayingService,
+  ) {
     // Wired in the body, not a field initializer: the gate is handed the
     // `nowPlayingService` parameter property, and the body runs after the
     // emit assigns it — safe under either class-field semantics.
@@ -86,12 +101,19 @@ export class WinampService {
     this.webamp.play();
   }
 
+  /**
+   * The transport commands are ensured, not sent: the guard reads the
+   * engine's status and decides, so neither the Menu nor any other surface
+   * has to. The engine's own `play` restarts a running track and its `pause`
+   * toggles, and both live behind the guard — `next()` and `prev()` stay
+   * pass-through, the engine auto-playing a track it tunes.
+   */
   play() {
-    this.webamp.play();
+    ensurePlaying(this.webamp.getPlayerMediaStatus(), this.webamp);
   }
 
   pause() {
-    this.webamp.pause();
+    ensurePaused(this.webamp.getPlayerMediaStatus(), this.webamp);
   }
 
   prev() {
