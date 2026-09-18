@@ -26,6 +26,12 @@ Whether audio is running: playing, paused, or none. Distinct from Tune — a pau
 player that has stopped is not tuned at all.
 _Avoid_: transport state, media status, player status
 
+**Media Session**:
+The browser's OS media widget (`navigator.mediaSession`): its metadata and playback state, and the play,
+pause, previous and next controls it offers. One adapter writes both properties, following Now Playing and
+the Playback state; seek controls are not offered, because a live stream has no position to seek to.
+_Avoid_: OS widget (say Media Session), media controls
+
 **Suspend / Resume** (Now Playing):
 Parking the metadata poll chain while a tuned Station keeps streaming: `suspend` stops further attempts and
 keeps the last published Now Playing; `resume` restarts only a parked chain, with an immediate attempt — a

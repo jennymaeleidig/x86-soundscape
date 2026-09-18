@@ -3,8 +3,10 @@ import Webamp from 'webamp';
 import Stations from '../../../assets/audio/stations';
 import { NowPlayingService } from '../now-playing/now-playing.service';
 import { ensurePaused, ensurePlaying } from './ensure';
+import { MEDIA_SESSION, wireMediaSession } from './media-session';
 import { playbackState$ } from './playback-state';
 import { wireTuneGate } from './tune-gate';
+import type { MediaSessionSurface } from './media-session';
 
 /**
  * The engine, as the wrapper and the wiring see it: the Webamp instance and
@@ -22,7 +24,10 @@ export const WEBAMP_ENGINE = new InjectionToken<Engine>('webamp engine', {
       },
       availableSkins: [{ url: 'assets/skins/Old_Mac-OS.wsz', name: 'MacOS' }],
       zIndex: 15,
-      enableMediaSession: true,
+      // The engine's own media-session integration stays off: the adapter in
+      // `media-session.ts` is the widget's one writer, and a second one
+      // behind the engine's back would fight it for the metadata.
+      enableMediaSession: false,
     }),
 });
 
@@ -60,10 +65,14 @@ export class WinampService {
    * the service owns, it can take back.
    */
   private unsubTuneGate: { unsubscribe(): void };
+  /** The Media Session adapter's handle, kept like its sibling above. */
+  private unsubMediaSession: { unsubscribe(): void };
 
   constructor(
     @Inject(WEBAMP_ENGINE) private readonly webamp: Engine,
     private nowPlayingService: NowPlayingService,
+    @Inject(MEDIA_SESSION)
+    private readonly mediaSession: MediaSessionSurface | undefined,
   ) {
     // Wired in the body, not a field initializer: the gate is handed the
     // `nowPlayingService` parameter property, and the body runs after the
@@ -73,6 +82,16 @@ export class WinampService {
       this.playbackState$,
       Stations.stations,
       this.nowPlayingService,
+    );
+    // The Media Session's one writer: it follows Now Playing and the
+    // playback state this service publishes, and its buttons land on this
+    // service's guarded transport. The session comes from the token — a
+    // browser without the API passes nothing, and the adapter stands down.
+    this.unsubMediaSession = wireMediaSession(
+      this.nowPlayingService.nowPlaying$,
+      this.playbackState$,
+      this,
+      this.mediaSession,
     );
   }
 

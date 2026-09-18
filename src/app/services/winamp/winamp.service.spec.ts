@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { FakeTransport } from '../../../testing/fake-transport';
+import { FakeMediaSession } from '../../../testing/fake-media-session';
+import { MEDIA_SESSION } from './media-session';
 import { NowPlayingTransport } from '../now-playing/transport';
 import { WEBAMP_ENGINE, WinampService } from './winamp.service';
 import type { EnginePlaybackStatus } from './playback-state';
@@ -38,18 +40,22 @@ class FakeEngine {
 }
 
 let engine: FakeEngine;
+let mediaSession: FakeMediaSession;
 
 describe('WinampService transport commands', () => {
   let service: WinampService;
 
   beforeEach(() => {
     engine = new FakeEngine();
+    mediaSession = new FakeMediaSession();
     TestBed.configureTestingModule({
       providers: [
         { provide: WEBAMP_ENGINE, useValue: engine },
         // The tune gate follows real wires into Now Playing; only the
         // transport it polls the streams with is a double.
         { provide: NowPlayingTransport, useValue: new FakeTransport() },
+        // The adapter writes to this session; the spec fires its handlers.
+        { provide: MEDIA_SESSION, useValue: mediaSession },
       ],
     });
     service = TestBed.inject(WinampService);
@@ -82,5 +88,22 @@ describe('WinampService transport commands', () => {
     service.next();
     service.prev();
     expect(engine.calls).toEqual(['next', 'prev']);
+  });
+
+  it('installs the OS widget’s play, pause, previous and next — and no seek handler', () => {
+    expect([...mediaSession.handlers.keys()].sort()).toEqual([
+      'nexttrack',
+      'pause',
+      'play',
+      'previoustrack',
+    ]);
+  });
+
+  it('the OS widget’s Pause cannot resume an already paused player', () => {
+    engine.status = 'PLAYING';
+    mediaSession.handlers.get('pause')!();
+    engine.status = 'PAUSED';
+    mediaSession.handlers.get('pause')!();
+    expect(engine.calls).toEqual(['pause']);
   });
 });
