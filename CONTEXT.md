@@ -18,7 +18,8 @@ _Avoid_: fallback metadata, track metadata
 
 **Tune** / **tuned**:
 The Station the player is streaming. A Station that is merely listed in the playlist is not tuned. A Station
-stays tuned while playback is paused, and stops being tuned when playback stops.
+stays tuned while playback is paused, and stops being tuned when playback stops. A player that has never been
+tuned holds no source, so Play on it tunes rather than plays.
 _Avoid_: play, select, load, current track
 
 **Playback state**:

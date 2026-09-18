@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import Stations from '../../../assets/audio/stations';
+import { FakeMediaElement } from '../../../testing/fake-media-element';
 import { FakeTransport } from '../../../testing/fake-transport';
 import { FakeMediaSession } from '../../../testing/fake-media-session';
 import { MEDIA_SESSION } from './media-session';
@@ -14,11 +16,20 @@ import type { EnginePlaybackStatus } from './playback-state';
 class FakeEngine {
   status: EnginePlaybackStatus = 'STOPPED';
   calls: string[] = [];
+  private trackCallback: ((track: { url: string } | null) => void) | undefined;
   getPlayerMediaStatus(): EnginePlaybackStatus {
     return this.status;
   }
   play(): void {
     this.calls.push('play');
+  }
+  setTracksToPlay(): void {
+    this.calls.push('setTracks');
+  }
+
+  /** Fires the track-change hook the tune gate follows, the engine's way. */
+  emitTrack(url: string): void {
+    this.trackCallback?.({ url });
   }
   pause(): void {
     this.calls.push('pause');
@@ -36,7 +47,10 @@ class FakeEngine {
     this.calls.push('stop');
   }
   store = { subscribe: () => () => undefined };
-  onTrackDidChange = () => () => undefined;
+  onTrackDidChange(cb: (track: { url: string } | null) => void): () => void {
+    this.trackCallback = cb;
+    return () => undefined;
+  }
 }
 
 let engine: FakeEngine;
@@ -70,6 +84,7 @@ describe('WinampService transport commands', () => {
   });
 
   it('lets a second Play stand — it does not restart', () => {
+    engine.emitTrack(Stations.stations[0].url); // a Station tuned first
     engine.status = 'PAUSED';
     service.play();
     engine.status = 'PLAYING';
@@ -78,9 +93,15 @@ describe('WinampService transport commands', () => {
   });
 
   it('reopens a closed player before playing', () => {
+    engine.emitTrack(Stations.stations[0].url); // a Station tuned first
     engine.status = 'CLOSED';
     service.play();
     expect(engine.calls).toEqual(['reopen', 'play']);
+  });
+
+  it('Play before any gesture tunes the first Station and plays it', () => {
+    service.play();
+    expect(engine.calls).toEqual(['reopen', 'setTracks', 'play']);
   });
 
   it('passes Next and Previous through untouched while paused — the engine tunes and auto-plays the track itself', () => {
@@ -105,5 +126,43 @@ describe('WinampService transport commands', () => {
     engine.status = 'PAUSED';
     mediaSession.handlers.get('pause')!();
     expect(engine.calls).toEqual(['pause']);
+  });
+});
+
+/**
+ * The one behaviour asserted against the outside world: no media request is
+ * issued before the gesture. The engine double above cannot say that — the
+ * request lives in the audio element the real engine builds — so these specs
+ * run the token's real factory behind a recording media element.
+ */
+describe('WinampService opens no stream before a gesture', () => {
+  let service: WinampService;
+
+  beforeEach(() => {
+    FakeMediaElement.install();
+    TestBed.configureTestingModule({
+      // No engine double: the factory's construction and playlist fill are
+      // part of what is asserted. The only network the tune gate could reach
+      // is the transport, which stays a double.
+      providers: [
+        { provide: NowPlayingTransport, useValue: new FakeTransport() },
+      ],
+    });
+    service = TestBed.inject(WinampService);
+  });
+
+  afterEach(() => {
+    FakeMediaElement.restore();
+  });
+
+  it('constructing the player performs no media request, and the playlist still lists every Station', () => {
+    expect(FakeMediaElement.requests).toEqual([]);
+    const engine = TestBed.inject(WEBAMP_ENGINE);
+    expect(engine.getPlaylistTracks().length).toBe(Stations.stations.length);
+  });
+
+  it('the first Play is the gesture: it tunes the first Station and is the first media request', () => {
+    service.play();
+    expect(FakeMediaElement.requests).toEqual([Stations.stations[0].url]);
   });
 });

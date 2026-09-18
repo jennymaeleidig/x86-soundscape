@@ -16,9 +16,12 @@ import type { MediaSessionSurface } from './media-session';
  */
 export const WEBAMP_ENGINE = new InjectionToken<Engine>('webamp engine', {
   providedIn: 'root',
-  factory: () =>
-    new Webamp({
-      initialTracks: Stations.stations,
+  factory: () => {
+    // No initial tracks: constructing the player must perform no media
+    // request, and no row may read as current before a gesture. The playlist
+    // is filled from the Station list instead, below.
+    const engine = new Webamp({
+      initialTracks: [],
       initialSkin: {
         url: 'assets/skins/classic_mac_v1.wsz',
       },
@@ -28,7 +31,20 @@ export const WEBAMP_ENGINE = new InjectionToken<Engine>('webamp engine', {
       // `media-session.ts` is the widget's one writer, and a second one
       // behind the engine's back would fight it for the metadata.
       enableMediaSession: false,
-    }),
+    });
+    // Every Station declares both its duration and its metadata, so the
+    // playlist fill is the no-fetch load style — nothing is lazy-loaded —
+    // and the playlist window lists every Station on load, with no row
+    // reading as current until a real gesture tunes one.
+    engine.appendTracks(Stations.stations);
+    // The playlist repeats: Next on the last Station wraps to the first
+    // rather than ending the broadcast — the engine's own flag, not wrap
+    // code of ours. Repeat defaults to off, so one toggle turns it on.
+    if (!engine.isRepeatEnabled()) {
+      engine.toggleRepeat();
+    }
+    return engine;
+  },
 });
 
 /** The player's engine: one Webamp instance, the only authority on audio. */
@@ -68,6 +84,15 @@ export class WinampService {
   /** The Media Session adapter's handle, kept like its sibling above. */
   private unsubMediaSession: { unsubscribe(): void };
 
+  /**
+   * Whether a Station has ever been tuned by a real gesture. The fact lives
+   * here — the player, where the playback state it gates is owned — and is
+   * recorded by the tune gate as it forwards the tune, not reinvented from
+   * the engine's status: a player that has never been tuned has no source
+   * for the engine to reach.
+   */
+  private everTuned = false;
+
   constructor(
     @Inject(WEBAMP_ENGINE) private readonly webamp: Engine,
     private nowPlayingService: NowPlayingService,
@@ -81,7 +106,17 @@ export class WinampService {
       this.webamp,
       this.playbackState$,
       Stations.stations,
-      this.nowPlayingService,
+      // The gate forwards to Now Playing and records the tune here on the
+      // way through: a tune that arrived was a real gesture's tune.
+      {
+        tune: (station) => {
+          this.everTuned = true;
+          this.nowPlayingService.tune(station);
+        },
+        stop: () => this.nowPlayingService.stop(),
+        suspend: () => this.nowPlayingService.suspend(),
+        resume: () => this.nowPlayingService.resume(),
+      },
     );
     // The Media Session's one writer: it follows Now Playing and the
     // playback state this service publishes, and its buttons land on this
@@ -128,6 +163,16 @@ export class WinampService {
    * pass-through, the engine auto-playing a track it tunes.
    */
   play() {
+    // No Station has ever been tuned: the engine holds no source, and play
+    // on it would reach the media element with no stream, swallow the
+    // rejection and mark itself playing — silence under a title bar that
+    // lies. Delegating to tuning tunes the first Station and plays it; the
+    // first play buffers for a moment rather than resuming a warm buffer,
+    // which is the accepted cost of no connection before the listener asks.
+    if (!this.everTuned) {
+      this.playRadio();
+      return;
+    }
     ensurePlaying(this.webamp.getPlayerMediaStatus(), this.webamp);
   }
 

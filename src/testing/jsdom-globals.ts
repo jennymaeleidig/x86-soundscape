@@ -35,3 +35,80 @@ class NoopIntersectionObserver {
 }
 
 globals['IntersectionObserver'] ??= NoopIntersectionObserver;
+
+/**
+ * A Web Audio context that builds inert nodes: webamp's media stack constructs
+ * its AudioContext at engine construction, and jsdom has none. Nothing here
+ * produces sound — it exists so the engine can be built, and so a spec can
+ * observe what reaches the audio element rather than what the graph does.
+ */
+function inertAudioNode(): Record<string, unknown> {
+  const node: Record<string, unknown> = {
+    connect: () => node,
+    disconnect: () => undefined,
+    gain: { value: 1 },
+    frequency: { value: 0 },
+    balance: { value: 0 },
+    type: '',
+    fftSize: 0,
+    smoothingTimeConstant: 0,
+    getByteFrequencyData: () => undefined,
+    getByteTimeDomainData: () => undefined,
+  };
+  return node;
+}
+
+class NoopAudioContext {
+  state = 'running';
+  currentTime = 0;
+  sampleRate = 44100;
+  destination = inertAudioNode();
+  resume(): Promise<void> {
+    return Promise.resolve();
+  }
+  createGain(): Record<string, unknown> {
+    return inertAudioNode();
+  }
+  createAnalyser(): Record<string, unknown> {
+    return inertAudioNode();
+  }
+  createBiquadFilter(): Record<string, unknown> {
+    return inertAudioNode();
+  }
+  createStereoPanner(): Record<string, unknown> {
+    return inertAudioNode();
+  }
+  createMediaElementSource(): Record<string, unknown> {
+    return inertAudioNode();
+  }
+  createChannelSplitter(): Record<string, unknown> {
+    return inertAudioNode();
+  }
+  createChannelMerger(): Record<string, unknown> {
+    return inertAudioNode();
+  }
+  createWaveShaper(): Record<string, unknown> {
+    return inertAudioNode();
+  }
+  createDelay(): Record<string, unknown> {
+    return inertAudioNode();
+  }
+  createDynamicsCompressor(): Record<string, unknown> {
+    return inertAudioNode();
+  }
+  createOscillator(): Record<string, unknown> {
+    return inertAudioNode();
+  }
+}
+
+globals['AudioContext'] ??= NoopAudioContext;
+// webamp patches node wiring through the real AudioNode prototype's connect
+// and disconnect, so the stub must carry them.
+globals['AudioNode'] ??= class NoopAudioNode {
+  connect(): unknown {
+    return undefined;
+  }
+  disconnect(): unknown {
+    return undefined;
+  }
+};
