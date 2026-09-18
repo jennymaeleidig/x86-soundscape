@@ -87,18 +87,6 @@ class NoopAudioContext {
   createChannelMerger(): Record<string, unknown> {
     return inertAudioNode();
   }
-  createWaveShaper(): Record<string, unknown> {
-    return inertAudioNode();
-  }
-  createDelay(): Record<string, unknown> {
-    return inertAudioNode();
-  }
-  createDynamicsCompressor(): Record<string, unknown> {
-    return inertAudioNode();
-  }
-  createOscillator(): Record<string, unknown> {
-    return inertAudioNode();
-  }
 }
 
 globals['AudioContext'] ??= NoopAudioContext;

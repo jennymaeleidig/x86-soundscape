@@ -1,11 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { firstValueFrom } from 'rxjs';
 import Stations from '../../../assets/audio/stations';
 import { FakeMediaElement } from '../../../testing/fake-media-element';
 import { FakeTransport } from '../../../testing/fake-transport';
 import { FakeMediaSession } from '../../../testing/fake-media-session';
 import { MEDIA_SESSION } from './media-session';
+import { NowPlayingService } from '../now-playing/now-playing.service';
 import { NowPlayingTransport } from '../now-playing/transport';
 import { WEBAMP_ENGINE, WinampService } from './winamp.service';
+import { EngineTrack } from './tune-gate';
 import type { EnginePlaybackStatus } from './playback-state';
 
 /**
@@ -16,7 +19,7 @@ import type { EnginePlaybackStatus } from './playback-state';
 class FakeEngine {
   status: EnginePlaybackStatus = 'STOPPED';
   calls: string[] = [];
-  private trackCallback: ((track: { url: string } | null) => void) | undefined;
+  private trackCallback: ((track: EngineTrack | null) => void) | undefined;
   getPlayerMediaStatus(): EnginePlaybackStatus {
     return this.status;
   }
@@ -47,7 +50,7 @@ class FakeEngine {
     this.calls.push('stop');
   }
   store = { subscribe: () => () => undefined };
-  onTrackDidChange(cb: (track: { url: string } | null) => void): () => void {
+  onTrackDidChange(cb: (track: EngineTrack | null) => void): () => void {
     this.trackCallback = cb;
     return () => undefined;
   }
@@ -155,10 +158,20 @@ describe('WinampService opens no stream before a gesture', () => {
     FakeMediaElement.restore();
   });
 
-  it('constructing the player performs no media request, and the playlist still lists every Station', () => {
+  it('constructing the player performs no media request, lists every Station, and leaves no row reading as current', async () => {
     expect(FakeMediaElement.requests).toEqual([]);
     const engine = TestBed.inject(WEBAMP_ENGINE);
     expect(engine.getPlaylistTracks().length).toBe(Stations.stations.length);
+    // The listener's own surfaces: nothing plays, and Now Playing carries no
+    // reading — no row is current until a gesture tunes one.
+    expect(await firstValueFrom(service.playbackState$)).toBe('none');
+    expect(
+      await firstValueFrom(TestBed.inject(NowPlayingService).nowPlaying$),
+    ).toBe(undefined);
+  });
+
+  it('the playlist repeats, so Next on the last Station wraps rather than ending the broadcast', () => {
+    expect(TestBed.inject(WEBAMP_ENGINE).isRepeatEnabled()).toBe(true);
   });
 
   it('the first Play is the gesture: it tunes the first Station and is the first media request', () => {

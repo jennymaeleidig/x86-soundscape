@@ -12,6 +12,12 @@ _Avoid_: Song, Track, Stream, Radio
 The live artist + title currently airing on a Station, derived from stream metadata while that Station is tuned.
 _Avoid_: Song, Track, current track
 
+**Gesture**:
+A listener action on a real control — a playlist row, a transport button, the Media Session — as opposed to
+anything the wiring does on its own. Tuning happens on a gesture; constructing, rendering and filling the
+playlist never tune, and no stream is opened before one.
+_Avoid_: event, trigger, action
+
 **Station descriptor**:
 A Station's static identity — its artist and title (e.g. "soma fm / Groove Salad") — shown in the menu bar when no Now Playing is available.
 _Avoid_: fallback metadata, track metadata
