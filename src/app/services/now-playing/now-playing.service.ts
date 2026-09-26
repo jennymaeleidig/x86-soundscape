@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import type { Station } from '../../../assets/audio/stations';
+import type { Station } from '../../data/stations';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NowPlaying, ResolvedParser, parserFor } from './parsers';
 import { NowPlayingTransport, sourceFor } from './transport';

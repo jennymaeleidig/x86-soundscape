@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import IcecastMetadataStats from 'icecast-metadata-stats';
-import type { Station } from '../../../assets/audio/stations';
+import type { Station } from '../../data/stations';
 
 /** Where one attempt reads from: the dependency's own read, or our own fetch. */
 export type NowPlayingSource =

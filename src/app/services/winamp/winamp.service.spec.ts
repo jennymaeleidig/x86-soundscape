@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
-import Stations from '../../../assets/audio/stations';
+import Stations from '../../data/stations';
 import { FakeMediaElement } from '../../../testing/fake-media-element';
 import { FakeTransport } from '../../../testing/fake-transport';
 import { FakeMediaSession } from '../../../testing/fake-media-session';

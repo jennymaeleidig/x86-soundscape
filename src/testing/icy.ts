@@ -1,4 +1,4 @@
-import Stations from '../assets/audio/stations';
+import Stations from '../app/data/stations';
 
 /** An ICY-shaped metadata payload, the shape the plain-icy parser reads. */
 export const icyPayload = (streamTitle: string) => ({

@@ -1,4 +1,4 @@
-import type { MetadataParser } from '../../../assets/audio/stations';
+import type { MetadataParser } from '../../data/stations';
 
 /**
  * The per-kind read of a Now Playing payload. Each adapter is table-driven,

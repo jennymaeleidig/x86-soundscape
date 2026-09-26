@@ -1,4 +1,4 @@
-import type { Station } from '../../../assets/audio/stations';
+import type { Station } from '../../data/stations';
 import type { Observable } from 'rxjs';
 import type { PlaybackState } from './playback-state';
 

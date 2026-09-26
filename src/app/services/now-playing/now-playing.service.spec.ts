@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
-import Stations from '../../../assets/audio/stations';
+import Stations from '../../data/stations';
 import { FakeTransport } from '../../../testing/fake-transport';
 import { drainMicrotasks, flush, withFakeTimers } from '../../../testing/flush';
 import { icyPayload, plainStation } from '../../../testing/icy';

@@ -1,6 +1,6 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import Webamp from 'webamp';
-import Stations from '../../../assets/audio/stations';
+import Stations from '../../data/stations';
 import { NowPlayingService } from '../now-playing/now-playing.service';
 import { ensurePaused, ensurePlaying } from './ensure';
 import { MEDIA_SESSION, wireMediaSession } from './media-session';
