@@ -162,8 +162,8 @@ const sameBox = (a, b, tolerance = 0.5) =>
 
 /**
  * The Surfer's pane is checked rather than assumed: it renders through the one
- * shared CRT wrapper, whose own rules carry full width and height with hidden
- * overflow, and its content fills that wrapper.
+ * shared CRT wrapper, and the wrapper's box is the pane's content — the video —
+ * so the scanline overlay covers exactly the screen and not the frame below it.
  */
 async function surferFit(server) {
   const { browser, page } = await openApp(server, ROOMY);
@@ -213,7 +213,7 @@ async function surferFit(server) {
     within(fit.content, fit.wrapper ?? { x: 0, y: 0, width: 0, height: 0 });
   return {
     ...fit,
-    wrapperFillsContentBox: sameBox(fit.wrapper, fit.containerContentBox),
+    wrapperFitsContent: sameBox(fit.wrapper, fit.content),
     wrapperInsideContainer:
       fit.wrapper != null &&
       fit.container != null &&
@@ -222,7 +222,7 @@ async function surferFit(server) {
       (fit.content?.width ?? 0) > 0 && (fit.content?.height ?? 0) > 0,
     contentInsideWrapper,
     fit:
-      sameBox(fit.wrapper, fit.containerContentBox) &&
+      sameBox(fit.wrapper, fit.content) &&
       fit.wrapperOverflow === "hidden" &&
       (fit.content?.width ?? 0) > 0 &&
       (fit.content?.height ?? 0) > 0 &&
@@ -657,7 +657,7 @@ async function main() {
       motion.onlyMarquee,
     "motion: reduced motion leaves no app animation and the rows still read":
       motion.reducedMotionIsEmpty && motion.rowsStillRenderText,
-    "surfer: the pane renders through the shared wrapper, which fills its container with hidden overflow and fits its content":
+    "surfer: the pane renders through the shared wrapper, whose box is the video it carries — hidden overflow, content inside, scanlines on the screen and not the frame":
       surfer.fit,
     "cost: the Window adds no paint, raster, style or layout records over the baseline, and only the marquee costs":
       cost.flickerCostGone,

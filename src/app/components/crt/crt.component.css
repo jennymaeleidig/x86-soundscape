@@ -3,12 +3,17 @@
  * this also carried a `text-shadow` animation, but the wrapper holds no text
  * for the shadow to inherit to, so its whole output was paint cost and it was
  * deleted. What a viewer reads as CRT is the filter and the scanlines.
+ *
+ * The wrapper carries the treatment, not the layout: it takes its box from its
+ * content. The width fills the parent on its own, and the height is the
+ * content's, so the scanline overlay covers exactly what a viewer sees and no
+ * more. A host that wants the pane filled (the Weather frame) states the height
+ * itself; a host whose content is the pane (the Surfer's video) says nothing.
  */
 :host {
   display: block;
   position: relative;
   width: 100%;
-  height: 100%;
   overflow: hidden;
   filter: grayscale(100%);
 }

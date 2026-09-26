@@ -66,6 +66,14 @@
   overflow: hidden;
 }
 
+/* The shared CRT wrapper is sized by its content; the Weather frame is the
+   pane, so it asks for the full height the container gives it. (The iframe's
+   own 100% height resolves against this wrapper, so the wrapper needs a
+   definite height.) */
+.ws-iframe-container > [appCrt] {
+  height: 100%;
+}
+
 .ws-iframe {
   width: 100%;
   height: 100%;
