@@ -5,6 +5,7 @@ import { NowPlayingService } from '../now-playing/now-playing.service';
 import { ensurePaused, ensurePlaying } from './ensure';
 import { MEDIA_SESSION, wireMediaSession } from './media-session';
 import { playbackState$ } from './playback-state';
+import { groupSize$ } from './group-size';
 import { wireTuneGate } from './tune-gate';
 import type { MediaSessionSurface } from './media-session';
 
@@ -66,6 +67,19 @@ export class WinampService {
    */
   readonly playbackState$ = playbackState$({
     status: () => this.webamp.getPlayerMediaStatus(),
+    subscribe: (onChange) => this.webamp.store.subscribe(onChange),
+  });
+
+  /**
+   * The union of the player's open windows, read from the engine's public
+   * typed store field and republished whenever its state changes. The mount
+   * node consumes this as a minimum, so the rectangle the engine's drag clamps
+   * against is never smaller than the group it confines — the one condition
+   * the clamp's arithmetic needs to write a legal coordinate.
+   */
+  readonly groupSize$ = groupSize$({
+    windows: () => this.webamp.store.getState().windows.genWindows,
+    doubled: () => this.webamp.store.getState().display.doubled,
     subscribe: (onChange) => this.webamp.store.subscribe(onChange),
   });
 

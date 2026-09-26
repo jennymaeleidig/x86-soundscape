@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "x86 Soundscape"
+abstract: "A retro Macintosh-style desktop in the browser that hosts internet radio stations, ambience sounds, a weather widget, and a video surfer."
+license: CC0-1.0
+references:
+  - type: software
+    title: "Webamp"
+    authors:
+      - family-names: "Eldredge"
+        given-names: "Jordan"
+    version: "2.3.1"
+    license: MIT
+    url: "https://github.com/captbaritone/webamp"
+    repository-code: "https://github.com/captbaritone/webamp"
+    notes: "The player engine. The skin's base window geometry (275x116, 25x29 resize segments, 14px shade height) is adapted in src/app/services/winamp/group-size.ts."
