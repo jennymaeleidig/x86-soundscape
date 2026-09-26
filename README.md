@@ -22,6 +22,8 @@ Deploy:
 
 `ng deploy`
 
+Publishes to GitHub Pages at https://x86-soundscape.jenny-page.online/ (custom domain, served at root). `angular-cli-ghpages` writes the CNAME and uses `baseHref: "/"` — do not change it to a repo-subpath like `/x86-soundscape/`, or the site 404s.
+
 ## Credits and Shoutouts
 
 - [system.css](https://sakofchit.github.io/system.css/)

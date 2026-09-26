@@ -84,6 +84,7 @@
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
           "options": {
+            "baseHref": "/",
             "cname": "x86-soundscape.jenny-page.online"
           }
         }
