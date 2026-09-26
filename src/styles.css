@@ -164,23 +164,15 @@ body.dragging * {
 }
 
 /*
- * prefers-reduced-motion: the app authors exactly one animation — the
- * marquee's transform — and this is the one media query that stops it,
- * through the hook the package already provides: its `.paused` class sets
- * `.om-marquee-item-wrapper { animation: none !important }`. The app cannot
- * add that class to a wrapper it does not own, so the rule the class would
- * apply is written here, once, for both places that marquee (the Menu and the
- * Surfer) — a component-scoped rule could cover only one of them.
+ * The marquee scrolls under every motion preference, `reduce` included. It is
+ * the row's label, not decoration: stopped, a long title is cut off at the
+ * frame, and the whole point of the marquee is that the claim stays readable.
+ * So the app deliberately writes no rule that stops it — this one motion it
+ * authors keeps going by choice, and that choice is recorded here rather than
+ * left to look like an oversight.
  *
- * The boundary of the promise is what the app authors. The Weather source's
- * own animation belongs to its document inside the embedded frame and can
- * honour the preference itself; the Surfer's video is content, not
- * decoration; an animated image cannot be paused by CSS; and the player's own
- * blinking countdown (webamp's) is the player's, not the app's. A reader who
- * finds those still moving is not looking at a broken promise.
+ * Everything else that moves is not the app's: the player's own blinking
+ * countdown (webamp's), the Weather source's animation inside its embedded
+ * frame, the Surfer's video, and any animated image each belong to their own
+ * author and honour the preference as they see fit.
  */
-@media (prefers-reduced-motion: reduce) {
-  .om-marquee-item-wrapper {
-    animation: none !important;
-  }
-}

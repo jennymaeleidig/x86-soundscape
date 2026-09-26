@@ -414,7 +414,7 @@ async function resizeCase(server) {
   };
 }
 
-/** The running animations, at normal and reduced motion, and the rows' text. */
+/** The running animations at normal and reduced motion, and the rows' text. */
 async function motionInventory(server) {
   const { browser, page } = await openApp(server, ROOMY);
   const bareAnimations = await listAnimations(page);
@@ -447,7 +447,9 @@ async function motionInventory(server) {
     weatherWindowAnimations: windowAnimations,
     onlyMarquee: onlyMarquee(bareAnimations) && onlyMarquee(windowAnimations),
     reducedMotionAnimations: reducedAnimations,
-    reducedMotionIsEmpty: reducedAnimations.length === 0,
+    // The marquee is the app's label, so the preference does not stop it; the
+    // list under reduce is the same marquee the normal run carries.
+    reducedMotionKeepsMarquee: onlyMarquee(reducedAnimations),
     rowsAtNormal,
     rowsAtReduced,
     rowsStillRenderText:
@@ -565,8 +567,9 @@ async function pausedMark(server) {
   await sleep(1500);
   const paused = await readRow();
 
-  // The mark alone must carry the state under reduced motion: the label
-  // stops, and dim + glyph still say paused.
+  // The mark must carry the state whether or not the label is moving, and the
+  // app's own motion — the marquee — is deliberately not stopped by the
+  // preference, so the label keeps scrolling even here.
   await page.emulateMediaFeatures([
     { name: "prefers-reduced-motion", value: "reduce" },
   ]);
@@ -585,11 +588,10 @@ async function pausedMark(server) {
     labelKeepsScrollingWhilePaused: paused.marqueeAnimating,
     markSurvivesReducedMotion:
       pausedReducedMotion.dimmed && pausedReducedMotion.text.startsWith(glyph),
-    // The app's own motion stops; the remaining `blink` list is webamp's own
-    // countdown blinker — the player's, not the app's, and out of ticket 05's
-    // promise, which is what the app authors.
-    marqueeStopsUnderReducedMotion:
-      pausedReducedMotion.appAnimations.length === 0,
+    // The app's label keeps scrolling under the preference too: the whole
+    // point of the marquee is that the row's claim stays readable.
+    marqueeKeepsScrollingUnderReducedMotion:
+      pausedReducedMotion.marqueeAnimating,
   };
 }
 
@@ -655,18 +657,18 @@ async function main() {
       resize.floorFollowed && resize.reDragContained,
     "motion: the marquee is the only animation, bare and with a Window open":
       motion.onlyMarquee,
-    "motion: reduced motion leaves no app animation and the rows still read":
-      motion.reducedMotionIsEmpty && motion.rowsStillRenderText,
+    "motion: the marquee scrolls under reduced motion too, so the rows still read":
+      motion.reducedMotionKeepsMarquee && motion.rowsStillRenderText,
     "surfer: the pane renders through the shared wrapper, whose box is the video it carries — hidden overflow, content inside, scanlines on the screen and not the frame":
       surfer.fit,
     "cost: the Window adds no paint, raster, style or layout records over the baseline, and only the marquee costs":
       cost.flickerCostGone,
     "paused mark: dim and glyph on a paused Station, none when playing or untuned":
       paused.markOnInitial && paused.markOnPlaying && paused.markOnPaused,
-    "paused mark: the label keeps scrolling, and the mark survives a stopped marquee":
+    "paused mark: the label keeps scrolling — the reduced-motion preference does not stop it — and the mark carries the state":
       paused.labelKeepsScrollingWhilePaused &&
       paused.markSurvivesReducedMotion &&
-      paused.marqueeStopsUnderReducedMotion,
+      paused.marqueeKeepsScrollingUnderReducedMotion,
   };
   await writeResults(resultsPath, run);
 
