@@ -47,6 +47,15 @@ export function muteActionLabel(state: AmbienceState): string {
 }
 
 /**
+ * The Menu's playback item, labelled with the action pressing it performs: the
+ * one control says whether the machine is running, so there is no moment where
+ * Play and Stop are both on offer and nothing says which one is current.
+ */
+export function playbackActionLabel(state: AmbienceState): string {
+  return state.playing ? 'Stop' : 'Play';
+}
+
+/**
  * The Applet's label: the mute, and the Sound it is holding, credited. The icon
  * answers the other question — is any sound coming out — so a latched mute shows
  * here while the icon has already gone dark.

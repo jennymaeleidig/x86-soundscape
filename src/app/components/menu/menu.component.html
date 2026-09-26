@@ -97,15 +97,21 @@
           <li role="menu-item" (click)="toggleAmbience()">
             <a>{{ muteAction() }}</a>
           </li>
-          <li role="menu-item" (click)="playAmbience()"><a>Play</a></li>
-          <li role="menu-item" (click)="stopAmbience()"><a>Stop</a></li>
+          <li role="menu-item" (click)="togglePlaybackAmbience()">
+            <a>{{ playbackAction() }}</a>
+          </li>
           <li role="menu-item" (click)="shuffleAmbience()"><a>Shuffle</a></li>
           <li role="menu-item" (click)="volumeUpAmbience()"><a>Volume +</a></li>
           <li role="menu-item" (click)="volumeDownAmbience()">
             <a>Volume -</a>
           </li>
           <hr />
-          <li role="menu-item" class="max-w-3xs">
+          <li
+            role="menu-item"
+            class="max-w-3xs"
+            id="ambience-container"
+            [class.stopped]="ambienceStopped()"
+          >
             <om-marquee
               [marqueeGap]="'4rem'"
               [animationDuration]="'15s'"
@@ -133,7 +139,7 @@
         aria-haspopup="false"
         id="scroll-container"
         class="max-w-3xs !bg-white !text-black !cursor-text !overflow-hidden !text-nowrap"
-        [class.paused]="paused()"
+        [class.idle]="idle()"
       >
         <om-marquee [marqueeGap]="'4rem'" [pauseOnHover]="false">
           <ng-template>

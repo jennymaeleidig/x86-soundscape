@@ -9,8 +9,22 @@
  * glyph, so the state is legible from the mark alone rather than from the
  * audio. The label keeps marqueeing — freezing it mid-scroll would hide half a
  * title, the one thing the marquee exists to prevent.
+ *
+ * The dim is wider than the glyph: it carries every state but playing, so a
+ * stopped or untuned player reads as idle by default instead of looking like a
+ * row that merely has nothing to say.
  */
-#scroll-container.paused {
+#scroll-container.idle {
+  opacity: 0.55;
+}
+
+/*
+ * Ambience's own marquee, dimmed while playback is stopped. Same device as
+ * `#scroll-container.idle` above and for the same reason: the row says the
+ * machine is idle, and the label keeps marqueeing so a long name stays whole.
+ * Ambience has no pause, so stopped is the only mark.
+ */
+#ambience-container.stopped {
   opacity: 0.55;
 }
 

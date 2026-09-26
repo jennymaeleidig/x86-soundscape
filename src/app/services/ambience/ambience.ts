@@ -53,6 +53,15 @@ export class AmbienceService {
     this.publish({ playing: false });
   }
 
+  /** Running → stop; stopped → resume the held Sound (or draw one). */
+  togglePlayback(): void {
+    if (this.currentState().playing) {
+      this.stop();
+    } else {
+      this.play();
+    }
+  }
+
   /** Pick a new random Sound and play it — the only thing that replaces the held one. */
   shuffle(): void {
     if (this.sounds.length === 0) {

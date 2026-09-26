@@ -25,9 +25,13 @@ describe('MenuComponent on Ambience', () => {
       .query(By.css('#scroll-container .item'))
       .nativeElement.textContent.trim();
 
-  /** The Now Playing row itself, whose dim carries the paused state. */
+  /** The Now Playing row itself, whose dim carries the idle state. */
   const nowPlayingRow = (): DebugElement =>
     fixture.debugElement.query(By.css('#scroll-container'));
+
+  /** The Ambience row itself, whose dim carries the stopped state. */
+  const ambienceRow = (): DebugElement =>
+    fixture.debugElement.query(By.css('#ambience-container'));
 
   /** The Ambience submenu, the one place these items live. */
   const submenu = () =>
@@ -216,7 +220,11 @@ describe('MenuComponent on Ambience', () => {
     expect(bar()).toBe('Nothing playing');
   });
 
-  it('marks a paused Station on the row and clears the mark when it plays or stops', () => {
+  it('dims the row whenever the player is not playing, and adds the pause glyph only when paused', () => {
+    // Nothing tuned at startup: idle by default, but no pause to glyph.
+    expect(nowPlayingRow().nativeElement.classList).toContain('idle');
+    expect(bar()).toBe('Nothing playing');
+
     nowPlaying$.next({ artist: 'soma fm', title: 'Groove Salad' });
     playback$.next('paused');
     fixture.detectChanges();
@@ -225,7 +233,7 @@ describe('MenuComponent on Ambience', () => {
     // marquee keeps its animation, so pausing never freezes a half-scrolled
     // title.
     expect(bar()).toBe('❚❚ soma fm - Groove Salad');
-    expect(nowPlayingRow().nativeElement.classList).toContain('paused');
+    expect(nowPlayingRow().nativeElement.classList).toContain('idle');
     expect(
       fixture.debugElement.query(By.css('#scroll-container om-marquee')),
     ).toBeTruthy();
@@ -233,14 +241,25 @@ describe('MenuComponent on Ambience', () => {
     playback$.next('playing');
     fixture.detectChanges();
     expect(bar()).toBe('soma fm - Groove Salad');
-    expect(nowPlayingRow().nativeElement.classList).not.toContain('paused');
+    expect(nowPlayingRow().nativeElement.classList).not.toContain('idle');
 
-    // Nothing tuned is no Station to pause, so no mark either.
+    // Stopped collapses into untuned: dimmed again, and no pause to glyph.
     playback$.next('none');
     nowPlaying$.next(undefined);
     fixture.detectChanges();
     expect(bar()).toBe('Nothing playing');
-    expect(nowPlayingRow().nativeElement.classList).not.toContain('paused');
+    expect(nowPlayingRow().nativeElement.classList).toContain('idle');
+  });
+
+  it("dims Ambience's own marquee while it is stopped, and clears the dim once it plays", () => {
+    // Nothing held and nothing playing at startup: the row reads as stopped.
+    expect(ambienceRow().nativeElement.classList).toContain('stopped');
+
+    press('Play');
+    expect(ambienceRow().nativeElement.classList).not.toContain('stopped');
+
+    press('Stop');
+    expect(ambienceRow().nativeElement.classList).toContain('stopped');
   });
 
   it("shows the Sound's own name and who recorded it, and the same nothing-held text the Applet shows", () => {
@@ -254,18 +273,23 @@ describe('MenuComponent on Ambience', () => {
     expect(credit()).toBe(`- ${ambience.state().sound?.creator}`);
   });
 
-  it('keeps Play, Stop, Shuffle and Volume working against the published state, Stop holding the Sound for Play', () => {
+  it('keeps the playback toggle, Shuffle and Volume working against the published state, the toggle holding the Sound and naming the action it performs', () => {
     press('Shuffle');
     const held = ambience.state().sound!;
     expect(held).not.toBeNull();
     FakeAudio.last.currentTime = 42;
+    // Running, so the one control offers the action that stops it.
+    expect(reading('Stop')).toBeTruthy();
 
     press('Stop');
     expect(ambience.state()).toMatchObject({ sound: held, playing: false });
+    // Stopped, so the same row now offers the action that starts it.
+    expect(reading('Play')).toBeTruthy();
 
     press('Play');
     expect(ambience.state()).toMatchObject({ sound: held, playing: true });
     expect(FakeAudio.last.currentTime).toBe(0);
+    expect(reading('Stop')).toBeTruthy();
 
     // Point the draw at a different Sound, so the assertion below fails for the
     // right reason instead of once in thirty runs.

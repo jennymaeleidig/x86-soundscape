@@ -164,4 +164,17 @@ describe('AmbienceService', () => {
     await settle();
     expect(service.state()).toMatchObject({ sound: held, playing: false });
   });
+
+  it('9. togglePlayback is stop while running and play while stopped, holding the Sound across the pair', () => {
+    service.shuffle();
+    const held = service.state().sound;
+    expect(service.state()).toMatchObject({ playing: true, sound: held });
+
+    service.togglePlayback();
+    expect(service.state()).toMatchObject({ playing: false, sound: held });
+
+    service.togglePlayback();
+    expect(service.state()).toMatchObject({ playing: true, sound: held });
+    expect(FakeAudio.last.src).toBe(held?.path);
+  });
 });

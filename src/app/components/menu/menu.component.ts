@@ -21,6 +21,7 @@ import {
   SEPARATOR,
   levelLabel,
   muteActionLabel,
+  playbackActionLabel,
   soundCredit,
   soundName,
 } from '../../services/ambience/ambience-labels';
@@ -67,18 +68,36 @@ export class MenuComponent {
    */
   readonly paused = computed(() => this.playbackState() === 'paused');
 
+  /**
+   * Whether the Now Playing row is dimmed: any state but playing, so an
+   * untuned or stopped player reads as idle from the dim alone rather than
+   * looking like a row that is merely quiet.
+   */
+  readonly idle = computed(() => this.playbackState() !== 'playing');
+
   /** The published Ambience state; the template reads it rather than a mirror of it. */
   readonly ambienceState = this.ambienceService.state;
 
   /**
+   * Whether Ambience's own marquee reads as stopped. It mirrors the radio's
+   * idle dim: the dim says the machine is not running without a second readout,
+   * and the label keeps marqueeing for the same reason the radio's does.
+   */
+  readonly ambienceStopped = computed(() => !this.ambienceState().playing);
+
+  /**
    * What the Menu says about Ambience, all derived from that one state: the
-   * Sound's own name and who recorded it, the level the Volume items move, and
-   * the mute item labelled with the action pressing it performs.
+   * Sound's own name and who recorded it, the level the Volume items move, the
+   * mute item labelled with the action pressing it performs, and the playback
+   * item, likewise labelled with what pressing it does.
    */
   readonly ambienceName = computed(() => soundName(this.ambienceState()));
   readonly ambienceCredit = computed(() => soundCredit(this.ambienceState()));
   readonly ambienceLevel = computed(() => levelLabel(this.ambienceState()));
   readonly muteAction = computed(() => muteActionLabel(this.ambienceState()));
+  readonly playbackAction = computed(() =>
+    playbackActionLabel(this.ambienceState()),
+  );
 
   /**
    * The bar's whole readout, with no prefix: a track or a Station descriptor
@@ -128,12 +147,8 @@ export class MenuComponent {
     this.winampService.next();
   }
 
-  playAmbience() {
-    this.ambienceService.play();
-  }
-
-  stopAmbience() {
-    this.ambienceService.stop();
+  togglePlaybackAmbience() {
+    this.ambienceService.togglePlayback();
   }
 
   shuffleAmbience() {
