@@ -1,11 +1,8 @@
 <div id="surfer" class="relative">
-  <img
-    class="w-full h-full object-contain"
-    src="assets/images/macintosh.png"
-  />
+  <img class="w-full h-full object-contain" src="assets/images/macintosh.png" />
   <div *ngIf="video$ | async as videoData; else loading">
     <div id="video-container" class="absolute z-10 inset-0">
-      <div class="crt grayscale">
+      <div appCrt>
         <video
           class="w-full object-fill aspect-512/342 rounded-2xl brightness-115"
           [autoplay]="'autoplay'"
@@ -45,7 +42,7 @@
   </div>
   <ng-template #loading>
     <div id="video-container" class="absolute z-10 inset-0">
-      <div class="crt grayscale">
+      <div appCrt>
         <img
           class="w-full object-fill aspect-512/342 rounded-2xl brightness-150"
           src="assets/images/offline.gif"

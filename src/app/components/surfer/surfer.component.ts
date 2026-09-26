@@ -7,13 +7,14 @@ import {
   type Video,
 } from '../../services/archive/archive.service';
 import { CHANNELS, type Channel } from '../../services/archive/channels';
+import { CrtComponent } from '../crt/crt.component';
 
 // Re-export the service's Video shape so the template binds unchanged.
 export type VideoData = Video;
 
 @Component({
   selector: 'app-surfer',
-  imports: [CommonModule, NgxMarqueeComponent],
+  imports: [CommonModule, NgxMarqueeComponent, CrtComponent],
   templateUrl: './surfer.component.html',
   styleUrl: './surfer.component.css',
 })

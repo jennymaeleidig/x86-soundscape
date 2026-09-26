@@ -101,6 +101,6 @@
   opacity: 0;
 }
 
-/* CRT overlay (scanlines + grayscale + text-shadow) now lives in the
-   shared `[appCrt]` component (src/app/components/crt). The weather window
-   wraps its iframe in <div appCrt> for both WS4KP and RetroCast. */
+/* CRT overlay (scanlines + grayscale) lives in the shared `[appCrt]`
+   component (src/app/components/crt). The weather window wraps its iframe in
+   <div appCrt> for both WS4KP and RetroCast. */

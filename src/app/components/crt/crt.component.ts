@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 
 // Attribute-selector component that wraps content (<ng-content>) and applies
-// the shared CRT effect (grayscale + scanlines + text-shadow animation).
+// the shared CRT effect (grayscale + scanlines).
 // Usage: <div appCrt><iframe ...></div>
-// Single source of truth for the CRT overlay; weather window uses this for
-// both WeatherStar 4000+ and RetroCast. Surfer keeps its own .crt/.grayscale
-// for now (follow-up change).
+// Single source of truth for the CRT overlay; the Weather and Surfer panes
+// both wrap their content in it.
 @Component({
   selector: '[appCrt]',
   standalone: true,

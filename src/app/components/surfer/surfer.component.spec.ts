@@ -64,4 +64,20 @@ describe('SurferComponent', () => {
       'Now Playing: T by U on the Somewhat Commercial channel.',
     );
   });
+
+  it('renders its pane through the one shared CRT wrapper, around the video', async () => {
+    fixture.detectChanges(); // ngOnInit issues the first fetch; the pane loads
+    const loading = fixture.nativeElement.querySelector('[appcrt]');
+    expect(loading).not.toBeNull();
+    expect(loading.parentElement.id).toBe('video-container');
+    expect(loading.querySelector('img')).not.toBeNull();
+
+    flushOneVideo(httpMock);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const wrapper = fixture.nativeElement.querySelector('[appcrt]');
+    expect(wrapper).not.toBeNull();
+    expect(wrapper.querySelector('video')).not.toBeNull();
+  });
 });
