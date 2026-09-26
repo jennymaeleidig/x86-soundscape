@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\"",
-    "measure:desktop-edges": "ng build && node harness/run-desktop-edges.mjs"
+    "measure:desktop-edges": "ng build && node harness/run-desktop-edges.mjs",
+    "measure:desktop-edges-final": "ng build && node harness/run-desktop-edges-final.mjs"
   },
   "private": true,
   "dependencies": {

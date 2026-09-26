@@ -163,6 +163,61 @@ export async function samplePlayerBoxes(page) {
   }, PLAYER_WINDOW_SELECTOR);
 }
 
+/**
+ * The player's confinement, read from the live document: the mount node, every
+ * open window, the union of those windows (the group the engine drags), the
+ * desktop bounds and its overflow, and whether the page scrolls. This is the
+ * rectangle and the box the confinement assertions compare.
+ */
+export async function sampleGroupState(page) {
+  return page.evaluate(() => {
+    const mount = document.querySelector("winamp > div");
+    const bounds = document.querySelector(".desktop-bounds");
+    const windows = [...document.querySelectorAll("#webamp .window")];
+    if (!mount || !bounds) {
+      throw new Error("the player mount node or the desktop bounds is missing");
+    }
+    const box = (el) => {
+      const r = el.getBoundingClientRect();
+      return { x: r.x, y: r.y, width: r.width, height: r.height };
+    };
+    const boxes = windows.map((el) => ({
+      id: el.id,
+      ...box(el),
+    }));
+    const union = boxes.reduce(
+      (b, w) => ({
+        left: Math.min(b.left, w.x),
+        top: Math.min(b.top, w.y),
+        right: Math.max(b.right, w.x + w.width),
+        bottom: Math.max(b.bottom, w.y + w.height),
+      }),
+      { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity },
+    );
+    return {
+      mount: box(mount),
+      mountMin: {
+        width: getComputedStyle(mount).minWidth,
+        height: getComputedStyle(mount).minHeight,
+      },
+      bounds: { ...box(bounds), overflow: getComputedStyle(bounds).overflow },
+      windows: boxes,
+      union: {
+        x: union.left,
+        y: union.top,
+        width: union.right - union.left,
+        height: union.bottom - union.top,
+      },
+      pageScroll: {
+        x: window.scrollX,
+        y: window.scrollY,
+        documentWidth: document.documentElement.scrollWidth,
+        documentHeight: document.documentElement.scrollHeight,
+      },
+    };
+  });
+}
+
 /** The player main window's title bar centre, in viewport coordinates. */
 export async function grabPoint(page) {
   const { window: playerWindow } = await samplePlayerBoxes(page);
@@ -226,7 +281,10 @@ export async function listAnimations(page) {
  * on the true repaint rate, and the forced frames themselves cost CPU — the
  * same cost is in the baseline, so the delta answers the Window's share.
  * Counters and CPU come from the browser's own accounting (Performance
- * metrics and SystemInfo.getProcessInfo) over the same wall-clock span.
+ * metrics and SystemInfo.getProcessInfo) over the same wall-clock span, and
+ * the timeline's own `Paint`, `RasterTask`, `UpdateLayoutTree` (style) and
+ * `Layout` events are counted through tracing — the same records the idle-cost
+ * measurement that opened this effort reported.
  */
 export async function measureCost(
   page,
@@ -241,6 +299,23 @@ export async function measureCost(
       .then(() => cdp.send("Performance.getMetrics"));
     return Object.fromEntries(metrics.map((m) => [m.name, m.value]));
   };
+  // The timeline records: each forced screenshot contributes its own, so the
+  // counts are compared against the baseline's, not read as absolutes.
+  const traced = [];
+  const onTrace = ({ value }) => {
+    for (const event of value) traced.push(event);
+  };
+  let tracing = false;
+  try {
+    cdp.on("Tracing.dataCollected", onTrace);
+    await cdp.send("Tracing.start", {
+      categories: "devtools.timeline",
+      transferMode: "ReportEvents",
+    });
+    tracing = true;
+  } catch {
+    tracing = false;
+  }
   const countersBefore = await readCounters();
   const cpuBefore = await cumulativeCpuSeconds(browser);
   const wallBefore = performance.now();
@@ -275,6 +350,23 @@ export async function measureCost(
   const wallSeconds = (performance.now() - wallBefore) / 1000;
   const cpuSeconds = (await cumulativeCpuSeconds(browser)) - cpuBefore;
   const countersAfter = await readCounters();
+  let timeline = {};
+  if (tracing) {
+    const complete = new Promise((resolve) =>
+      cdp.once("Tracing.tracingComplete", resolve),
+    );
+    await cdp.send("Tracing.end");
+    await complete;
+    cdp.off("Tracing.dataCollected", onTrace);
+    const count = (name) =>
+      traced.reduce((n, event) => n + (event.name === name ? 1 : 0), 0);
+    timeline = {
+      paintRecords: count("Paint"),
+      rasterTasks: count("RasterTask"),
+      styleRecalcs: count("UpdateLayoutTree"),
+      layouts: count("Layout"),
+    };
+  }
   await cdp.send("Performance.disable");
   await cdp.detach();
   const counterDelta = (name) =>
@@ -293,6 +385,7 @@ export async function measureCost(
         (countersAfter["TaskDuration"] - countersBefore["TaskDuration"]) * 1000,
       ),
     },
+    timeline,
   };
 }
 
