@@ -133,11 +133,14 @@
         aria-haspopup="false"
         id="scroll-container"
         class="max-w-3xs !bg-white !text-black !cursor-text !overflow-hidden !text-nowrap"
+        [class.paused]="paused()"
       >
         <om-marquee [marqueeGap]="'4rem'" [pauseOnHover]="false">
           <ng-template>
             <div title="{{ reading() | decodeHtmlString }}" class="item">
-              {{ reading() | decodeHtmlString }}
+              <span *ngIf="paused()" class="pause-mark"
+                >&#10074;&#10074;&#32;</span
+              >{{ reading() | decodeHtmlString }}
             </div>
           </ng-template>
         </om-marquee>

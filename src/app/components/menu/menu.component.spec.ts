@@ -9,6 +9,7 @@ import { AmbienceService } from '../../services/ambience/ambience';
 import { ambienceSounds } from '../../services/ambience/sounds';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { WinampService } from '../../services/winamp/winamp.service';
+import { type PlaybackState } from '../../services/winamp/playback-state';
 import { NowPlayingService } from '../../services/now-playing/now-playing.service';
 import { FakeAudio } from '../../../testing/fake-audio';
 
@@ -16,12 +17,17 @@ describe('MenuComponent on Ambience', () => {
   let fixture: ComponentFixture<MenuComponent>;
   let ambience: AmbienceService;
   let nowPlaying$: Subject<object | undefined>;
+  let playback$: Subject<PlaybackState>;
 
   /** The bar's Now Playing readout, the marquee's one line. */
   const bar = (): string =>
     fixture.debugElement
       .query(By.css('#scroll-container .item'))
       .nativeElement.textContent.trim();
+
+  /** The Now Playing row itself, whose dim carries the paused state. */
+  const nowPlayingRow = (): DebugElement =>
+    fixture.debugElement.query(By.css('#scroll-container'));
 
   /** The Ambience submenu, the one place these items live. */
   const submenu = () =>
@@ -91,6 +97,7 @@ describe('MenuComponent on Ambience', () => {
             prev: jest.fn(),
             stop: jest.fn(),
             next: jest.fn(),
+            playbackState$: (playback$ = new Subject<PlaybackState>()),
           },
         },
         {
@@ -207,6 +214,33 @@ describe('MenuComponent on Ambience', () => {
     nowPlaying$.next(undefined);
     fixture.detectChanges();
     expect(bar()).toBe('Nothing playing');
+  });
+
+  it('marks a paused Station on the row and clears the mark when it plays or stops', () => {
+    nowPlaying$.next({ artist: 'soma fm', title: 'Groove Salad' });
+    playback$.next('paused');
+    fixture.detectChanges();
+
+    // The mark says the state on its own — the label keeps its place and the
+    // marquee keeps its animation, so pausing never freezes a half-scrolled
+    // title.
+    expect(bar()).toBe('❚❚ soma fm - Groove Salad');
+    expect(nowPlayingRow().nativeElement.classList).toContain('paused');
+    expect(
+      fixture.debugElement.query(By.css('#scroll-container om-marquee')),
+    ).toBeTruthy();
+
+    playback$.next('playing');
+    fixture.detectChanges();
+    expect(bar()).toBe('soma fm - Groove Salad');
+    expect(nowPlayingRow().nativeElement.classList).not.toContain('paused');
+
+    // Nothing tuned is no Station to pause, so no mark either.
+    playback$.next('none');
+    nowPlaying$.next(undefined);
+    fixture.detectChanges();
+    expect(bar()).toBe('Nothing playing');
+    expect(nowPlayingRow().nativeElement.classList).not.toContain('paused');
   });
 
   it("shows the Sound's own name and who recorded it, and the same nothing-held text the Applet shows", () => {

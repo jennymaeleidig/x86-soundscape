@@ -5,6 +5,16 @@
 }
 
 /*
+ * The paused mark: the row dims and its title is prefixed with the pause
+ * glyph, so the state is legible from the mark alone rather than from the
+ * audio. The label keeps marqueeing — freezing it mid-scroll would hide half a
+ * title, the one thing the marquee exists to prevent.
+ */
+#scroll-container.paused {
+  opacity: 0.55;
+}
+
+/*
  * system.css styles no readout row, and no disabled menu item at all: its hover
  * invert lands on every `ul[role=menu] > [role=menu-item] > a` (the library's
  * only disabled state is `.btn:disabled`). The level keeps that anchor for the

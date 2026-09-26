@@ -11,6 +11,7 @@ import { FeatureId } from '../../services/feature/feature';
 import { AboutComponent } from '../about/about.component';
 import { AnnouncementsComponent } from '../announcements/announcements.component';
 import { WinampService } from '../../services/winamp/winamp.service';
+import { type PlaybackState } from '../../services/winamp/playback-state';
 import { NowPlayingService } from '../../services/now-playing/now-playing.service';
 import { CommonModule } from '@angular/common';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
@@ -53,6 +54,18 @@ export class MenuComponent {
   private readonly nowPlaying = toSignal(this.nowPlayingService.nowPlaying$, {
     initialValue: undefined,
   });
+
+  /** The player's published playback state, the row's mark's only input. */
+  private readonly playbackState = toSignal(this.winampService.playbackState$, {
+    initialValue: 'none' as PlaybackState,
+  });
+
+  /**
+   * Whether the Now Playing row carries the paused mark. Pausing a Station is
+   * the only mark: playing and nothing-tuned both read mark-free, because
+   * there is nothing paused to say.
+   */
+  readonly paused = computed(() => this.playbackState() === 'paused');
 
   /** The published Ambience state; the template reads it rather than a mirror of it. */
   readonly ambienceState = this.ambienceService.state;
