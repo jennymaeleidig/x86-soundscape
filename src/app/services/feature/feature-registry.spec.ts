@@ -11,7 +11,7 @@ describe('FeatureRegistry', () => {
   let open: jest.Mock;
   let reopenWinamp: jest.Mock;
   let playRadio: jest.Mock;
-  let toggleAmbience: jest.Mock;
+  let togglePlaybackAmbience: jest.Mock;
   let ambienceState: WritableSignal<AmbienceState>;
 
   const IDLE: AmbienceState = {
@@ -29,7 +29,7 @@ describe('FeatureRegistry', () => {
     open = jest.fn();
     reopenWinamp = jest.fn();
     playRadio = jest.fn();
-    toggleAmbience = jest.fn();
+    togglePlaybackAmbience = jest.fn();
     ambienceState = signal(IDLE);
 
     TestBed.configureTestingModule({
@@ -38,7 +38,10 @@ describe('FeatureRegistry', () => {
         { provide: WinampService, useValue: { reopenWinamp, playRadio } },
         {
           provide: AmbienceService,
-          useValue: { toggle: toggleAmbience, state: ambienceState },
+          useValue: {
+            togglePlayback: togglePlaybackAmbience,
+            state: ambienceState,
+          },
         },
       ],
     });
@@ -103,7 +106,7 @@ describe('FeatureRegistry', () => {
 
     expect(reopenWinamp).toHaveBeenCalledTimes(1);
     expect(playRadio).toHaveBeenCalledTimes(1);
-    expect(toggleAmbience).toHaveBeenCalledTimes(1);
+    expect(togglePlaybackAmbience).toHaveBeenCalledTimes(1);
     expect(open).not.toHaveBeenCalled();
   });
 
@@ -113,14 +116,16 @@ describe('FeatureRegistry', () => {
     }
   });
 
-  it("computes the Ambience row's appearance over the published state: audible shows the on icon, muted or stopped the off", () => {
+  it("computes the Ambience row's appearance over the published state: playing shows the on icon, stopped the off, whatever the mute", () => {
     const appearance = ambienceAppearance;
 
     ambienceState.set({ ...IDLE, playing: true });
     expect(appearance().icon).toBe('assets/images/ambience_on.png');
 
+    // Mute is the Menu's business: the Applet tracks running, the thing its
+    // own activation toggles, so a muted-but-running machine still reads on.
     ambienceState.set({ ...IDLE, playing: true, muted: true });
-    expect(appearance().icon).toBe('assets/images/ambience_off.png');
+    expect(appearance().icon).toBe('assets/images/ambience_on.png');
 
     ambienceState.set(IDLE);
     expect(appearance().icon).toBe('assets/images/ambience_off.png');

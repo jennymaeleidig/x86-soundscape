@@ -56,9 +56,9 @@ export function playbackActionLabel(state: AmbienceState): string {
 }
 
 /**
- * The Applet's label: the mute, and the Sound it is holding, credited. The icon
- * answers the other question — is any sound coming out — so a latched mute shows
- * here while the icon has already gone dark.
+ * The Applet's tooltip: the mute, and the Sound it is holding, credited. The
+ * icon answers a different question — is the machine running — so a latched
+ * mute shows here while the icon stays on with the playback it describes.
  */
 export function appletLabel(state: AmbienceState): string {
   return state.muted && state.sound

@@ -3,7 +3,7 @@ import { FeatureId, type Feature, type WindowDescription } from './feature';
 import { WindowService } from '../window/window.service';
 import { WinampService } from '../winamp/winamp.service';
 import { AmbienceService } from '../ambience/ambience';
-import { appletLabel, isAudible } from '../ambience/ambience-labels';
+import { appletLabel } from '../ambience/ambience-labels';
 import { AboutComponent } from '../../components/about/about.component';
 import { AnnouncementsComponent } from '../../components/announcements/announcements.component';
 import { SurferComponent } from '../../components/surfer/surfer.component';
@@ -61,20 +61,21 @@ export class FeatureRegistry {
         () => this.winamp.playRadio(),
       ),
       // The one row whose appearance is computed rather than static: the icon
-      // answers isAudible over the published state — the same predicate the
-      // Menu's mute item reads — and the tooltip names the held Sound through
-      // the shared wording module, so the Applet and the Menu cannot disagree.
+      // answers `playing` — the same flag the Menu's playback item reads — so
+      // the Applet and the Menu cannot disagree about whether the machine is
+      // running. The tooltip names the held Sound through the shared wording
+      // module, mute included. Activating is the Menu item's own toggle.
       {
         id: FeatureId.Ambience,
         title: 'Ambience',
         appearance: computed(() => {
           const state = this.ambience.state();
           return {
-            icon: isAudible(state) ? AMBIENCE_ON_ICON : AMBIENCE_OFF_ICON,
+            icon: state.playing ? AMBIENCE_ON_ICON : AMBIENCE_OFF_ICON,
             tooltip: appletLabel(state),
           };
         }),
-        activate: () => this.ambience.toggle(),
+        activate: () => this.ambience.togglePlayback(),
       },
       this.windowFeature(
         FeatureId.Weather,

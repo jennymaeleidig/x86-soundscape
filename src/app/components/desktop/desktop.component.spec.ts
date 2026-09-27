@@ -23,7 +23,7 @@ describe('DesktopComponent', () => {
           provide: WinampService,
           useValue: { reopenWinamp: jest.fn(), playRadio: jest.fn() },
         },
-        { provide: AmbienceService, useValue: { toggle: jest.fn() } },
+        { provide: AmbienceService, useValue: { togglePlayback: jest.fn() } },
       ],
     });
     registry = TestBed.inject(FeatureRegistry);
