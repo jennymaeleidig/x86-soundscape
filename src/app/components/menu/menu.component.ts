@@ -62,16 +62,9 @@ export class MenuComponent {
   });
 
   /**
-   * Whether the Now Playing row carries the paused mark. Pausing a Station is
-   * the only mark: playing and nothing-tuned both read mark-free, because
-   * there is nothing paused to say.
-   */
-  readonly paused = computed(() => this.playbackState() === 'paused');
-
-  /**
-   * Whether the Now Playing row is dimmed: any state but playing, so an
-   * untuned or stopped player reads as idle from the dim alone rather than
-   * looking like a row that is merely quiet.
+   * Whether the Now Playing row is dimmed: any state but playing — paused,
+   * stopped and untuned alike — so a running player is the only one that reads
+   * bright, rather than a row that is merely quiet.
    */
   readonly idle = computed(() => this.playbackState() !== 'playing');
 

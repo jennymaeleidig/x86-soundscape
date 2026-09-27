@@ -144,9 +144,7 @@
         <om-marquee [marqueeGap]="'4rem'" [pauseOnHover]="false">
           <ng-template>
             <div title="{{ reading() | decodeHtmlString }}" class="item">
-              <span *ngIf="paused()" class="pause-mark"
-                >&#10074;&#10074;&#32;</span
-              >{{ reading() | decodeHtmlString }}
+              {{ reading() | decodeHtmlString }}
             </div>
           </ng-template>
         </om-marquee>

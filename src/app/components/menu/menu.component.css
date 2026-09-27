@@ -5,14 +5,12 @@
 }
 
 /*
- * The paused mark: the row dims and its title is prefixed with the pause
- * glyph, so the state is legible from the mark alone rather than from the
- * audio. The label keeps marqueeing — freezing it mid-scroll would hide half a
- * title, the one thing the marquee exists to prevent.
- *
- * The dim is wider than the glyph: it carries every state but playing, so a
- * stopped or untuned player reads as idle by default instead of looking like a
- * row that merely has nothing to say.
+ * The idle mark: the row dims for every state but playing — paused, stopped
+ * and untuned alike — so the machine reads as idle from the grey alone instead
+ * of looking like a row that merely has nothing to say. A paused Station keeps
+ * its label: freezing the marquee mid-scroll would hide half a title (the one
+ * thing the marquee exists to prevent), and the track it stopped on is exactly
+ * what the listener paused to read.
  */
 #scroll-container.idle {
   opacity: 0.55;

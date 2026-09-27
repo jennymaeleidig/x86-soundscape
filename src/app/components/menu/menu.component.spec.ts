@@ -220,8 +220,8 @@ describe('MenuComponent on Ambience', () => {
     expect(bar()).toBe('Nothing playing');
   });
 
-  it('dims the row whenever the player is not playing, and adds the pause glyph only when paused', () => {
-    // Nothing tuned at startup: idle by default, but no pause to glyph.
+  it('dims the row whenever the player is not playing, and marks a paused Station with the dim alone', () => {
+    // Nothing tuned at startup: idle by default, and no Station to read.
     expect(nowPlayingRow().nativeElement.classList).toContain('idle');
     expect(bar()).toBe('Nothing playing');
 
@@ -229,10 +229,9 @@ describe('MenuComponent on Ambience', () => {
     playback$.next('paused');
     fixture.detectChanges();
 
-    // The mark says the state on its own — the label keeps its place and the
-    // marquee keeps its animation, so pausing never freezes a half-scrolled
-    // title.
-    expect(bar()).toBe('❚❚ soma fm - Groove Salad');
+    // The dim is the whole mark — the label keeps its text, its place and its
+    // marquee, so pausing never freezes a half-scrolled title.
+    expect(bar()).toBe('soma fm - Groove Salad');
     expect(nowPlayingRow().nativeElement.classList).toContain('idle');
     expect(
       fixture.debugElement.query(By.css('#scroll-container om-marquee')),
@@ -243,7 +242,7 @@ describe('MenuComponent on Ambience', () => {
     expect(bar()).toBe('soma fm - Groove Salad');
     expect(nowPlayingRow().nativeElement.classList).not.toContain('idle');
 
-    // Stopped collapses into untuned: dimmed again, and no pause to glyph.
+    // Stopped collapses into untuned: dimmed again, reading the sentence.
     playback$.next('none');
     nowPlaying$.next(undefined);
     fixture.detectChanges();

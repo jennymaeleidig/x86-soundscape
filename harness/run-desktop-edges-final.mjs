@@ -523,7 +523,7 @@ async function idleCost(server) {
   };
 }
 
-/** A paused Station's row: dim, prefixed, and still carrying its label. */
+/** A paused Station's row: dimmed, unmarked, and still carrying its label. */
 async function pausedMark(server) {
   const { browser, page } = await openAppWithLocalAudio(server, ROOMY);
   const readRow = () =>
@@ -539,7 +539,7 @@ async function pausedMark(server) {
         );
       };
       return {
-        dimmed: row?.classList.contains("paused") ?? null,
+        dimmed: row?.classList.contains("idle") ?? null,
         text: item?.textContent.trim() ?? null,
         title: item?.getAttribute("title") ?? null,
         marqueeAnimating: animations.some(isMarquee),
@@ -567,7 +567,7 @@ async function pausedMark(server) {
   await sleep(1500);
   const paused = await readRow();
 
-  // The mark must carry the state whether or not the label is moving, and the
+  // The dim must carry the state whether or not the label is moving, and the
   // app's own motion — the marquee — is deliberately not stopped by the
   // preference, so the label keeps scrolling even here.
   await page.emulateMediaFeatures([
@@ -582,12 +582,15 @@ async function pausedMark(server) {
     playing,
     paused,
     pausedReducedMotion,
-    markOnInitial: !initial.dimmed && !initial.text.startsWith(glyph),
-    markOnPlaying: !playing.dimmed && !playing.text.startsWith(glyph),
-    markOnPaused: paused.dimmed && paused.text.startsWith(glyph),
+    // The dim is the whole mark: it says idle for every state but playing,
+    // untuned and paused alike, and no glyph joins the label.
+    dimmedWhenIdle: initial.dimmed && paused.dimmed,
+    undimmedWhenPlaying: !playing.dimmed,
+    glyphIsGone: [initial, playing, paused].every(
+      (row) => !(row.text ?? "").includes(glyph),
+    ),
     labelKeepsScrollingWhilePaused: paused.marqueeAnimating,
-    markSurvivesReducedMotion:
-      pausedReducedMotion.dimmed && pausedReducedMotion.text.startsWith(glyph),
+    dimSurvivesReducedMotion: pausedReducedMotion.dimmed,
     // The app's label keeps scrolling under the preference too: the whole
     // point of the marquee is that the row's claim stays readable.
     marqueeKeepsScrollingUnderReducedMotion:
@@ -663,11 +666,11 @@ async function main() {
       surfer.fit,
     "cost: the Window adds no paint, raster, style or layout records over the baseline, and only the marquee costs":
       cost.flickerCostGone,
-    "paused mark: dim and glyph on a paused Station, none when playing or untuned":
-      paused.markOnInitial && paused.markOnPlaying && paused.markOnPaused,
-    "paused mark: the label keeps scrolling — the reduced-motion preference does not stop it — and the mark carries the state":
+    "paused mark: the dim alone marks a paused Station, the row brightens when playing, and the label carries no glyph":
+      paused.dimmedWhenIdle && paused.undimmedWhenPlaying && paused.glyphIsGone,
+    "paused mark: the label keeps scrolling — the reduced-motion preference does not stop it — and the dim carries the state":
       paused.labelKeepsScrollingWhilePaused &&
-      paused.markSurvivesReducedMotion &&
+      paused.dimSurvivesReducedMotion &&
       paused.marqueeKeepsScrollingUnderReducedMotion,
   };
   await writeResults(resultsPath, run);
