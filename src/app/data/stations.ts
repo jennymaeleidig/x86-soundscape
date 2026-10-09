@@ -38,6 +38,17 @@ export default class Stations {
     // },
     {
       metaData: {
+        artist: 'Soundlink+',
+        title: 'Satellaview+',
+      },
+      // The host's own origin, not the raw IP from the .pls: only this one
+      // sends the CORS headers the ICY read needs, so the IP would leave Now
+      // Playing on the Station descriptor forever.
+      url: 'https://howlingf-gecko.radioca.st/stream',
+      duration: DEFAULT_DURATION,
+    },
+    {
+      metaData: {
         artist: 'soma fm',
         title: 'Groove Salad',
       },
@@ -238,17 +249,6 @@ export default class Stations {
         title: 'BirdHause',
       },
       url: 'https://ec2.yesstreaming.net:3195/stream',
-      duration: DEFAULT_DURATION,
-    },
-    {
-      metaData: {
-        artist: 'Soundlink+',
-        title: 'Satellaview+',
-      },
-      // The host's own origin, not the raw IP from the .pls: only this one
-      // sends the CORS headers the ICY read needs, so the IP would leave Now
-      // Playing on the Station descriptor forever.
-      url: 'https://howlingf-gecko.radioca.st/stream',
       duration: DEFAULT_DURATION,
     },
   ];
