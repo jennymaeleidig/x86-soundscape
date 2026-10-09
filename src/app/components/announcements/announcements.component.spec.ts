@@ -9,9 +9,9 @@ describe('AnnouncementsComponent', () => {
     fixture.detectChanges();
 
     const entries = fixture.nativeElement.querySelectorAll('.grid > div');
-    expect(entries.length).toBe(6);
-    expect(entries[0].textContent).toContain('Upadates! Updates!! Updates!!!');
-    expect(entries[5].textContent).toContain('Welcome');
+    expect(entries.length).toBe(7);
+    expect(entries[0].textContent).toContain('Satellaview Soundlink+');
+    expect(entries[6].textContent).toContain('Welcome');
     expect(fixture.nativeElement.querySelector('.window')).toBeNull();
   });
 });

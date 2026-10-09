@@ -22,13 +22,18 @@ export interface AnnouncementContent {
 export class AnnouncementsComponent {
   static readonly announcements: AnnouncementContent[] = [
     {
-      title: 'Upadates! Updates!! Updates!!!',
+      title: 'Satellaview Soundlink+ :o',
+      msg: 'Super excited to announce the addition of the original home for the Tide of Sound broadcast. Please checkout the teams awesome work at: https://satellaview-plus.com/ -- DJ x86',
+      date: '10/09/26',
+    },
+    {
+      title: 'Updates! Updates!! Updates!!!',
       msg: "updates, updates read all about 'em... Webamp upgraded to latest ver., mobile support ENHANCED, and browser / device media controls. Enjoy :) -- DJ x86",
       date: '07/15/26',
     },
     {
       title: 'New Music and the Weather',
-      msg: "I've added some new stations to the mix. I've aslo added a the WeatherStar 4000+ widget by Matt. Some stations are currently unavailable, but I'm working on increasing their uptime! Love y'all. -- DJ x86",
+      msg: "I've added some new stations to the mix. I've also added a the WeatherStar 4000+ widget by Matt. Some stations are currently unavailable, but I'm working on increasing their uptime! Love y'all. -- DJ x86",
       date: '05/27/26',
     },
     {
