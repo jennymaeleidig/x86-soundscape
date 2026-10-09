@@ -9,11 +9,7 @@ export type PlaybackState = 'playing' | 'paused' | 'none';
  * a Station is tuned iff playback is playing or paused.
  */
 export type EnginePlaybackStatus =
-  | 'PLAYING'
-  | 'PAUSED'
-  | 'STOPPED'
-  | 'ENDED'
-  | 'CLOSED';
+  'PLAYING' | 'PAUSED' | 'STOPPED' | 'ENDED' | 'CLOSED';
 /**
  * The engine surface the player reads the playback state from: one status
  * read and one change subscription. The engine remains the only authority on
