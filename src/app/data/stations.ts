@@ -38,7 +38,7 @@ export default class Stations {
     // },
     {
       metaData: {
-        artist: 'Soundlink+',
+        artist: 'SoundLink+',
         title: 'Satellaview+',
       },
       // The host's own origin, not the raw IP from the .pls: only this one
