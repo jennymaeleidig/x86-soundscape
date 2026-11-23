@@ -4,6 +4,7 @@ import {
   Input,
   inputBinding,
   ChangeDetectionStrategy,
+  signal,
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
@@ -58,12 +59,12 @@ describe('MountService', () => {
 
   it('leaves the same state after a bindings-driven change', () => {
     const found = target.innerHTML;
-    let label = 'first';
+    const label = signal('first');
     const handle = mount().mount(MountStubComponent, target, [
-      inputBinding('label', () => label),
+      inputBinding('label', () => label()),
     ]);
     render();
-    label = 'second';
+    label.set('second');
     render();
     expect(target.textContent).toContain('stub:second');
 
