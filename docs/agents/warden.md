@@ -55,7 +55,7 @@ Warden never discovers a dot-path or an extensionless file. They are not missing
 they are judged only when named. The repository has:
 
 - Dot-paths: `.editorconfig`, `.gitignore`, `.husky/pre-commit`, `.husky/pre-push`, `.postcssrc.json`,
-  `.tool-versions`, `src/assets/.gitkeep`
+  `.npmrc`, `src/assets/.gitkeep`
 - Extensionless: `CNAME`
 
 Live edits to these paths are judged like any other path. To audit one explicitly, name it:
@@ -74,6 +74,6 @@ Live edits to these paths are judged like any other path. To audit one explicitl
 /warden rules audit . --max 200
 ```
 
-With the local project file in place, the audit counts 117 files: 81 `.ts`, 13 `.html`, 11 `.css`, 8
+With the local project file in place, the audit counts 118 files: 82 `.ts`, 13 `.html`, 11 `.css`, 8
 `.json`, and 4 `.md`.
 `--max 200` sits above that, so the dialog count is not truncated.

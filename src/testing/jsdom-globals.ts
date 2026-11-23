@@ -1,8 +1,6 @@
 /**
  * Globals this repo's jsdom leaves out, supplied for the components under test.
  *
- * - `TextDecoder` and `TextEncoder`: webamp's bundle reads them at import time,
- *   and the Applet and the Menu import WinampService.
  * - `IntersectionObserver`: the marquee in the Menu starts one once its view is
  *   up, and jsdom has none.
  *
