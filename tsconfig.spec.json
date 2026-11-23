@@ -9,13 +9,5 @@
     "src/**/*.spec.ts",
     "src/**/*.d.ts",
     "src/testing/jsdom-globals.ts"
-  ],
-  "angularCompilerOptions": {
-    "extendedDiagnostics": {
-      "checks": {
-        "nullishCoalescingNotNullable": "suppress",
-        "optionalChainNotNullable": "suppress"
-      }
-    }
-  }
+  ]
 }

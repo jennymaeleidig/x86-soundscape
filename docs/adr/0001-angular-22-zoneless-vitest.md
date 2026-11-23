@@ -20,6 +20,8 @@ peer range to Angular `^21.0.0`.
 - Run the app on Angular 22, zoneless: no `zone.js`, no `provideZoneChangeDetection`.
   Code that must trigger change detection signals it (a component input driven by a
   signal, as the mount spec now shows).
+- Stay on TypeScript 6.0, not 7: Angular 22 supports `>=6.0.0 <6.1.0` only, so
+  TypeScript 7 is out until Angular supports it.
 - Run the tests on Angular's `@angular/build:unit-test` builder with Vitest, in jsdom
   with globals on. The suite keeps `describe`/`it`/`expect` global; `vi` replaces every
   Jest API. Fake timers fake the standard timers plus `queueMicrotask` — Vitest's
@@ -39,3 +41,8 @@ peer range to Angular `^21.0.0`.
 - `tsc -p tsconfig.json` now also typechecks the specs (types `vitest/globals`), while
   `tsconfig.app.json` and `tsconfig.spec.json` keep their own `types`, so the app build
   never sees test globals.
+- The select container's `selectOnClick` is set imperatively in the Desktop's
+  `ngAfterViewInit` rather than by a template binding: the two-way `[(selectedItems)]`
+  binding desynchronizes the binding slots of the inputs after it, so Angular 22
+  silently drops a `[selectOnClick]` binding. If a framework update fixes that slot
+  accounting, move the value back into the template.

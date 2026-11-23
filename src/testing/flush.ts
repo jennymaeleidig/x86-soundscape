@@ -36,7 +36,8 @@ const FAKED = [
  */
 export async function withFakeTimers(body: () => Promise<void>): Promise<void> {
   vi.useFakeTimers({
-    // A plain string[] is not FakeMethod[]; the inline literal narrows it.
+    // A plain string[] is not FakeMethod[]; the cast keeps the array above as
+    // the readable list of faked timers.
     toFake: [...FAKED] as never,
   });
   try {
