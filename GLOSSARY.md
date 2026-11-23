@@ -12,6 +12,10 @@ _Avoid_: Song, Track, Stream, Radio, fallback metadata
 The live artist + title currently airing on a tuned Station, derived from stream metadata.
 _Avoid_: Song, Track, current track
 
+**Kind**:
+The metadata flavor a Station's descriptor declares — which live parser and source derivation its Now Playing uses.
+_Avoid_: metadata type, format
+
 **Tune** / **tuned**:
 The Station the player is streaming. A Station merely listed in the playlist is not tuned; a paused player is still tuned; a stopped one is not.
 _Avoid_: play, select, load, current track
