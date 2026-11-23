@@ -36,6 +36,7 @@ const ROOMY = { width: 600, height: 500 };
 const AUDIO_FIXTURE =
   "src/assets/audio/sounds/SoundLonely/University_Computer_Lab_Ambience-pNHMmu400M.mp3";
 
+/** @param {string[]} revArgs */
 function git(revArgs) {
   try {
     return execFileSync("git", revArgs, { encoding: "utf8" }).trim();
@@ -275,7 +276,10 @@ async function confinementAt(server, viewport, direction) {
   // its vertical origin when asked to scroll. (The Menu bar already forces a
   // horizontal extent of its own at these widths; that is recorded, not ours.)
   const scroll = await page.evaluate(() => {
-    const mount = document.querySelector("winamp > div");
+    const mount = /** @type {HTMLElement | null} */ (
+      document.querySelector("winamp > div")
+    );
+    if (!mount) throw new Error("the player mount is not rendered");
     const floor = document.documentElement.scrollWidth;
     const minWidth = mount.style.minWidth;
     const minHeight = mount.style.minHeight;
@@ -301,7 +305,9 @@ async function confinementAt(server, viewport, direction) {
       const r = el.getBoundingClientRect();
       return { x: r.x, y: r.y, width: r.width, height: r.height };
     };
-    const bounds = document.querySelector(".desktop-bounds");
+    const bounds = /** @type {HTMLElement} */ (
+      document.querySelector(".desktop-bounds")
+    );
     const grid = document.querySelector("dts-select-container");
     const boundary = document.querySelector("[cdkDragBoundary]");
     const named = boundary?.getAttribute("cdkDragBoundary") ?? null;
@@ -545,10 +551,16 @@ async function pausedMark(server) {
         marqueeAnimating: animations.some(isMarquee),
         // Everything else on the list is the player's own (webamp's blinking
         // countdown while a Station is tuned), not the app's motion.
-        appAnimations: animations.filter(isMarquee).map((a) => a.animationName),
+        appAnimations: animations
+          .filter(isMarquee)
+          .map(
+            (a) => /** @type {{animationName?: string}} */ (a).animationName,
+          ),
         playerAnimations: animations
           .filter((a) => !isMarquee(a))
-          .map((a) => a.animationName),
+          .map(
+            (a) => /** @type {{animationName?: string}} */ (a).animationName,
+          ),
       };
     });
   const clickMenuItem = (label) =>
@@ -556,7 +568,7 @@ async function pausedMark(server) {
       const anchors = [...document.querySelectorAll('ul[role="menu"] li a')];
       const found = anchors.find((a) => a.textContent.trim() === label);
       if (!found) throw new Error(`no menu item ${label}`);
-      found.click();
+      /** @type {HTMLElement} */ (found).click();
     }, label);
 
   const initial = await readRow();

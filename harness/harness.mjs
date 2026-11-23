@@ -77,7 +77,8 @@ export function serveDist(dir) {
   return new Promise((resolve) => {
     server.listen(0, "127.0.0.1", () => {
       resolve({
-        port: server.address().port,
+        port: /** @type {import("node:net").AddressInfo} */ (server.address())
+          .port,
         close: () => new Promise((done) => server.close(done)),
       });
     });
@@ -103,6 +104,7 @@ export async function launchHeadless({ width, height }) {
 /** What ran and where: the browser build and the machine, beside every number.
  * `browserVersion` is the string `browser.version()` returns, taken while the
  * browser is still open. */
+/** @param {string | null} [browserVersion] */
 export function machineInfo(browserVersion = null) {
   const cpus = os.cpus();
   return {
@@ -251,11 +253,13 @@ export async function dragPlayer(page, { x, y, dx, dy, steps = 8 }) {
 export async function listAnimations(page) {
   return page.evaluate(() =>
     document.getAnimations().map((animation) => {
-      const effect = animation.effect;
+      const effect = /** @type {{target?: Element}} */ (animation.effect);
       const target = effect?.target;
       return {
         name:
-          animation.animationName ?? animation.constructor.name ?? "animation",
+          /** @type {{animationName?: string}} */ (animation).animationName ??
+          animation.constructor.name ??
+          "animation",
         playState: animation.playState,
         target: target
           ? `${target.tagName.toLowerCase()}${
@@ -337,7 +341,11 @@ export async function measureCost(
   const capture = () =>
     page
       .screenshot({ type: "png", optimizeForSpeed: true })
-      .then((buf) => PNG.sync.read(Buffer.from(buf)));
+      .then((buf) =>
+        /** @type {{sync: {read(buf: Buffer): unknown}}} */ (
+          /** @type {unknown} */ (PNG)
+        ).sync.read(Buffer.from(buf)),
+      );
   let previous = await capture();
   let changedTotal = 0;
   const deadline = performance.now() + seconds * 1000;

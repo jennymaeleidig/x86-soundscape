@@ -1,0 +1,13 @@
+{
+  "rules": {
+    "exclude": [
+      "src/assets/**",
+      "src/favicon.ico",
+      "package-lock.json"
+    ],
+    "skip": [
+      "docs/adr/**",
+      "docs/agents/**"
+    ]
+  }
+}

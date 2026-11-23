@@ -33,6 +33,7 @@ const resultsPath = `.scratch/desktop-edges/results/${new Date()
   .toISOString()
   .replace(/[:.]/g, "-")}-desktop-edges.json`;
 
+/** @param {string[]} revArgs */
 function git(revArgs) {
   try {
     return execFileSync("git", revArgs, { encoding: "utf8" }).trim();
