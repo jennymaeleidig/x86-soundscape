@@ -8,8 +8,6 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { FeatureId } from '../../services/feature/feature';
-import { AboutComponent } from '../about/about.component';
-import { AnnouncementsComponent } from '../announcements/announcements.component';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { type PlaybackState } from '../../services/winamp/playback-state';
 import { NowPlayingService } from '../../services/now-playing/now-playing.service';
@@ -107,17 +105,11 @@ export class MenuComponent {
   });
 
   openAbout() {
-    this.popUpService.open({
-      id: FeatureId.About,
-      contents: AboutComponent.text,
-    });
+    this.popUpService.open(FeatureId.About);
   }
 
   openAnnouncements() {
-    this.popUpService.open({
-      id: FeatureId.Announcements,
-      contents: AnnouncementsComponent.announcements,
-    });
+    this.popUpService.open(FeatureId.Announcements);
   }
 
   play() {
