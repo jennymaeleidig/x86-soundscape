@@ -13,7 +13,7 @@ import type { EnginePlaybackStatus } from './playback-state';
 
 /**
  * The engine, as far as the wrapper's transport commands reach: the status
- * read the guard decides on and the verbs it may call. `store.subscribe` and
+ * the guarded verbs read and the verbs they may call. `store.subscribe` and
  * `onTrackDidChange` stand in for the wires the tune gate follows.
  */
 class FakeEngine {
@@ -100,6 +100,29 @@ describe('WinampService transport commands', () => {
     engine.status = 'CLOSED';
     service.play();
     expect(engine.calls).toEqual(['reopen', 'play']);
+  });
+
+  it('plays the tuned Station when stopped or ended', () => {
+    engine.emitTrack(Stations.stations[0].url); // a Station tuned first
+    engine.status = 'STOPPED';
+    service.play();
+    engine.status = 'ENDED';
+    service.play();
+    expect(engine.calls).toEqual(['play', 'play']);
+  });
+
+  it('lets Pause stand when nothing plays — the engine’s own pause is a toggle', () => {
+    const statuses: EnginePlaybackStatus[] = [
+      'PAUSED',
+      'STOPPED',
+      'ENDED',
+      'CLOSED',
+    ];
+    for (const status of statuses) {
+      engine.status = status;
+      service.pause();
+    }
+    expect(engine.calls).toEqual([]);
   });
 
   it('Play before any gesture tunes the first Station and plays it', () => {
