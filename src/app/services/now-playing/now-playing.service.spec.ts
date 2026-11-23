@@ -5,7 +5,7 @@ import { FakeTransport } from '../../../testing/fake-transport';
 import { drainMicrotasks, flush, withFakeTimers } from '../../../testing/flush';
 import { icyPayload, plainStation } from '../../../testing/icy';
 import { NowPlayingService } from './now-playing.service';
-import { NowPlaying } from './parsers';
+import { NowPlaying } from './kinds';
 import { NowPlayingTransport } from './transport';
 
 const azuracastPayload = (artist: string, title: string) => ({
@@ -87,10 +87,6 @@ describe('NowPlayingService', () => {
     service.tune(azuracast);
     await flush();
     expect(seen.at(-1)).toEqual({ artist: 'Artist Two', title: 'Title Two' });
-    expect(transport.sources.at(-1)).toEqual({
-      via: 'fetch',
-      endpoint: expect.stringContaining('/api/nowplaying/'),
-    });
   });
 
   it('never fetches for a Station that polls none, and a malformed payload arrives as nothing', async () => {

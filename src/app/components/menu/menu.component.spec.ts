@@ -2,7 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
-import { NowPlaying } from '../../services/now-playing/parsers';
+import { NowPlaying } from '../../services/now-playing/kinds';
 
 import { MenuComponent } from './menu.component';
 import { AmbienceService } from '../../services/ambience/ambience';

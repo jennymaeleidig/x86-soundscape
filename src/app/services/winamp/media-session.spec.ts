@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
-import { NowPlaying } from '../now-playing/parsers';
+import { NowPlaying } from '../now-playing/kinds';
 import { PlaybackState } from './playback-state';
 import { MEDIA_SESSION, wireMediaSession } from './media-session';
 import type { MediaSessionSurface } from './media-session';

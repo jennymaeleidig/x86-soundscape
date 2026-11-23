@@ -1,7 +1,5 @@
-import {
-  NowPlayingSource,
-  NowPlayingTransport,
-} from '../app/services/now-playing/transport';
+import type { NowPlayingSource } from '../app/services/now-playing/kinds';
+import { NowPlayingTransport } from '../app/services/now-playing/transport';
 
 /**
  * The transport double specs hand Now Playing: each queued answer is handed
