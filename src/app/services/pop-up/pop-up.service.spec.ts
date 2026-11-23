@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { PopUpService } from './pop-up.service';
 import { MountService } from '../mount/mount';
 import { FeatureId } from '../feature/feature';
-import { AnnouncementsComponent } from '../../components/announcements/announcements.component';
+import { announcements } from '../../components/announcements/announcements';
 
 describe('PopUpService', () => {
   describe('with the real mount module', () => {
@@ -54,7 +54,7 @@ describe('PopUpService', () => {
       open(FeatureId.Announcements);
 
       const popUpText = popUp()?.textContent ?? '';
-      const [latest, previous] = AnnouncementsComponent.announcements;
+      const [latest, previous] = announcements;
       expect(popUpText).toContain('Latest');
       expect(popUpText).toContain(latest.title);
       expect(popUpText).toContain(latest.msg);

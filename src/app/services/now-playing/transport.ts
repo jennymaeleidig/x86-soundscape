@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import IcecastMetadataStats from 'icecast-metadata-stats';
-import type { NowPlayingSource } from './kinds';
+
+/** Where one attempt reads from: the dependency's own read, or our own fetch. */
+export type NowPlayingRequest =
+  | { via: 'library'; url: string; source: string }
+  | { via: 'fetch'; endpoint: string };
 
 /**
  * The transport seam beneath Now Playing: one attempt per call, no timer, no
@@ -11,7 +15,7 @@ import type { NowPlayingSource } from './kinds';
  */
 export abstract class NowPlayingTransport {
   /** One attempt. `undefined` is a failed or empty attempt, not a value. */
-  abstract fetch(source: NowPlayingSource): Promise<unknown | undefined>;
+  abstract fetch(source: NowPlayingRequest): Promise<unknown | undefined>;
   /** Releases the socket now, when the tune changes or stops. */
   abstract cancel(): void;
 }
@@ -31,7 +35,7 @@ export class HttpNowPlayingTransport extends NowPlayingTransport {
     return new IcecastMetadataStats(url, options);
   }
 
-  async fetch(source: NowPlayingSource): Promise<unknown | undefined> {
+  async fetch(source: NowPlayingRequest): Promise<unknown | undefined> {
     return source.via === 'fetch'
       ? this.fetchJson(source.endpoint)
       : this.fetchLibrary(source);

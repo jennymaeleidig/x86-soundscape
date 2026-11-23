@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AnnouncementsLatestComponent } from './announcements-latest.component';
-import { AnnouncementsComponent } from '../announcements/announcements.component';
+import { announcements } from '../announcements/announcements';
 
 describe('AnnouncementsLatestComponent', () => {
   it('renders only the latest entry from the list the Announcements Window shows', () => {
@@ -9,7 +9,7 @@ describe('AnnouncementsLatestComponent', () => {
 
     fixture.detectChanges();
 
-    const [latest, previous] = AnnouncementsComponent.announcements;
+    const [latest, previous] = announcements;
     expect(fixture.nativeElement.querySelectorAll('.grid').length).toBe(1);
     expect(fixture.nativeElement.textContent).toContain(latest.title);
     expect(fixture.nativeElement.textContent).toContain(latest.date);

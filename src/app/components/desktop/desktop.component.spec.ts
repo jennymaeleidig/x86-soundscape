@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DesktopComponent } from './desktop.component';
+import { AppletDrag } from '../applet/applet-drag';
 import { FeatureRegistry } from '../../services/feature/feature-registry';
 import { WindowService } from '../../services/window/window.service';
 import { WinampService } from '../../services/winamp/winamp.service';
@@ -46,10 +47,23 @@ describe('DesktopComponent', () => {
       expect(applet.feature).toBe(rows[index]);
       expect(applet.x).toBe(0);
       expect(applet.y).toBe(0);
-      expect(component.getAppletInputs(applet)).toEqual({
-        feature: rows[index],
-      });
     });
+  });
+
+  it('is the drag seam its Applets inject: a gesture starts clear and a moving Applet stands the select down', () => {
+    const component = desktop();
+    const drag: AppletDrag = component;
+
+    expect(drag.isDragGesture()).toBe(false);
+    drag.setMoving(true);
+    expect(component.appletIsMoving).toBe(true);
+    drag.setMoving(false);
+    expect(component.appletIsMoving).toBe(false);
+
+    component.dragGestureActive = true;
+    expect(drag.isDragGesture()).toBe(true);
+    drag.beginGesture();
+    expect(drag.isDragGesture()).toBe(false);
   });
 
   it('keeps the identity matchable after the copy, which is why the key is apart from the value', () => {

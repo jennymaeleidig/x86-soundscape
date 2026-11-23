@@ -31,13 +31,7 @@
           (cdkDragMoved)="onDragMoved($event, applet)"
           (cdkDragEnded)="onDragEnded($event, applet)"
         >
-          <ng-container
-            *ngComponentOutlet="
-              AppletComponent;
-              inputs: getAppletInputs(applet);
-              injector: injector
-            "
-          ></ng-container>
+          <app-applet [feature]="applet.feature"></app-applet>
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import {
   Component,
   ElementRef,
-  Injector,
   ViewChild,
   AfterViewInit,
 } from '@angular/core';
@@ -14,7 +13,7 @@ import {
   DragToSelectModule,
   SelectContainerComponent,
 } from 'ngx-drag-to-select';
-import { CommonModule, NgComponentOutlet } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   CdkDrag,
   CdkDragStart,
@@ -32,23 +31,6 @@ interface DesktopApplet {
   y: number;
 }
 
-/** The Desktop's side of the drag seam its Applets inject. */
-class DesktopAppletDrag implements AppletDrag {
-  constructor(private readonly desktop: DesktopComponent) {}
-
-  isDragGesture() {
-    return this.desktop.dragGestureActive;
-  }
-
-  beginGesture() {
-    this.desktop.dragGestureActive = false;
-  }
-
-  setMoving(moving: boolean) {
-    this.desktop.appletIsMoving = moving;
-  }
-}
-
 @Component({
   selector: 'app-desktop',
   standalone: true,
@@ -57,19 +39,19 @@ class DesktopAppletDrag implements AppletDrag {
     WinampComponent,
     DragToSelectModule,
     CommonModule,
-    NgComponentOutlet,
     CdkDrag,
+    AppletComponent,
   ],
   templateUrl: './desktop.component.html',
   styleUrl: './desktop.component.css',
+  providers: [{ provide: AppletDrag, useExisting: DesktopComponent }],
 })
-export class DesktopComponent implements AfterViewInit {
+export class DesktopComponent implements AfterViewInit, AppletDrag {
   @ViewChild('container') selectContainer!: SelectContainerComponent;
   @ViewChild('container', { read: ElementRef }) containerRef!: ElementRef;
   @ViewChild('bounds') bounds!: ElementRef<HTMLElement>;
 
   selectedApplets: Array<DesktopApplet> = [];
-  AppletComponent = AppletComponent;
   console = console;
   applets: DesktopApplet[] = [];
   appletIsMoving: boolean = false;
@@ -78,9 +60,6 @@ export class DesktopComponent implements AfterViewInit {
   private dragStartPositions: Map<DesktopApplet, Point> = new Map();
   private activelyDraggedApplet: DesktopApplet | null = null;
   dragGestureActive: boolean = false;
-  injector = Injector.create({
-    providers: [{ provide: AppletDrag, useValue: new DesktopAppletDrag(this) }],
-  });
 
   constructor(
     private readonly desktopBounds: DesktopBounds,
@@ -179,11 +158,20 @@ export class DesktopComponent implements AfterViewInit {
     }, 50);
   }
 
-  isSelected(applet: DesktopApplet): boolean {
-    return this.selectedApplets.includes(applet);
+  /** The Desktop's side of the drag seam its Applets inject. */
+  isDragGesture() {
+    return this.dragGestureActive;
   }
 
-  getAppletInputs(applet: DesktopApplet) {
-    return { feature: applet.feature };
+  beginGesture() {
+    this.dragGestureActive = false;
+  }
+
+  setMoving(moving: boolean) {
+    this.appletIsMoving = moving;
+  }
+
+  isSelected(applet: DesktopApplet): boolean {
+    return this.selectedApplets.includes(applet);
   }
 }
