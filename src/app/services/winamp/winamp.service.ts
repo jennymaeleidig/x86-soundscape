@@ -2,7 +2,6 @@ import { Inject, Injectable, InjectionToken } from '@angular/core';
 import Webamp from 'webamp';
 import Stations from '../../data/stations';
 import { NowPlayingService } from '../now-playing/now-playing.service';
-import { ensurePaused, ensurePlaying } from './ensure';
 import { MEDIA_SESSION, wireMediaSession } from './media-session';
 import { playbackState$ } from './playback-state';
 import { groupSize$ } from './group-size';
@@ -12,7 +11,7 @@ import type { MediaSessionSurface } from './media-session';
 /**
  * The engine, as the wrapper and the wiring see it: the Webamp instance and
  * everything it publishes. Built by the token's factory in the app; a spec
- * provides its own double, so the transport guard can be asserted against a
+ * provides its own double, so the guarded transport can be asserted against a
  * recorded engine rather than a real one.
  */
 export const WEBAMP_ENGINE = new InjectionToken<Engine>('webamp engine', {
@@ -170,10 +169,10 @@ export class WinampService {
   }
 
   /**
-   * The transport commands are ensured, not sent: the guard reads the
-   * engine's status and decides, so neither the Menu nor any other surface
-   * has to. The engine's own `play` restarts a running track and its `pause`
-   * toggles, and both live behind the guard — `next()` and `prev()` stay
+   * The transport commands are guarded, not sent: each reads the engine's
+   * status and decides, so neither the Menu nor any other surface has to.
+   * The engine's own `play` restarts a running track and its `pause`
+   * toggles, and both live behind that read — `next()` and `prev()` stay
    * pass-through, the engine auto-playing a track it tunes.
    */
   play() {
@@ -187,11 +186,29 @@ export class WinampService {
       this.playRadio();
       return;
     }
-    ensurePlaying(this.webamp.getPlayerMediaStatus(), this.webamp);
+    // A play command that cannot stop on a second press: already playing it
+    // is the identity, paused it unpauses, stopped or ended it starts the
+    // current track. A closed player is reopened first, so audio never plays
+    // from a hidden player with no surface holding intent about it — and the
+    // OS play control, reading the engine through this service, inherits the
+    // same decision.
+    const status = this.webamp.getPlayerMediaStatus();
+    if (status === 'PLAYING') {
+      return;
+    }
+    if (status === 'CLOSED') {
+      this.webamp.reopen();
+    }
+    this.webamp.play();
   }
 
   pause() {
-    ensurePaused(this.webamp.getPlayerMediaStatus(), this.webamp);
+    // A pause command that cannot resume on a second press: only a playing
+    // engine pauses — the engine's own pause would start a stopped or closed
+    // player — and every other status is left standing.
+    if (this.webamp.getPlayerMediaStatus() === 'PLAYING') {
+      this.webamp.pause();
+    }
   }
 
   prev() {
