@@ -30,7 +30,7 @@ export function nowPlayingLine(track: NowPlaying | undefined): string {
 }
 
 /** The one predicate the Applet's icon and the Menu's mute item both answer. */
-export function isAudible(state: AmbienceState): boolean {
+function isAudible(state: AmbienceState): boolean {
   return state.playing && !state.muted;
 }
 
