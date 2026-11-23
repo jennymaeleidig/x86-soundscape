@@ -3,16 +3,29 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { AppletComponent } from './applet.component';
+import { AppletDrag } from './applet-drag';
 import { FeatureId, type Feature } from '../../services/feature/feature';
 
 const ICON = 'assets/images/ambience_off.png';
 const TOOLTIP = 'Nothing playing';
 
+class FakeAppletDrag implements AppletDrag {
+  dragging = false;
+  setMoving = jest.fn<void, [boolean]>();
+
+  isDragGesture() {
+    return this.dragging;
+  }
+
+  beginGesture() {
+    this.dragging = false;
+  }
+}
+
 describe('AppletComponent', () => {
   let fixture: ComponentFixture<AppletComponent>;
   let activate: jest.Mock;
-  let setMoving: jest.Mock;
-  let dragging: boolean;
+  let drag: FakeAppletDrag;
 
   const feature = (): Feature => ({
     id: FeatureId.Ambience,
@@ -29,22 +42,10 @@ describe('AppletComponent', () => {
 
   beforeEach(() => {
     activate = jest.fn();
-    setMoving = jest.fn();
-    dragging = false;
+    drag = new FakeAppletDrag();
 
     TestBed.configureTestingModule({
-      providers: [
-        { provide: 'appletIsMoving', useValue: setMoving },
-        {
-          provide: 'appletDragState',
-          useValue: {
-            isDragGesture: () => dragging,
-            reset: () => {
-              dragging = false;
-            },
-          },
-        },
-      ],
+      providers: [{ provide: AppletDrag, useValue: drag }],
     });
 
     fixture = TestBed.createComponent(AppletComponent);
@@ -67,7 +68,7 @@ describe('AppletComponent', () => {
 
   it('does not activate on a drag across the Desktop', () => {
     press(); // the gesture starts
-    dragging = true; // and the Desktop marks it a drag
+    drag.dragging = true; // and the Desktop marks it a drag
 
     button().triggerEventHandler('dblclick', {});
 
@@ -76,7 +77,7 @@ describe('AppletComponent', () => {
 
   it('clears the drag state the moment a new gesture starts, so the next click works', () => {
     press();
-    dragging = true;
+    drag.dragging = true;
     button().triggerEventHandler('dblclick', {});
 
     press();
@@ -89,7 +90,7 @@ describe('AppletComponent', () => {
     button().triggerEventHandler('mousedown', {});
     button().triggerEventHandler('mouseup', {});
 
-    expect(setMoving).toHaveBeenNthCalledWith(1, true);
-    expect(setMoving).toHaveBeenNthCalledWith(2, false);
+    expect(drag.setMoving).toHaveBeenNthCalledWith(1, true);
+    expect(drag.setMoving).toHaveBeenNthCalledWith(2, false);
   });
 });

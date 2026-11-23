@@ -3,7 +3,7 @@
 <div #bounds class="relative w-full h-full overflow-hidden desktop-bounds">
   <winamp></winamp>
   <!-- Selectable area -->
-  <!-- The selectable area does not play nice w/ the drag library, conly ever marks as selected at intial location. -->
+  <!-- The selectable area does not play nice w/ the drag library, only ever marks as selected at initial location. -->
   <dts-select-container
     class="w-full h-full absolute top-0 left-0 overflow-hidden"
     #container="dts-select-container"
@@ -27,17 +27,11 @@
         <div
           cdkDragBoundary=".desktop-bounds"
           cdkDrag
-          (cdkDragStarted)="onDragStarted($event, applet)"
+          (cdkDragStarted)="onDragStarted(applet)"
           (cdkDragMoved)="onDragMoved($event, applet)"
           (cdkDragEnded)="onDragEnded($event, applet)"
         >
-          <ng-container
-            *ngComponentOutlet="
-              AppletComponent;
-              inputs: getAppletInputs(applet);
-              injector: injector
-            "
-          ></ng-container>
+          <app-applet [feature]="applet.feature"></app-applet>
         </div>
       </div>
     </div>

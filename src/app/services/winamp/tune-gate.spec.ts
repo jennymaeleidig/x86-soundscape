@@ -7,7 +7,7 @@ import { drainMicrotasks, withFakeTimers } from '../../../testing/flush';
 import { icyPayload, plainStation } from '../../../testing/icy';
 import { NowPlayingService } from '../now-playing/now-playing.service';
 import { NowPlayingTransport } from '../now-playing/transport';
-import { NowPlaying } from '../now-playing/parsers';
+import { NowPlaying } from '../now-playing/kinds';
 import { PlaybackState, playbackState$ } from './playback-state';
 import {
   EngineTrack,

@@ -1,35 +1,10 @@
 import { Injectable } from '@angular/core';
 import IcecastMetadataStats from 'icecast-metadata-stats';
-import type { Station } from '../../data/stations';
 
 /** Where one attempt reads from: the dependency's own read, or our own fetch. */
-export type NowPlayingSource =
+export type NowPlayingRequest =
   | { via: 'library'; url: string; source: string }
   | { via: 'fetch'; endpoint: string };
-
-/** The source one attempt reads, built from the Station and its parser kind. */
-export function sourceFor(
-  station: Station,
-  kind: 'icy' | 'icestats' | 'azuracast',
-): NowPlayingSource {
-  const parser = station.metadataParser;
-  if (parser?.kind === 'azuracast') {
-    return {
-      via: 'fetch',
-      endpoint: `${originOf(station.url)}/api/nowplaying/${parser.shortcode}`,
-    };
-  }
-  return { via: 'library', url: station.url, source: kind };
-}
-
-function originOf(url: string): string {
-  try {
-    const parsed = new URL(url);
-    return `${parsed.protocol}//${parsed.host}`;
-  } catch {
-    return '';
-  }
-}
 
 /**
  * The transport seam beneath Now Playing: one attempt per call, no timer, no
@@ -40,7 +15,7 @@ function originOf(url: string): string {
  */
 export abstract class NowPlayingTransport {
   /** One attempt. `undefined` is a failed or empty attempt, not a value. */
-  abstract fetch(source: NowPlayingSource): Promise<unknown | undefined>;
+  abstract fetch(source: NowPlayingRequest): Promise<unknown | undefined>;
   /** Releases the socket now, when the tune changes or stops. */
   abstract cancel(): void;
 }
@@ -60,7 +35,7 @@ export class HttpNowPlayingTransport extends NowPlayingTransport {
     return new IcecastMetadataStats(url, options);
   }
 
-  async fetch(source: NowPlayingSource): Promise<unknown | undefined> {
+  async fetch(source: NowPlayingRequest): Promise<unknown | undefined> {
     return source.via === 'fetch'
       ? this.fetchJson(source.endpoint)
       : this.fetchLibrary(source);

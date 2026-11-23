@@ -1,23 +1,36 @@
-import { levelPercent, type AmbienceState } from './ambience';
+import { levelPercent, type AmbienceState } from '../ambience/ambience';
+import type { NowPlaying } from '../now-playing/kinds';
 
 /**
- * The words the Applet and the Menu show, derived from the one published state.
- * Both surfaces read these, so neither can tell the listener something
- * different about the one Sound Ambience holds.
+ * The words both marquees show, derived from the state each surface publishes.
+ * The Menu bar's Now Playing line and the Ambience readout read the same
+ * sentences here, so the two can never tell the listener different things.
  */
 
 /** What both surfaces say when nothing is held or tuned. */
 export const NOTHING_PLAYING = 'Nothing playing';
 
 /**
- * The separator the player puts between artist and title (`formatTrack`), so a
- * credit trails the name the way a title trails its artist, and a track reads
- * as one line.
+ * The separator both joins put between a name and what follows it, so a credit
+ * trails the Sound the way a title trails its artist.
  */
 export const SEPARATOR = ' - ';
 
+/**
+ * The Menu bar's Now Playing line: a track or Station descriptor as artist,
+ * separator, title, and the shared sentence when nothing is tuned.
+ */
+export function nowPlayingLine(track: NowPlaying | undefined): string {
+  if (!track) {
+    return NOTHING_PLAYING;
+  }
+  return track.artist
+    ? `${track.artist}${SEPARATOR}${track.title}`
+    : track.title;
+}
+
 /** The one predicate the Applet's icon and the Menu's mute item both answer. */
-export function isAudible(state: AmbienceState): boolean {
+function isAudible(state: AmbienceState): boolean {
   return state.playing && !state.muted;
 }
 

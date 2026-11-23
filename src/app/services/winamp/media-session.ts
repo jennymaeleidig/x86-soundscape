@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import { combineLatest, Observable, Subscription } from 'rxjs';
-import type { NowPlaying } from '../now-playing/parsers';
+import type { NowPlaying } from '../now-playing/kinds';
 import type { PlaybackState } from './playback-state';
 
 /**
@@ -16,8 +16,9 @@ export type MediaSessionSurface = Pick<
 
 /**
  * The player's transport commands, as the widget's buttons perform them. The
- * commands are the guarded ones — `ensure` decided, never the engine's own
- * toggling verbs — so a second press of the OS pause cannot resume.
+ * commands are the guarded ones — the player read its own status and decided,
+ * never the engine's own toggling verbs — so a second press of the OS pause
+ * cannot resume.
  */
 export interface MediaCommands {
   play(): void;

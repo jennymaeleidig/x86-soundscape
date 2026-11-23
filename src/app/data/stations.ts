@@ -1,18 +1,8 @@
 import type { URLTrack } from 'webamp';
-
-export type MetadataParser =
-  | { kind: 'icy' }
-  | {
-      kind: 'icestats';
-      sourceIndex?: number;
-      titleField: string;
-      artistField?: string;
-    }
-  | { kind: 'azuracast'; shortcode: string }
-  | { kind: 'none' };
+import type { MetadataKind } from '../services/now-playing/kinds';
 
 export type Station = URLTrack & {
-  metadataParser?: MetadataParser;
+  metadataKind?: MetadataKind;
 };
 
 const DEFAULT_DURATION: number = 5999;
@@ -86,7 +76,7 @@ export default class Stations {
       },
       url: 'https://radio.plaza.one/ogg',
       duration: DEFAULT_DURATION,
-      metadataParser: {
+      metadataKind: {
         kind: 'icestats',
         sourceIndex: 0,
         titleField: 'yp_currently_playing',
@@ -100,7 +90,7 @@ export default class Stations {
       },
       url: 'https://public.isekoi-radio.com/listen/isekoi/radio.mp3',
       duration: DEFAULT_DURATION,
-      metadataParser: { kind: 'azuracast', shortcode: 'isekoi' },
+      metadataKind: { kind: 'azuracast', shortcode: 'isekoi' },
     },
     {
       metaData: {
@@ -109,7 +99,7 @@ export default class Stations {
       },
       url: 'https://public.isekoi-radio.com/listen/ambient/ambientradio.mp3',
       duration: DEFAULT_DURATION,
-      metadataParser: { kind: 'azuracast', shortcode: 'ambient' },
+      metadataKind: { kind: 'azuracast', shortcode: 'ambient' },
     },
     {
       metaData: {
@@ -118,7 +108,7 @@ export default class Stations {
       },
       url: 'https://public.isekoi-radio.com/listen/chill/radio.mp3',
       duration: DEFAULT_DURATION,
-      metadataParser: { kind: 'azuracast', shortcode: 'chill' },
+      metadataKind: { kind: 'azuracast', shortcode: 'chill' },
     },
     {
       metaData: {
@@ -167,7 +157,7 @@ export default class Stations {
       },
       url: 'https://channels.dinamo.fm/locodyno-mp3',
       duration: DEFAULT_DURATION,
-      metadataParser: {
+      metadataKind: {
         kind: 'icestats',
         sourceIndex: 17,
         titleField: 'title',
@@ -180,7 +170,7 @@ export default class Stations {
       },
       url: 'https://channels.dinamo.fm/sleep-mp3',
       duration: DEFAULT_DURATION,
-      metadataParser: {
+      metadataKind: {
         kind: 'icestats',
         sourceIndex: 23,
         titleField: 'title',
@@ -217,7 +207,7 @@ export default class Stations {
       },
       url: 'https://broadcast.modular-station.com/radio/8000/radio.aac',
       duration: DEFAULT_DURATION,
-      metadataParser: { kind: 'azuracast', shortcode: '1' },
+      metadataKind: { kind: 'azuracast', shortcode: '1' },
     },
     {
       metaData: {

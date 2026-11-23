@@ -8,8 +8,6 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
 import { FeatureId } from '../../services/feature/feature';
-import { AboutComponent } from '../about/about.component';
-import { AnnouncementsComponent } from '../announcements/announcements.component';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { type PlaybackState } from '../../services/winamp/playback-state';
 import { NowPlayingService } from '../../services/now-playing/now-playing.service';
@@ -17,21 +15,19 @@ import { CommonModule } from '@angular/common';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
 import { AmbienceService } from '../../services/ambience/ambience';
 import {
-  NOTHING_PLAYING,
-  SEPARATOR,
   levelLabel,
   muteActionLabel,
+  nowPlayingLine,
   playbackActionLabel,
   soundCredit,
   soundName,
-} from '../../services/ambience/ambience-labels';
+} from '../../services/wording/wording';
 
 @Pipe({ name: 'decodeHtmlString', standalone: true })
 export class DecodeHtmlString implements PipeTransform {
   transform(value: string) {
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = value;
-    return tempElement.textContent;
+    const parsed = new DOMParser().parseFromString(value, 'text/html');
+    return parsed.body.textContent;
   }
 }
 
@@ -93,31 +89,17 @@ export class MenuComponent {
   );
 
   /**
-   * The bar's whole readout, with no prefix: a track or a Station descriptor
-   * as `artist - title`, and nothing tuned as the shared sentence.
+   * The bar's whole readout, with no prefix: the shared Now Playing line, so
+   * the Menu and the Ambience readout cannot disagree about what is playing.
    */
-  readonly reading = computed(() => {
-    const track = this.nowPlaying();
-    if (!track) {
-      return NOTHING_PLAYING;
-    }
-    return track.artist
-      ? `${track.artist}${SEPARATOR}${track.title}`
-      : track.title;
-  });
+  readonly reading = computed(() => nowPlayingLine(this.nowPlaying()));
 
   openAbout() {
-    this.popUpService.open({
-      id: FeatureId.About,
-      contents: AboutComponent.text,
-    });
+    this.popUpService.open(FeatureId.About);
   }
 
   openAnnouncements() {
-    this.popUpService.open({
-      id: FeatureId.Announcements,
-      contents: AnnouncementsComponent.announcements,
-    });
+    this.popUpService.open(FeatureId.Announcements);
   }
 
   play() {

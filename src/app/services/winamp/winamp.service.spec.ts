@@ -13,7 +13,7 @@ import type { EnginePlaybackStatus } from './playback-state';
 
 /**
  * The engine, as far as the wrapper's transport commands reach: the status
- * read the guard decides on and the verbs it may call. `store.subscribe` and
+ * the guarded verbs read and the verbs they may call. `store.subscribe` and
  * `onTrackDidChange` stand in for the wires the tune gate follows.
  */
 class FakeEngine {
@@ -49,6 +49,11 @@ class FakeEngine {
   stop(): void {
     this.calls.push('stop');
   }
+  renderInto(element: HTMLElement): void {
+    this.calls.push('renderInto');
+    this.renderTarget = element;
+  }
+  renderTarget: HTMLElement | undefined;
   store = { subscribe: () => () => undefined };
   onTrackDidChange(cb: (track: EngineTrack | null) => void): () => void {
     this.trackCallback = cb;
@@ -102,6 +107,29 @@ describe('WinampService transport commands', () => {
     expect(engine.calls).toEqual(['reopen', 'play']);
   });
 
+  it('plays the tuned Station when stopped or ended', () => {
+    engine.emitTrack(Stations.stations[0].url); // a Station tuned first
+    engine.status = 'STOPPED';
+    service.play();
+    engine.status = 'ENDED';
+    service.play();
+    expect(engine.calls).toEqual(['play', 'play']);
+  });
+
+  it('lets Pause stand when nothing plays — the engine’s own pause is a toggle', () => {
+    const statuses: EnginePlaybackStatus[] = [
+      'PAUSED',
+      'STOPPED',
+      'ENDED',
+      'CLOSED',
+    ];
+    for (const status of statuses) {
+      engine.status = status;
+      service.pause();
+    }
+    expect(engine.calls).toEqual([]);
+  });
+
   it('Play before any gesture tunes the first Station and plays it', () => {
     service.play();
     expect(engine.calls).toEqual(['reopen', 'setTracks', 'play']);
@@ -112,6 +140,13 @@ describe('WinampService transport commands', () => {
     service.next();
     service.prev();
     expect(engine.calls).toEqual(['next', 'prev']);
+  });
+
+  it('renders into the mount element it is handed, in one call', () => {
+    const mount = document.createElement('div');
+    service.renderWinamp(mount);
+    expect(engine.calls).toEqual(['renderInto']);
+    expect(engine.renderTarget).toBe(mount);
   });
 
   it('installs the OS widget’s play, pause, previous and next — and no seek handler', () => {

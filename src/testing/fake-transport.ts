@@ -1,6 +1,6 @@
 import {
-  NowPlayingSource,
   NowPlayingTransport,
+  type NowPlayingRequest,
 } from '../app/services/now-playing/transport';
 
 /**
@@ -9,7 +9,7 @@ import {
  * be made to land after its tune ended.
  */
 export class FakeTransport extends NowPlayingTransport {
-  sources: NowPlayingSource[] = [];
+  sources: NowPlayingRequest[] = [];
   cancelled = 0;
   private answers: Promise<unknown | undefined>[] = [];
 
@@ -33,7 +33,7 @@ export class FakeTransport extends NowPlayingTransport {
     };
   }
 
-  fetch(source: NowPlayingSource): Promise<unknown | undefined> {
+  fetch(source: NowPlayingRequest): Promise<unknown | undefined> {
     this.sources.push(source);
     return this.answers.shift() ?? Promise.resolve(undefined);
   }

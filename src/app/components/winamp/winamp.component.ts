@@ -29,8 +29,7 @@ export class WinampComponent {
   constructor(private webAmpService: WinampService) {}
 
   ngAfterViewInit() {
-    this.webAmpService.setWinampRootElement(this.winamp.nativeElement);
-    this.webAmpService.renderWinamp();
+    this.webAmpService.renderWinamp(this.winamp.nativeElement);
   }
 
   ngOnInit() {

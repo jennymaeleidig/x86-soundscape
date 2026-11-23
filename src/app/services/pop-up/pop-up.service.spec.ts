@@ -3,20 +3,10 @@ import { TestBed } from '@angular/core/testing';
 
 import { PopUpService } from './pop-up.service';
 import { MountService } from '../mount/mount';
-import { PopUpComponent } from '../../components/pop-up/pop-up.component';
-import { type Options } from './pop-up.options';
 import { FeatureId } from '../feature/feature';
+import { announcements } from '../../components/announcements/announcements';
 
 describe('PopUpService', () => {
-  const aboutOptions = (): Options => ({
-    id: FeatureId.About,
-    contents: 'All about it',
-  });
-  const announcementsOptions = (): Options => ({
-    id: FeatureId.Announcements,
-    contents: [{ title: 'Big news', date: 'today', msg: 'It shipped' }],
-  });
-
   describe('with the real mount module', () => {
     let service: PopUpService;
 
@@ -26,10 +16,13 @@ describe('PopUpService', () => {
     });
 
     /** A mounted view shows in the DOM only once change detection runs. */
-    const open = (options: Options) => {
-      service.open(options);
+    const open = (id: FeatureId) => {
+      service.open(id);
       TestBed.inject(ApplicationRef).tick();
     };
+
+    const popUp = (): Element | null =>
+      document.body.querySelector('app-pop-up');
 
     /** Presses Escape on the document, as the user does. */
     const pressEscape = () => {
@@ -38,32 +31,64 @@ describe('PopUpService', () => {
     };
 
     it('mounts the Pop-up into the document body, so it overlays the page', () => {
-      open(aboutOptions());
+      open(FeatureId.About);
 
-      expect(document.body.querySelector('app-pop-up')).not.toBeNull();
+      expect(popUp()).not.toBeNull();
     });
 
-    it('the identity and contents arrive as bindings, not a service read-back', () => {
-      open(aboutOptions());
+    it("mounts the Feature's own content component, the way the Window host does", () => {
+      open(FeatureId.About);
 
-      const text = document.body.querySelector('app-pop-up')?.textContent ?? '';
+      expect(popUp()?.querySelector('app-about')).not.toBeNull();
+    });
+
+    it('shows the About text under its own heading', () => {
+      open(FeatureId.About);
+
+      const text = popUp()?.textContent ?? '';
       expect(text).toContain('About');
-      expect(text).toContain('All about it');
+      expect(text).toContain('x86 Soundscape');
     });
 
-    it('the Announcements shape shows the latest entry', () => {
-      open(announcementsOptions());
+    it('shows only the latest announcement, from the same list the Window shows', () => {
+      open(FeatureId.Announcements);
 
-      const text = document.body.querySelector('app-pop-up')?.textContent ?? '';
-      expect(text).toContain('Big news');
-      expect(text).toContain('It shipped');
+      const popUpText = popUp()?.textContent ?? '';
+      const [latest, previous] = announcements;
+      expect(popUpText).toContain('Latest');
+      expect(popUpText).toContain(latest.title);
+      expect(popUpText).toContain(latest.msg);
+      expect(popUpText).not.toContain(previous.title);
+    });
+
+    it('the OK button dismisses it', () => {
+      open(FeatureId.About);
+
+      const ok = Array.from(popUp()?.querySelectorAll('button') ?? []).find(
+        (button) => button.textContent?.trim() === 'OK',
+      );
+      ok?.click();
+      TestBed.inject(ApplicationRef).tick();
+
+      expect(popUp()).toBeNull();
+    });
+
+    it('a backdrop click dismisses it', () => {
+      open(FeatureId.About);
+
+      popUp()?.firstElementChild?.dispatchEvent(
+        new MouseEvent('click', { bubbles: true }),
+      );
+      TestBed.inject(ApplicationRef).tick();
+
+      expect(popUp()).toBeNull();
     });
 
     it('Escape dismisses it, and a later Escape runs nothing of the dismissed Pop-up', () => {
-      open(aboutOptions());
+      open(FeatureId.About);
 
       pressEscape();
-      expect(document.body.querySelector('app-pop-up')).toBeNull();
+      expect(popUp()).toBeNull();
 
       const close = jest.spyOn(service, 'close');
       pressEscape();
@@ -71,10 +96,10 @@ describe('PopUpService', () => {
     });
 
     it('a close destroys the component and its DOM', () => {
-      open(aboutOptions());
+      open(FeatureId.About);
       service.close();
 
-      expect(document.body.querySelector('app-pop-up')).toBeNull();
+      expect(popUp()).toBeNull();
     });
   });
 
@@ -94,15 +119,15 @@ describe('PopUpService', () => {
     });
 
     it('keeps at most one Pop-up open: opening another destroys the one it replaces', () => {
-      service.open(aboutOptions());
-      service.open(announcementsOptions());
+      service.open(FeatureId.About);
+      service.open(FeatureId.Announcements);
 
       expect(mount).toHaveBeenCalledTimes(2);
       expect(destroy).toHaveBeenCalledTimes(1);
     });
 
     it('a close destroys the handle, and nothing is left to close again', () => {
-      service.open(aboutOptions());
+      service.open(FeatureId.About);
       service.close();
       service.close();
 

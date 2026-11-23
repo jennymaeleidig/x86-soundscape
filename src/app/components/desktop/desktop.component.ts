@@ -1,22 +1,21 @@
 import {
   Component,
   ElementRef,
-  Injector,
   ViewChild,
   AfterViewInit,
 } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
 import { WinampComponent } from '../winamp/winamp.component';
 import { AppletComponent } from '../applet/applet.component';
+import { AppletDrag } from '../applet/applet-drag';
 import { DesktopBounds } from '../../services/window/desktop-bounds';
 import {
   DragToSelectModule,
   SelectContainerComponent,
 } from 'ngx-drag-to-select';
-import { CommonModule, NgComponentOutlet } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   CdkDrag,
-  CdkDragStart,
   CdkDragMove,
   CdkDragEnd,
   Point,
@@ -39,44 +38,26 @@ interface DesktopApplet {
     WinampComponent,
     DragToSelectModule,
     CommonModule,
-    NgComponentOutlet,
     CdkDrag,
+    AppletComponent,
   ],
   templateUrl: './desktop.component.html',
   styleUrl: './desktop.component.css',
+  providers: [{ provide: AppletDrag, useExisting: DesktopComponent }],
 })
-export class DesktopComponent implements AfterViewInit {
+export class DesktopComponent implements AfterViewInit, AppletDrag {
   @ViewChild('container') selectContainer!: SelectContainerComponent;
   @ViewChild('container', { read: ElementRef }) containerRef!: ElementRef;
   @ViewChild('bounds') bounds!: ElementRef<HTMLElement>;
 
   selectedApplets: Array<DesktopApplet> = [];
-  AppletComponent = AppletComponent;
   console = console;
   applets: DesktopApplet[] = [];
   appletIsMoving: boolean = false;
 
   // Track drag state
   private dragStartPositions: Map<DesktopApplet, Point> = new Map();
-  private activelyDraggedApplet: DesktopApplet | null = null;
   dragGestureActive: boolean = false;
-  injector = Injector.create({
-    providers: [
-      {
-        provide: 'appletIsMoving',
-        useValue: (data: boolean) => this.setAppletIsMoving(data),
-      },
-      {
-        provide: 'appletDragState',
-        useValue: {
-          isDragGesture: () => this.dragGestureActive,
-          reset: () => {
-            this.dragGestureActive = false;
-          },
-        },
-      },
-    ],
-  });
 
   constructor(
     private readonly desktopBounds: DesktopBounds,
@@ -99,13 +80,8 @@ export class DesktopComponent implements AfterViewInit {
     }));
   }
 
-  setAppletIsMoving(data: boolean) {
-    this.appletIsMoving = data;
-  }
-
-  onDragStarted(event: CdkDragStart, applet: DesktopApplet) {
+  onDragStarted(applet: DesktopApplet) {
     this.dragGestureActive = true;
-    this.activelyDraggedApplet = applet;
 
     // If the dragged applet is not selected, clear selection and select only this one
     if (!this.selectedApplets.includes(applet)) {
@@ -137,7 +113,7 @@ export class DesktopComponent implements AfterViewInit {
     });
   }
 
-  onDragEnded(event: CdkDragEnd, applet: DesktopApplet) {
+  onDragEnded(event: CdkDragEnd, _applet: DesktopApplet) {
     // Get the actual final position from the drag source element
     // This respects the boundary constraints
     const element = event.source.element.nativeElement;
@@ -169,7 +145,6 @@ export class DesktopComponent implements AfterViewInit {
 
     // Clear drag state
     this.dragStartPositions.clear();
-    this.activelyDraggedApplet = null;
 
     // Force the drag-select library to recalculate element positions
     setTimeout(() => {
@@ -179,11 +154,20 @@ export class DesktopComponent implements AfterViewInit {
     }, 50);
   }
 
-  isSelected(applet: DesktopApplet): boolean {
-    return this.selectedApplets.includes(applet);
+  /** The Desktop's side of the drag seam its Applets inject. */
+  isDragGesture() {
+    return this.dragGestureActive;
   }
 
-  getAppletInputs(applet: DesktopApplet) {
-    return { feature: applet.feature };
+  beginGesture() {
+    this.dragGestureActive = false;
+  }
+
+  setMoving(moving: boolean) {
+    this.appletIsMoving = moving;
+  }
+
+  isSelected(applet: DesktopApplet): boolean {
+    return this.selectedApplets.includes(applet);
   }
 }

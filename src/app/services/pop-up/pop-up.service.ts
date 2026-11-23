@@ -1,7 +1,8 @@
 import { Injectable, inputBinding, outputBinding } from '@angular/core';
 import { PopUpComponent } from '../../components/pop-up/pop-up.component';
 import { MountService, type MountHandle } from '../mount/mount';
-import { Options } from './pop-up.options';
+import { FeatureId } from '../feature/feature';
+import { POP_UP_VIEWS } from './pop-up.shapes';
 
 /**
  * The Pop-up host. It owns one rule — at most one Pop-up open at a time — and
@@ -18,12 +19,22 @@ export class PopUpService {
 
   constructor(private readonly mount: MountService) {}
 
-  /** Mounts the Pop-up into the document body, so it overlays the page. */
-  open(options: Options) {
+  /**
+   * Mounts the Pop-up for the Feature into the document body, so it overlays
+   * the page. The shape's content component is rendered the way the Window
+   * host renders its Feature's content, with no data plumbing of its own.
+   */
+  open(id: FeatureId) {
+    const view = POP_UP_VIEWS[id];
+    if (!view) {
+      throw new Error(`${FeatureId[id]} has no Pop-up view`);
+    }
+
     this.close();
 
     this.handle = this.mount.mount(PopUpComponent, document.body, [
-      inputBinding('options', () => options),
+      inputBinding('title', () => view.title),
+      inputBinding('content', () => view.content),
       outputBinding('onClose', () => this.close()),
     ]);
   }

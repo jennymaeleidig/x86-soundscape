@@ -4,29 +4,12 @@
     class="fixed top-0 right-0 left-0 z-50 justify-center content-center m-auto h-[calc(100%-1rem)] md:max-w-1/4 md:max-h-full"
   >
     <div class="modal-dialog outer-border">
-      <div [ngSwitch]="options.id" class="inner-border center">
-        <div *ngSwitchCase="FeatureId.About" class="modal-contents">
-          <h1 class="modal-text text-center">
-            {{ FeatureId[options.id] }}
-          </h1>
+      <div class="inner-border center">
+        <div class="modal-contents">
+          <h1 class="modal-text text-center">{{ title }}</h1>
           <br />
-          <div class="text-justify px-2">{{ $any(options.contents) }}</div>
+          <ng-container *ngComponentOutlet="content" />
           <br />
-          <section class="field-row justify-end gap-2">
-            <button class="btn" (click)="onClose.emit()">OK</button>
-          </section>
-        </div>
-        <div *ngSwitchCase="FeatureId.Announcements" class="modal-contents">
-          <h1 class="modal-text text-center">Latest</h1>
-          <br />
-          <div class="grid pb-4">
-            <div class="flex justify-between items-end">
-              <div>{{ getLatest()?.title }}</div>
-              <div>{{ getLatest()?.date }}</div>
-            </div>
-            <hr class="mb-2 mt-1" />
-            <div class="text-justify px-2">{{ getLatest()?.msg }}</div>
-          </div>
           <section class="field-row justify-end gap-2">
             <button class="btn" (click)="onClose.emit()">OK</button>
           </section>

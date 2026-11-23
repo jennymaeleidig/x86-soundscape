@@ -1,62 +1,16 @@
 import { Component } from '@angular/core';
-import { NgFor } from '@angular/common';
-
-/** One entry in the Announcements list. */
-export interface AnnouncementContent {
-  title: string;
-  msg: string;
-  date: string;
-}
+import { announcements } from './announcements';
 
 /**
- * The Announcements list, owned here rather than in a data file. The Window
- * renders this component into its pane; the Menu's Pop-up reads the same list,
- * showing only the latest entry, in its own shape.
+ * The Announcements Window, rendering every entry in the list kept beside it.
+ * The Menu's Pop-up reads that same list through its latest-entry component,
+ * in its own shape.
  */
 @Component({
   selector: 'app-announcements',
   standalone: true,
-  imports: [NgFor],
   templateUrl: './announcements.component.html',
 })
 export class AnnouncementsComponent {
-  static readonly announcements: AnnouncementContent[] = [
-    {
-      title: 'Satellaview Soundlink+ :o',
-      msg: 'Super excited to announce the addition of the original home for the Tide of Sound broadcast. Please checkout the teams awesome work at: https://satellaview-plus.com/ -- DJ x86',
-      date: '10/09/26',
-    },
-    {
-      title: 'Updates! Updates!! Updates!!!',
-      msg: "updates, updates read all about 'em... Webamp upgraded to latest ver., mobile support ENHANCED, and browser / device media controls. Enjoy :) -- DJ x86",
-      date: '07/15/26',
-    },
-    {
-      title: 'New Music and the Weather',
-      msg: "I've added some new stations to the mix. I've also added a the WeatherStar 4000+ widget by Matt. Some stations are currently unavailable, but I'm working on increasing their uptime! Love y'all. -- DJ x86",
-      date: '05/27/26',
-    },
-    {
-      title: '56 kbit/s - Hiatus',
-      msg: '56 kbit/s is on pause for a while, thank you for the support ♥. Stay tuned for future updates and new music!? Some minor tweaks in here for ya as well. -- DJ x86',
-      date: '1/11/26',
-    },
-    {
-      title: 'New Sights (⌐■_■)',
-      msg: 'Enjoy some improved reliability and check out the new visualizer and added ambience. Stay chill. -- DJ x86',
-      date: '07/10/25',
-    },
-    {
-      title: '56 kbit/s',
-      msg: 'Join me live on WRIR 97.3 FM, 2nd and 4th Thursdays, 11pm - 1am EST for a deep dive into the sounds of the Internet.   -- DJ x86',
-      date: '04/10/25',
-    },
-    {
-      title: 'Welcome',
-      msg: 'Kick back and relax, draw some boxes mindlessly on the desktop, check out the visualizer, or just enjoy the tunes. Happy to have you.   -- DJ x86',
-      date: '03/24/25',
-    },
-  ];
-
-  readonly announcements = AnnouncementsComponent.announcements;
+  readonly announcements = announcements;
 }
