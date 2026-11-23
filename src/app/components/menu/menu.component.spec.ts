@@ -2,8 +2,6 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
-import { NowPlaying } from '../../services/now-playing/kinds';
-
 import { MenuComponent } from './menu.component';
 import { AmbienceService } from '../../services/ambience/ambience';
 import { ambienceSounds } from '../../services/ambience/sounds';
@@ -12,6 +10,7 @@ import { WinampService } from '../../services/winamp/winamp.service';
 import { type PlaybackState } from '../../services/winamp/playback-state';
 import { NowPlayingService } from '../../services/now-playing/now-playing.service';
 import { FakeAudio } from '../../../testing/fake-audio';
+import { FeatureId } from '../../services/feature/feature';
 
 describe('MenuComponent on Ambience', () => {
   let fixture: ComponentFixture<MenuComponent>;
@@ -89,6 +88,8 @@ describe('MenuComponent on Ambience', () => {
 
   beforeEach(() => {
     FakeAudio.install();
+    playback$ = new Subject<PlaybackState>();
+    nowPlaying$ = new Subject();
 
     TestBed.configureTestingModule({
       providers: [
@@ -101,12 +102,12 @@ describe('MenuComponent on Ambience', () => {
             prev: jest.fn(),
             stop: jest.fn(),
             next: jest.fn(),
-            playbackState$: (playback$ = new Subject<PlaybackState>()),
+            playbackState$: playback$,
           },
         },
         {
           provide: NowPlayingService,
-          useValue: { nowPlaying$: (nowPlaying$ = new Subject()) },
+          useValue: { nowPlaying$ },
         },
         AmbienceService,
       ],
@@ -306,5 +307,65 @@ describe('MenuComponent on Ambience', () => {
     expect(ambience.state().sound).not.toEqual(held);
 
     jest.restoreAllMocks();
+  });
+});
+
+describe('MenuComponent Pop-ups', () => {
+  let fixture: ComponentFixture<MenuComponent>;
+  let open: jest.Mock;
+
+  const click = (label: string) => {
+    const item = fixture.debugElement
+      .queryAll(By.css('li[role="menu-item"]'))
+      .find(
+        (candidate) => candidate.nativeElement.textContent.trim() === label,
+      );
+    if (!item) throw new Error(`the Menu shows no item reading "${label}"`);
+    item.triggerEventHandler('click', {});
+    fixture.detectChanges();
+  };
+
+  beforeEach(() => {
+    FakeAudio.install();
+    open = jest.fn();
+
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: PopUpService, useValue: { open } },
+        {
+          provide: WinampService,
+          useValue: {
+            play: jest.fn(),
+            pause: jest.fn(),
+            prev: jest.fn(),
+            stop: jest.fn(),
+            next: jest.fn(),
+            playbackState$: new Subject<PlaybackState>(),
+          },
+        },
+        {
+          provide: NowPlayingService,
+          useValue: { nowPlaying$: new Subject() },
+        },
+        AmbienceService,
+      ],
+    });
+
+    fixture = TestBed.createComponent(MenuComponent);
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    FakeAudio.restore();
+  });
+
+  it('opens each Pop-up by Feature alone, handing the host no display content', () => {
+    click('About');
+    click('Latest');
+
+    expect(open.mock.calls).toEqual([
+      [FeatureId.About],
+      [FeatureId.Announcements],
+    ]);
   });
 });
