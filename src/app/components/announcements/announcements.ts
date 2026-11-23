@@ -12,7 +12,7 @@ export interface AnnouncementContent {
  */
 export const announcements: AnnouncementContent[] = [
   {
-    title: 'Satellaview Soundlink+ :o',
+    title: 'Satellaview SoundLink+ :o',
     msg: 'Super excited to announce the addition of the original home for the Tide of Sound broadcast. Please checkout the teams awesome work at: https://satellaview-plus.com/ -- DJ x86',
     date: '10/09/26',
   },
