@@ -1,15 +1,5 @@
 import type { URLTrack } from 'webamp';
-
-export type MetadataParser =
-  | { kind: 'icy' }
-  | {
-      kind: 'icestats';
-      sourceIndex?: number;
-      titleField: string;
-      artistField?: string;
-    }
-  | { kind: 'azuracast'; shortcode: string }
-  | { kind: 'none' };
+import type { MetadataParser } from '../services/now-playing/kinds';
 
 export type Station = URLTrack & {
   metadataParser?: MetadataParser;

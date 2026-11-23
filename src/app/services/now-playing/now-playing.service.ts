@@ -1,16 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import type { Station } from '../../data/stations';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NowPlaying, ResolvedParser, parserFor } from './parsers';
-import { NowPlayingTransport, sourceFor } from './transport';
+import { NowPlaying, ResolvedKind, resolveKind } from './kinds';
+import { NowPlayingTransport } from './transport';
 
 /** How long the module rests between attempts; the transport owns no cadence. */
 const POLL_INTERVAL_MS = 15_000;
 
-/** What one run of the chain tracks: the Station and its resolved parser. */
+/** What one run of the chain tracks: the Station and its resolved kind. */
 interface Run {
   station: Station;
-  parser: ResolvedParser;
+  kind: ResolvedKind;
 }
 
 /**
@@ -54,15 +54,15 @@ export class NowPlayingService {
     // Published immediately, for every kind: the descriptor is the reading
     // until a payload yields a track.
     this.current.next(descriptorOf(station));
-    const parser = parserFor(station.metadataParser);
-    if (!parser) {
+    const kind = resolveKind(station);
+    if (!kind) {
       // 'none' means never polls: descriptor forever, no request.
       this.endRun();
       return;
     }
-    this.chain = { run: { station, parser }, parked: false };
+    this.chain = { run: { station, kind }, parked: false };
     this.failing = false;
-    void this.track(generation, station, parser);
+    void this.track(generation, station, kind);
   }
 
   stop(): void {
@@ -97,7 +97,7 @@ export class NowPlayingService {
     }
     const generation = this.endRun();
     chain.parked = false;
-    void this.track(generation, chain.run.station, chain.run.parser);
+    void this.track(generation, chain.run.station, chain.run.kind);
   }
 
   /**
@@ -132,10 +132,10 @@ export class NowPlayingService {
   private async track(
     generation: number,
     station: Station,
-    parser: ResolvedParser,
+    kind: ResolvedKind,
   ): Promise<void> {
     while (generation === this.generation) {
-      const raw = await this.transport.fetch(sourceFor(station, parser.kind));
+      const raw = await this.transport.fetch(kind.source);
       if (generation !== this.generation) {
         return;
       }
@@ -145,7 +145,7 @@ export class NowPlayingService {
       // counts as a success and re-arms the log, even if it carries no track.
       if (raw !== undefined) {
         this.failing = false;
-        const track = this.read(raw, station, parser);
+        const track = this.read(raw, station, kind);
         if (track) {
           this.current.next(track);
         }
@@ -176,10 +176,10 @@ export class NowPlayingService {
   private read(
     raw: unknown,
     station: Station,
-    parser: ResolvedParser,
+    kind: ResolvedKind,
   ): NowPlaying | undefined {
     try {
-      const track = parser.read(raw);
+      const track = kind.read(raw);
       if (!track) {
         return undefined;
       }

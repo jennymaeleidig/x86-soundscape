@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import { combineLatest, Observable, Subscription } from 'rxjs';
-import type { NowPlaying } from '../now-playing/parsers';
+import type { NowPlaying } from '../now-playing/kinds';
 import type { PlaybackState } from './playback-state';
 
 /**
