@@ -15,14 +15,13 @@ import { CommonModule } from '@angular/common';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
 import { AmbienceService } from '../../services/ambience/ambience';
 import {
-  NOTHING_PLAYING,
-  SEPARATOR,
   levelLabel,
   muteActionLabel,
+  nowPlayingLine,
   playbackActionLabel,
   soundCredit,
   soundName,
-} from '../../services/ambience/ambience-labels';
+} from '../../services/wording/wording';
 
 @Pipe({ name: 'decodeHtmlString', standalone: true })
 export class DecodeHtmlString implements PipeTransform {
@@ -91,18 +90,10 @@ export class MenuComponent {
   );
 
   /**
-   * The bar's whole readout, with no prefix: a track or a Station descriptor
-   * as `artist - title`, and nothing tuned as the shared sentence.
+   * The bar's whole readout, with no prefix: the shared Now Playing line, so
+   * the Menu and the Ambience readout cannot disagree about what is playing.
    */
-  readonly reading = computed(() => {
-    const track = this.nowPlaying();
-    if (!track) {
-      return NOTHING_PLAYING;
-    }
-    return track.artist
-      ? `${track.artist}${SEPARATOR}${track.title}`
-      : track.title;
-  });
+  readonly reading = computed(() => nowPlayingLine(this.nowPlaying()));
 
   openAbout() {
     this.popUpService.open(FeatureId.About);
