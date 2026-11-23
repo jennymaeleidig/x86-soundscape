@@ -1,12 +1,7 @@
-import type { Station } from '../../data/stations';
+import type { NowPlayingRequest } from './transport';
 
 /** The live artist + title a payload yields, or the Station descriptor. */
 export type NowPlaying = { artist: string; title: string };
-
-/** Where one attempt reads from: the dependency's own read, or our own fetch. */
-export type NowPlayingSource =
-  | { via: 'library'; url: string; source: string }
-  | { via: 'fetch'; endpoint: string };
 
 /** The config a Station declares for a Kind; `{}` for the default kind. */
 type NoConfig = Record<never, never>;
@@ -25,37 +20,37 @@ type AzuracastConfig = { shortcode: string };
  * this module names its source or parses its payload.
  */
 type Kind<C> = {
-  source(station: Station, config: C): NowPlayingSource;
+  source(url: string, config: C): NowPlayingRequest;
   read(raw: unknown, config: C): NowPlaying | undefined;
 };
 
 /**
- * The table. `icy` is the row a Station naming no parser falls back to; the
+ * The table. `icy` is the row a Station naming no Kind falls back to; the
  * `stats` kind left the union (a dead branch nothing read). `none` is not a
  * row: it means *never polls*, so it has no source to derive and no payload
  * to read, and `resolveKind` answers `undefined` for it.
  */
 const kinds = {
   icy: {
-    source: (station: Station, _config: NoConfig) => ({
+    source: (url: string, _config: NoConfig) => ({
       via: 'library',
-      url: station.url,
+      url,
       source: 'icy',
     }),
     read: (raw: unknown, _config: NoConfig) => readIcy(raw),
   } satisfies Kind<NoConfig>,
   icestats: {
-    source: (station: Station, _config: IcestatsConfig) => ({
+    source: (url: string, _config: IcestatsConfig) => ({
       via: 'library',
-      url: station.url,
+      url,
       source: 'icestats',
     }),
     read: (raw: unknown, config: IcestatsConfig) => readIcestats(raw, config),
   } satisfies Kind<IcestatsConfig>,
   azuracast: {
-    source: (station: Station, config: AzuracastConfig) => ({
+    source: (url: string, config: AzuracastConfig) => ({
       via: 'fetch',
-      endpoint: `${originOf(station.url)}/api/nowplaying/${config.shortcode}`,
+      endpoint: `${originOf(url)}/api/nowplaying/${config.shortcode}`,
     }),
     read: (raw: unknown, config: AzuracastConfig) => readAzuracast(raw, config),
   } satisfies Kind<AzuracastConfig>,
@@ -67,32 +62,35 @@ type KindName = keyof typeof kinds;
 type ConfigOf<K extends KindName> = Parameters<(typeof kinds)[K]['read']>[1];
 
 /** The kind union, built from the rows; `none` is the never-polls arm. */
-export type MetadataParser =
+export type MetadataKind =
   { [K in KindName]: { kind: K } & ConfigOf<K> }[KindName] | { kind: 'none' };
 
-type DeclaredKind = Exclude<MetadataParser, { kind: 'none' }>;
+type DeclaredKind = Exclude<MetadataKind, { kind: 'none' }>;
 
 /** The one resolved kind for a Station, ready to fetch and read. */
 export type ResolvedKind = {
-  source: NowPlayingSource;
+  source: NowPlayingRequest;
   read: (raw: unknown) => NowPlaying | undefined;
 };
 
 /**
- * Resolves a Station's descriptor to its Kind. A Station naming no parser
- * gets `icy`; `none` resolves to `undefined`, meaning the Station is never
- * polled. The row's functions are bound to the Station's own config here, so
- * the returned source and read need no further kind knowledge.
+ * Resolves a Station's descriptor to its Kind. A Station naming no Kind gets
+ * `icy`; `none` resolves to `undefined`, meaning the Station is never polled.
+ * The row's functions are bound to the Station's own config here, so the
+ * returned source and read need no further kind knowledge.
  */
-export function resolveKind(station: Station): ResolvedKind | undefined {
-  const declared = station.metadataParser;
+export function resolveKind(station: {
+  url: string;
+  metadataKind?: MetadataKind;
+}): ResolvedKind | undefined {
+  const declared = station.metadataKind;
   if (declared?.kind === 'none') {
     return undefined;
   }
   const config: DeclaredKind = declared ?? { kind: 'icy' };
   const row = kinds[config.kind] as Kind<DeclaredKind>;
   return {
-    source: row.source(station, config),
+    source: row.source(station.url, config),
     read: (raw) => row.read(raw, config),
   };
 }

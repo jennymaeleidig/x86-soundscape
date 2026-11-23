@@ -36,7 +36,7 @@ describe('NowPlayingService', () => {
   });
 
   it('shows the Station descriptor at once, for every kind, before any payload arrives', async () => {
-    const kinds = Stations.stations.filter((station) => station.metadataParser);
+    const kinds = Stations.stations.filter((station) => station.metadataKind);
     for (const station of kinds) {
       const seen = await readings();
       service.tune(station);
@@ -52,7 +52,7 @@ describe('NowPlayingService', () => {
 
   it('replaces the descriptor with a track, and a payload carrying no track changes nothing', async () => {
     const station = Stations.stations.find(
-      (candidate) => candidate.metadataParser?.kind === 'icestats',
+      (candidate) => candidate.metadataKind?.kind === 'icestats',
     )!;
     const seen = await readings();
     transport.queue(
@@ -69,12 +69,12 @@ describe('NowPlayingService', () => {
     expect(seen.at(-1)).toEqual({ artist: 'The Cure', title: 'A Forest' });
   });
 
-  it('reads a payload the way its kind asks, and a Station naming no parser gets icy once', async () => {
+  it('reads a payload the way its kind asks, and a Station naming no Kind gets icy once', async () => {
     const plain = Stations.stations.find(
-      (candidate) => !candidate.metadataParser,
+      (candidate) => !candidate.metadataKind,
     )!;
     const azuracast = Stations.stations.find(
-      (candidate) => candidate.metadataParser?.kind === 'azuracast',
+      (candidate) => candidate.metadataKind?.kind === 'azuracast',
     )!;
 
     const seen = await readings();
@@ -91,7 +91,7 @@ describe('NowPlayingService', () => {
 
   it('never fetches for a Station that polls none, and a malformed payload arrives as nothing', async () => {
     const none = Stations.stations.find(
-      (candidate) => candidate.metadataParser?.kind === 'none',
+      (candidate) => candidate.metadataKind?.kind === 'none',
     );
     const seen = await readings();
 
@@ -101,7 +101,7 @@ describe('NowPlayingService', () => {
     }
 
     const plain = Stations.stations.find(
-      (candidate) => !candidate.metadataParser,
+      (candidate) => !candidate.metadataKind,
     )!;
     transport.queue('not an icy payload at all');
     service.tune(plain);
@@ -114,7 +114,7 @@ describe('NowPlayingService', () => {
 
   it('publishes undefined on stop, and a payload landing after the stop changes nothing', async () => {
     const station = Stations.stations.find(
-      (candidate) => !candidate.metadataParser,
+      (candidate) => !candidate.metadataKind,
     )!;
     const seen = await readings();
     transport.queue(icyPayload('Artist - Title'));
@@ -262,7 +262,7 @@ describe('NowPlayingService', () => {
 
   it('a re-tune tears the previous tracking down itself and always restarts', async () => {
     const plain = Stations.stations.find(
-      (candidate) => !candidate.metadataParser,
+      (candidate) => !candidate.metadataKind,
     )!;
     const seen = await readings();
     transport.queue(icyPayload('First - Track'));

@@ -1,23 +1,23 @@
-import { MetadataParser, resolveKind } from './kinds';
+import { MetadataKind, resolveKind } from './kinds';
 import type { Station } from '../../data/stations';
 import { icyPayload } from '../../../testing/icy';
 
 /** A Station descriptor carrying only what a Kind's derivation reads. */
 function station(
-  overrides: { url?: string; metadataParser?: MetadataParser } = {},
+  overrides: { url?: string; metadataKind?: MetadataKind } = {},
 ): Station {
   return {
     metaData: { artist: 'Artist', title: 'Title' },
     url: overrides.url ?? 'https://ice.example/stream',
     duration: 5999,
-    ...(overrides.metadataParser
-      ? { metadataParser: overrides.metadataParser }
+    ...(overrides.metadataKind
+      ? { metadataKind: overrides.metadataKind }
       : {}),
   };
 }
 
 describe('resolveKind', () => {
-  it('a Station naming no parser reads icy from its own URL', () => {
+  it('a Station naming no Kind reads icy from its own URL', () => {
     const resolved = resolveKind(station())!;
     expect(resolved.source).toEqual({
       via: 'library',
@@ -38,7 +38,7 @@ describe('resolveKind', () => {
   it('icestats reads the source at the declared index, with its title and artist fields', () => {
     const resolved = resolveKind(
       station({
-        metadataParser: {
+        metadataKind: {
           kind: 'icestats',
           sourceIndex: 1,
           titleField: 'title',
@@ -66,7 +66,7 @@ describe('resolveKind', () => {
   it('icestats without an index reads the source object', () => {
     const resolved = resolveKind(
       station({
-        metadataParser: { kind: 'icestats', titleField: 'song' },
+        metadataKind: { kind: 'icestats', titleField: 'song' },
       }),
     )!;
     expect(
@@ -78,7 +78,7 @@ describe('resolveKind', () => {
     const resolved = resolveKind(
       station({
         url: 'https://radio.example/listen/a/radio.mp3',
-        metadataParser: { kind: 'azuracast', shortcode: 'a' },
+        metadataKind: { kind: 'azuracast', shortcode: 'a' },
       }),
     )!;
     expect(resolved.source).toEqual({
@@ -95,7 +95,7 @@ describe('resolveKind', () => {
     const resolved = resolveKind(
       station({
         url: 'not a url',
-        metadataParser: { kind: 'azuracast', shortcode: 'a' },
+        metadataKind: { kind: 'azuracast', shortcode: 'a' },
       }),
     )!;
     expect(resolved.source).toEqual({
@@ -106,7 +106,7 @@ describe('resolveKind', () => {
 
   it('none never resolves, so there is no source and no read', () => {
     expect(
-      resolveKind(station({ metadataParser: { kind: 'none' } })),
+      resolveKind(station({ metadataKind: { kind: 'none' } })),
     ).toBeUndefined();
   });
 });
