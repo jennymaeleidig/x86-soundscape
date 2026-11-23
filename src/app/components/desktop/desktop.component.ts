@@ -8,6 +8,7 @@ import {
 import { MenuComponent } from '../menu/menu.component';
 import { WinampComponent } from '../winamp/winamp.component';
 import { AppletComponent } from '../applet/applet.component';
+import { AppletDrag } from '../applet/applet-drag';
 import { DesktopBounds } from '../../services/window/desktop-bounds';
 import {
   DragToSelectModule,
@@ -29,6 +30,23 @@ interface DesktopApplet {
   feature: Feature;
   x: number;
   y: number;
+}
+
+/** The Desktop's side of the drag seam its Applets inject. */
+class DesktopAppletDrag implements AppletDrag {
+  constructor(private readonly desktop: DesktopComponent) {}
+
+  isDragGesture() {
+    return this.desktop.dragGestureActive;
+  }
+
+  beginGesture() {
+    this.desktop.dragGestureActive = false;
+  }
+
+  setMoving(moving: boolean) {
+    this.desktop.appletIsMoving = moving;
+  }
 }
 
 @Component({
@@ -61,21 +79,7 @@ export class DesktopComponent implements AfterViewInit {
   private activelyDraggedApplet: DesktopApplet | null = null;
   dragGestureActive: boolean = false;
   injector = Injector.create({
-    providers: [
-      {
-        provide: 'appletIsMoving',
-        useValue: (data: boolean) => this.setAppletIsMoving(data),
-      },
-      {
-        provide: 'appletDragState',
-        useValue: {
-          isDragGesture: () => this.dragGestureActive,
-          reset: () => {
-            this.dragGestureActive = false;
-          },
-        },
-      },
-    ],
+    providers: [{ provide: AppletDrag, useValue: new DesktopAppletDrag(this) }],
   });
 
   constructor(
@@ -97,10 +101,6 @@ export class DesktopComponent implements AfterViewInit {
       x: 0,
       y: 0,
     }));
-  }
-
-  setAppletIsMoving(data: boolean) {
-    this.appletIsMoving = data;
   }
 
   onDragStarted(event: CdkDragStart, applet: DesktopApplet) {
@@ -137,7 +137,7 @@ export class DesktopComponent implements AfterViewInit {
     });
   }
 
-  onDragEnded(event: CdkDragEnd, applet: DesktopApplet) {
+  onDragEnded(event: CdkDragEnd, _applet: DesktopApplet) {
     // Get the actual final position from the drag source element
     // This respects the boundary constraints
     const element = event.source.element.nativeElement;
