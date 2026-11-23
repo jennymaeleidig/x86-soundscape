@@ -54,8 +54,6 @@ type Engine = InstanceType<typeof Webamp>;
   providedIn: 'root',
 })
 export class WinampService {
-  rootElement!: HTMLElement;
-
   /**
    * The cache over the engine's own authority on whether audio runs. The
    * store is the single funnel for every real status change — the element's
@@ -144,24 +142,24 @@ export class WinampService {
   }
 
   /**
-   * Must be called before renderWebamp().
+   * Renders the player into the given mount element. The element is the
+   * argument, not stored state, so the ordering the old set-then-render pair
+   * only documented is now the only call a caller can make.
    */
-  setWinampRootElement(elem: HTMLElement) {
-    this.rootElement = elem;
-  }
-
-  renderWinamp() {
-    this.webamp.renderInto(this.rootElement);
-  }
-
-  closeWinamp() {
-    this.webamp.close();
+  renderWinamp(mount: HTMLElement) {
+    this.webamp.renderInto(mount);
   }
 
   reopenWinamp() {
     this.webamp.reopen();
   }
 
+  /**
+   * The Play Radio Action's own Gesture: reopen, tune the whole playlist and
+   * play. Unguarded by design — it is what a listener presses to start the
+   * radio, so it must tune even when nothing was ever tuned. The guarded
+   * transport Play below delegates here for exactly that first press.
+   */
   playRadio() {
     this.webamp.reopen();
     this.webamp.setTracksToPlay(Stations.stations);
@@ -174,6 +172,10 @@ export class WinampService {
    * The engine's own `play` restarts a running track and its `pause`
    * toggles, and both live behind that read — `next()` and `prev()` stay
    * pass-through, the engine auto-playing a track it tunes.
+   *
+   * Unlike the Play Radio Action's unguarded Gesture, this Play keeps a
+   * second press standing; only its first press on an untuned player
+   * delegates to that Gesture.
    */
   play() {
     // No Station has ever been tuned: the engine holds no source, and play

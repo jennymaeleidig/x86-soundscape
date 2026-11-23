@@ -49,6 +49,11 @@ class FakeEngine {
   stop(): void {
     this.calls.push('stop');
   }
+  renderInto(element: HTMLElement): void {
+    this.calls.push('renderInto');
+    this.renderTarget = element;
+  }
+  renderTarget: HTMLElement | undefined;
   store = { subscribe: () => () => undefined };
   onTrackDidChange(cb: (track: EngineTrack | null) => void): () => void {
     this.trackCallback = cb;
@@ -135,6 +140,13 @@ describe('WinampService transport commands', () => {
     service.next();
     service.prev();
     expect(engine.calls).toEqual(['next', 'prev']);
+  });
+
+  it('renders into the mount element it is handed, in one call', () => {
+    const mount = document.createElement('div');
+    service.renderWinamp(mount);
+    expect(engine.calls).toEqual(['renderInto']);
+    expect(engine.renderTarget).toBe(mount);
   });
 
   it('installs the OS widget’s play, pause, previous and next — and no seek handler', () => {
