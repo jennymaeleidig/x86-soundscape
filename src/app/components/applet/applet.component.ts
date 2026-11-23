@@ -1,6 +1,7 @@
-import { Component, HostListener, Inject, Input } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
 import { type Feature } from '../../services/feature/feature';
+import { AppletDrag } from './applet-drag';
 
 /**
  * A desktop icon that represents one Feature: it shows the row's appearance and
@@ -17,34 +18,27 @@ import { type Feature } from '../../services/feature/feature';
 export class AppletComponent {
   @Input({ required: true }) feature!: Feature;
 
-  constructor(
-    @Inject('appletIsMoving') public setAppletIsMoving: Function,
-    @Inject('appletDragState')
-    private appletDragState: {
-      isDragGesture: () => boolean;
-      reset: () => void;
-    },
-  ) {}
+  constructor(private readonly drag: AppletDrag) {}
 
   @HostListener('touchstart')
   @HostListener('mousedown')
   onGestureStart() {
-    this.appletDragState.reset();
+    this.drag.beginGesture();
   }
 
   /** Activates the Feature, unless the gesture was a drag across the Desktop. */
   activate() {
-    if (this.appletDragState.isDragGesture()) {
+    if (this.drag.isDragGesture()) {
       return;
     }
     this.feature.activate();
   }
 
   setMoving() {
-    this.setAppletIsMoving(true);
+    this.drag.setMoving(true);
   }
 
   unsetMoving() {
-    this.setAppletIsMoving(false);
+    this.drag.setMoving(false);
   }
 }
