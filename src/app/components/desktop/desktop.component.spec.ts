@@ -56,9 +56,9 @@ describe('DesktopComponent', () => {
 
     expect(drag.isDragGesture()).toBe(false);
     drag.setMoving(true);
-    expect(component.appletIsMoving).toBe(true);
+    expect(component.appletIsMoving()).toBe(true);
     drag.setMoving(false);
-    expect(component.appletIsMoving).toBe(false);
+    expect(component.appletIsMoving()).toBe(false);
 
     component.dragGestureActive = true;
     expect(drag.isDragGesture()).toBe(true);

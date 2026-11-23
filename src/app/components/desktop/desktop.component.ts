@@ -4,6 +4,7 @@ import {
   ViewChild,
   AfterViewInit,
   ChangeDetectionStrategy,
+  signal,
 } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
 import { WinampComponent } from '../winamp/winamp.component';
@@ -54,7 +55,8 @@ export class DesktopComponent implements AfterViewInit, AppletDrag {
   selectedApplets: Array<DesktopApplet> = [];
   console = console;
   applets: DesktopApplet[] = [];
-  appletIsMoving: boolean = false;
+  /** Zoneless: the select container stands down through this signal's write. */
+  readonly appletIsMoving = signal(false);
 
   // Track drag state
   private dragStartPositions: Map<DesktopApplet, Point> = new Map();
@@ -69,6 +71,10 @@ export class DesktopComponent implements AfterViewInit, AppletDrag {
     // The Window host is root-provided, so the bounds travel as a value rather
     // than as a provider in the Desktop's own injector scope.
     this.desktopBounds.element = this.bounds.nativeElement;
+    // Set here rather than as a template binding: the two-way selectedItems
+    // binding desynchronizes the binding slots of the inputs after it, so a
+    // [selectOnClick] binding never reaches the container.
+    this.selectContainer.selectOnClick = false;
   }
 
   ngOnInit() {
@@ -165,7 +171,7 @@ export class DesktopComponent implements AfterViewInit, AppletDrag {
   }
 
   setMoving(moving: boolean) {
-    this.appletIsMoving = moving;
+    this.appletIsMoving.set(moving);
   }
 
   isSelected(applet: DesktopApplet): boolean {
