@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AnnouncementsComponent } from '../announcements/announcements.component';
+import { announcements } from '../announcements/announcements';
 
 /**
  * The latest entry from the Announcements list, in the Pop-up's small shape.
@@ -12,5 +12,5 @@ import { AnnouncementsComponent } from '../announcements/announcements.component
   templateUrl: './announcements-latest.component.html',
 })
 export class AnnouncementsLatestComponent {
-  readonly announcement = AnnouncementsComponent.announcements[0];
+  readonly announcement = announcements[0];
 }
