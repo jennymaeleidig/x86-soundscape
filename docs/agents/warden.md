@@ -24,8 +24,8 @@ Then add the source extensions the built-in set does not cover to `rules.auditEx
 "auditExtensions": ["md", "css", "html", "json"]
 ```
 
-The built-in set already covers `ts` and `mjs`. The repositories' TypeScript, harness scripts, styles,
-Angular templates, and JSON configuration are audited once these entries are present. Warden reads both
+The built-in set already covers `ts` and `mjs`. The repository's TypeScript, styles, Angular templates, and
+JSON configuration are audited once these entries are present. Warden reads both
 config files at session start, so restart the session (or `/new`) after editing them.
 
 ## Excluded paths
@@ -74,7 +74,6 @@ Live edits to these paths are judged like any other path. To audit one explicitl
 /warden rules audit . --max 200
 ```
 
-With the local project file in place, the audit counts 112 files: 77 `.ts`, 12 `.html`, 11 `.css`, 6
-`.json`, 4 `.md`, and 3 `.mjs`. An untracked source file such as `harness/jsconfig.json` adds one, so this
-working tree counts 113.
-`--max 200` sits above both, so the dialog count is not truncated.
+With the local project file in place, the audit counts 117 files: 81 `.ts`, 13 `.html`, 11 `.css`, 8
+`.json`, and 4 `.md`.
+`--max 200` sits above that, so the dialog count is not truncated.

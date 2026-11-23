@@ -6,7 +6,7 @@ the repo. Verification ran with Node 24.3.0, `typescript-language-server` 6.1.0,
 
 ## Install
 
-Run `npm install` first so the TypeScript server can resolve Angular and harness dependencies from
+Run `npm install` first so the TypeScript server can resolve Angular dependencies from
 `node_modules`. Install the pinned servers with mise from the repo root:
 
 ```bash
@@ -22,14 +22,9 @@ the servers, and its gitignore-backed ignore set covers `node_modules/`, `dist/`
 
 | Files | Root marker | Notes |
 | --- | --- | --- |
-| Application TypeScript | `tsconfig.json` | Excludes `node_modules`, `dist`, `tmp`, and `harness` |
-| Harness `.mjs` | `harness/jsconfig.json` | Turns on `checkJs`; the root `tsconfig.json` excludes `harness`, so this project owns those files |
+| Application TypeScript | `tsconfig.json` | Excludes `node_modules`, `dist`, and `tmp` |
 | Markdown | `.git` | No `.marksman.toml`; Marksman skips gitignored paths |
 | CSS, HTML, JSON | file's directory | Host-managed servers |
-
-The harness project reports real JavaScript errors but not implicit-any hints: annotating every
-measurement callback would bury the errors it exists to catch. The application TypeScript project
-keeps full strictness.
 
 ## Verified buckets
 
@@ -39,7 +34,6 @@ error.
 | Bucket | Server | Probe | Result |
 | --- | --- | --- | --- |
 | TypeScript | `typescript` | `export const n: number = "s";` | `[typescript]` 2322 |
-| Harness JavaScript (`.mjs`) | `typescript` | `const n = 1; n.missing();` | `[typescript]` 2339 |
 | CSS | `css` | `a { color: ; }` | `[css]` `css-propertyvalueexpected` |
 | HTML | `html` | `documentSymbol` on a `<div><span>` probe | Both symbols returned by the HTML server |
 | JSON | `json` | `{"a":1,}` | `[json]` 519 |
@@ -65,11 +59,10 @@ lens_diagnostics { "source": "lsp", "scope": "paths", "paths": ["path/to/probe.t
 Use `lsp_navigation` with `operation: "documentSymbol"` for HTML. A probe is a pass only when the
 outcome says `findings` or `clean` and the tag names the intended server.
 
-Check the projects directly as well:
+Check the project directly as well:
 
 ```bash
 npx tsc -p tsconfig.json --noEmit
-npx tsc -p harness/jsconfig.json --noEmit
 ```
 
 A warm server keeps its old root and initialization options. Restart the pi session after changing
