@@ -3,7 +3,7 @@ import { FeatureId, type Feature, type WindowDescription } from './feature';
 import { WindowService } from '../window/window.service';
 import { WinampService } from '../winamp/winamp.service';
 import { AmbienceService } from '../ambience/ambience';
-import { appletLabel } from '../ambience/ambience-labels';
+import { appletLabel } from '../wording/wording';
 import { AboutComponent } from '../../components/about/about.component';
 import { AnnouncementsComponent } from '../../components/announcements/announcements.component';
 import { SurferComponent } from '../../components/surfer/surfer.component';
