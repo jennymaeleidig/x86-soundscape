@@ -10,7 +10,7 @@ describe('AnnouncementsComponent', () => {
 
     const entries = fixture.nativeElement.querySelectorAll('.grid > div');
     expect(entries.length).toBe(7);
-    expect(entries[0].textContent).toContain('Satellaview Soundlink+');
+    expect(entries[0].textContent).toContain('Satellaview SoundLink+');
     expect(entries[6].textContent).toContain('Welcome');
     expect(fixture.nativeElement.querySelector('.window')).toBeNull();
   });
