@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 // Attribute-selector component that wraps content (<ng-content>) and applies
 // the shared CRT effect (grayscale + scanlines).
@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
   selector: '[appCrt]',
   standalone: true,
   template: '<ng-content></ng-content>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './crt.component.css',
 })
 export class CrtComponent {}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { announcements } from './announcements';
 
 /**
@@ -9,6 +9,7 @@ import { announcements } from './announcements';
 @Component({
   selector: 'app-announcements',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './announcements.component.html',
 })
 export class AnnouncementsComponent {

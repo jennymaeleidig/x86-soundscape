@@ -124,7 +124,7 @@ describe('AmbienceService', () => {
   });
 
   it('7. stop keeps the Sound, play resumes it from the beginning, and shuffle is the only thing that replaces it', () => {
-    jest
+    vi
       .spyOn(Math, 'random')
       .mockReturnValueOnce(0)
       .mockReturnValueOnce(0.999);
@@ -146,7 +146,7 @@ describe('AmbienceService', () => {
     service.shuffle();
     expect(service.state().sound).not.toBe(held);
 
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('8. a refused play is an ordinary state on both play paths, and no rejection escapes', async () => {

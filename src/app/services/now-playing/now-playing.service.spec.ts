@@ -143,17 +143,17 @@ describe('NowPlayingService', () => {
       service.tune(station);
       expect(transport.sources.length).toBe(1); // immediate, before any clock
 
-      jest.advanceTimersByTime(60_000);
+      vi.advanceTimersByTime(60_000);
       await drainMicrotasks();
       expect(transport.sources.length).toBe(1); // a settled attempt starts the clock
 
       slow.resolve(icyPayload('First - Track'));
       await drainMicrotasks();
-      jest.advanceTimersByTime(14_999);
+      vi.advanceTimersByTime(14_999);
       await drainMicrotasks();
       expect(transport.sources.length).toBe(1);
 
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       await drainMicrotasks();
       expect(transport.sources.length).toBe(2); // one gap later
     });
@@ -170,7 +170,7 @@ describe('NowPlayingService', () => {
 
       service.suspend();
       expect(transport.cancelled).toBeGreaterThan(0);
-      jest.advanceTimersByTime(60_000);
+      vi.advanceTimersByTime(60_000);
       await drainMicrotasks();
       expect(transport.sources.length).toBe(1); // parked: no further attempts
       expect(seen.at(-1)).toEqual({ artist: 'Artist', title: 'Title' });
@@ -221,7 +221,7 @@ describe('NowPlayingService', () => {
   });
 
   it('a run of failures logs its literal line once, a success re-arms the log, and no failure publishes', async () => {
-    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     await withFakeTimers(async () => {
       const station = plainStation();
       const seen = await readings();
@@ -236,7 +236,7 @@ describe('NowPlayingService', () => {
       await drainMicrotasks();
       expect(seen.at(-1)).toEqual({ artist: 'Artist', title: 'Title' });
 
-      jest.advanceTimersByTime(15_000);
+      vi.advanceTimersByTime(15_000);
       await drainMicrotasks(); // first failure: logged once, nothing published
       expect(warn).toHaveBeenCalledWith(
         'Now Playing: attempt for ' +
@@ -245,15 +245,15 @@ describe('NowPlayingService', () => {
       );
       expect(seen.at(-1)).toEqual({ artist: 'Artist', title: 'Title' });
 
-      jest.advanceTimersByTime(15_000);
+      vi.advanceTimersByTime(15_000);
       await drainMicrotasks(); // second failure: still one line for the run
       expect(warn).toHaveBeenCalledTimes(1);
 
-      jest.advanceTimersByTime(15_000);
+      vi.advanceTimersByTime(15_000);
       await drainMicrotasks(); // a success re-arms the log
       expect(seen.at(-1)).toEqual({ artist: 'Back', title: 'Track' });
 
-      jest.advanceTimersByTime(15_000);
+      vi.advanceTimersByTime(15_000);
       await drainMicrotasks(); // a fresh run of failures: logged once again
       expect(warn).toHaveBeenCalledTimes(2);
     });

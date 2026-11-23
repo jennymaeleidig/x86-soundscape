@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { signal, type WritableSignal } from '@angular/core';
 
@@ -8,10 +9,10 @@ import { WinampService } from '../winamp/winamp.service';
 import { AmbienceService, type AmbienceState } from '../ambience/ambience';
 
 describe('FeatureRegistry', () => {
-  let open: jest.Mock;
-  let reopenWinamp: jest.Mock;
-  let playRadio: jest.Mock;
-  let togglePlaybackAmbience: jest.Mock;
+  let open: Mock;
+  let reopenWinamp: Mock;
+  let playRadio: Mock;
+  let togglePlaybackAmbience: Mock;
   let ambienceState: WritableSignal<AmbienceState>;
 
   const IDLE: AmbienceState = {
@@ -26,10 +27,10 @@ describe('FeatureRegistry', () => {
   const ambienceAppearance = () => row(FeatureId.Ambience).appearance();
 
   beforeEach(() => {
-    open = jest.fn();
-    reopenWinamp = jest.fn();
-    playRadio = jest.fn();
-    togglePlaybackAmbience = jest.fn();
+    open = vi.fn();
+    reopenWinamp = vi.fn();
+    playRadio = vi.fn();
+    togglePlaybackAmbience = vi.fn();
     ambienceState = signal(IDLE);
 
     TestBed.configureTestingModule({

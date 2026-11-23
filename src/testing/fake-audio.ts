@@ -3,6 +3,8 @@
  * playback, and the module is a property — not a promise — because it derives
  * the element from its state rather than reading it back.
  */
+import { vi } from 'vitest';
+
 export class FakeAudio {
   static built: FakeAudio[] = [];
   static refusePlay = false;
@@ -34,7 +36,7 @@ export class FakeAudio {
   paused = true;
   playCount = 0;
   onerror: (() => void) | null = null;
-  readonly pause = jest.fn(() => {
+  readonly pause = vi.fn(() => {
     this.paused = true;
   });
 

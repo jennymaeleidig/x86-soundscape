@@ -19,12 +19,12 @@ describe('DesktopComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: WindowService, useValue: { open: jest.fn() } },
+        { provide: WindowService, useValue: { open: vi.fn() } },
         {
           provide: WinampService,
-          useValue: { reopenWinamp: jest.fn(), playRadio: jest.fn() },
+          useValue: { reopenWinamp: vi.fn(), playRadio: vi.fn() },
         },
-        { provide: AmbienceService, useValue: { togglePlayback: jest.fn() } },
+        { provide: AmbienceService, useValue: { togglePlayback: vi.fn() } },
       ],
     });
     registry = TestBed.inject(FeatureRegistry);

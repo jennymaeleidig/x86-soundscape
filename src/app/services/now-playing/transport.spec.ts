@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { HttpNowPlayingTransport } from './transport';
 import type IcecastMetadataStats from 'icecast-metadata-stats';
 
@@ -53,14 +54,14 @@ describe('HttpNowPlayingTransport', () => {
   let transport: TestableTransport;
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     transport = new TestableTransport();
   });
 
   const originalFetch = globalThis.fetch;
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
     if (originalFetch === undefined) {
       delete (globalThis as { fetch?: unknown }).fetch;
     } else {
@@ -69,14 +70,14 @@ describe('HttpNowPlayingTransport', () => {
   });
 
   /** jsdom has no global fetch; the transport reads it off globalThis. */
-  const useFetch = (mock: jest.Mock) => {
+  const useFetch = (mock: Mock) => {
     (globalThis as { fetch?: unknown }).fetch = mock;
     return mock;
   };
 
   it('settles our own fetch by its deadline, reporting a failed attempt rather than rejecting', async () => {
     const fetchMock = useFetch(
-      jest.fn().mockImplementation(
+      vi.fn().mockImplementation(
         (_url: string, init?: { signal?: AbortSignal }) =>
           new Promise((_resolve, reject) => {
             init?.signal?.addEventListener('abort', () =>
@@ -90,12 +91,12 @@ describe('HttpNowPlayingTransport', () => {
       via: 'fetch',
       endpoint: 'https://radio.example/api/nowplaying/isekoi',
     });
-    const settled = jest.fn();
+    const settled = vi.fn();
     attempt.then(settled);
 
-    jest.advanceTimersByTime(9_999);
+    vi.advanceTimersByTime(9_999);
     expect(settled).not.toHaveBeenCalled();
-    jest.advanceTimersByTime(1);
+    vi.advanceTimersByTime(1);
     await attempt;
     expect(settled).toHaveBeenCalledWith(undefined);
     expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -103,7 +104,7 @@ describe('HttpNowPlayingTransport', () => {
 
   it('reads azuracast JSON when the response is good, and nothing when it is not', async () => {
     useFetch(
-      jest.fn().mockResolvedValue({
+      vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({ now_playing: {} }),
       } as unknown as Response),
@@ -113,7 +114,7 @@ describe('HttpNowPlayingTransport', () => {
     ).resolves.toEqual({ now_playing: {} });
 
     useFetch(
-      jest.fn().mockResolvedValue({
+      vi.fn().mockResolvedValue({
         ok: false,
         json: async () => ({}),
       } as unknown as Response),
@@ -129,7 +130,7 @@ describe('HttpNowPlayingTransport', () => {
       url: 'https://ice.example/stream',
       source: 'icestats',
     });
-    const settled = jest.fn();
+    const settled = vi.fn();
     attempt.then(settled);
 
     const [listener] = transport.libraries;
@@ -137,7 +138,7 @@ describe('HttpNowPlayingTransport', () => {
     expect(listener.options.sources).toEqual(['icestats']);
     expect(listener.reads).toHaveLength(1);
 
-    jest.advanceTimersByTime(10_000);
+    vi.advanceTimersByTime(10_000);
     await attempt;
     expect(settled).toHaveBeenCalledWith(undefined);
     expect(listener.stopped).toBe(true);
@@ -145,7 +146,7 @@ describe('HttpNowPlayingTransport', () => {
 
   it('cancel releases the socket: the fetch aborts and the library instance stops', async () => {
     useFetch(
-      jest.fn().mockImplementation(
+      vi.fn().mockImplementation(
         (_url: string, init?: { signal?: AbortSignal }) =>
           new Promise((_resolve, reject) => {
             init?.signal?.addEventListener('abort', () =>

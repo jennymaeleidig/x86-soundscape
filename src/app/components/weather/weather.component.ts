@@ -1,4 +1,10 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { WeatherStarService } from '../../services/weather-star/weather-star.service';
 import { CrtComponent } from '../crt/crt.component';
@@ -8,6 +14,7 @@ import { CrtComponent } from '../crt/crt.component';
   standalone: true,
   imports: [FormsModule, CrtComponent],
   templateUrl: './weather.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './weather.component.css',
 })
 export class WeatherComponent {

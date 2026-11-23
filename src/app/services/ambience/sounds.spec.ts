@@ -1,20 +1,11 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { ambienceSounds } from './sounds';
 
 // jsdom has no filesystem and the spec bundle is built for the browser, so the
-// library's folder is read through Jest's own Node-side module registry.
-const fs = jest.requireActual('fs') as {
-  existsSync(path: string): boolean;
-  readdirSync(
-    path: string,
-    options: { withFileTypes: true },
-  ): { name: string; isDirectory(): boolean }[];
-};
-const path = jest.requireActual('path') as {
-  dirname(path: string): string;
-  join(...parts: string[]): string;
-};
+// library's folder is read through Vitest's own Node-side module registry.
 
-/** The Angular workspace root, found above the directory Jest runs in. */
+/** The Angular workspace root, found above the directory Vitest runs in. */
 function workspaceRoot(): string {
   for (let dir = process.cwd(); ; dir = path.dirname(dir)) {
     if (fs.existsSync(path.join(dir, 'angular.json'))) {

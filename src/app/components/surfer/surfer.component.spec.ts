@@ -3,7 +3,7 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { type Observable, firstValueFrom } from 'rxjs';
 
 import { SurferComponent, type VideoData } from './surfer.component';
@@ -17,7 +17,7 @@ describe('SurferComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SurferComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     fixture = TestBed.createComponent(SurferComponent);
     component = fixture.componentInstance;

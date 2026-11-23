@@ -5,6 +5,7 @@ import {
   Output,
   HostListener,
   type Type,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 
@@ -19,6 +20,7 @@ import { NgComponentOutlet } from '@angular/common';
   standalone: true,
   imports: [NgComponentOutlet],
   templateUrl: './pop-up.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pop-up.component.css',
 })
 export class PopUpComponent {

@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -11,7 +12,7 @@ const TOOLTIP = 'Nothing playing';
 
 class FakeAppletDrag implements AppletDrag {
   dragging = false;
-  setMoving = jest.fn<void, [boolean]>();
+  setMoving = vi.fn<(moving: boolean) => void>();
 
   isDragGesture() {
     return this.dragging;
@@ -24,7 +25,7 @@ class FakeAppletDrag implements AppletDrag {
 
 describe('AppletComponent', () => {
   let fixture: ComponentFixture<AppletComponent>;
-  let activate: jest.Mock;
+  let activate: Mock;
   let drag: FakeAppletDrag;
 
   const feature = (): Feature => ({
@@ -41,7 +42,7 @@ describe('AppletComponent', () => {
   const press = () => fixture.debugElement.triggerEventHandler('mousedown', {});
 
   beforeEach(() => {
-    activate = jest.fn();
+    activate = vi.fn();
     drag = new FakeAppletDrag();
 
     TestBed.configureTestingModule({

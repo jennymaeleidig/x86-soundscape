@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -93,15 +94,15 @@ describe('MenuComponent on Ambience', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: PopUpService, useValue: { open: jest.fn() } },
+        { provide: PopUpService, useValue: { open: vi.fn() } },
         {
           provide: WinampService,
           useValue: {
-            play: jest.fn(),
-            pause: jest.fn(),
-            prev: jest.fn(),
-            stop: jest.fn(),
-            next: jest.fn(),
+            play: vi.fn(),
+            pause: vi.fn(),
+            prev: vi.fn(),
+            stop: vi.fn(),
+            next: vi.fn(),
             playbackState$: playback$,
           },
         },
@@ -296,7 +297,7 @@ describe('MenuComponent on Ambience', () => {
     const elsewhere = ambienceSounds.filter(
       (sound) => sound.path !== held.path,
     );
-    jest
+    vi
       .spyOn(Math, 'random')
       .mockReturnValue(
         (ambienceSounds.indexOf(elsewhere[0]) + 0.5) / ambienceSounds.length,
@@ -306,13 +307,13 @@ describe('MenuComponent on Ambience', () => {
     expect(ambience.state().sound).toEqual(elsewhere[0]);
     expect(ambience.state().sound).not.toEqual(held);
 
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });
 
 describe('MenuComponent Pop-ups', () => {
   let fixture: ComponentFixture<MenuComponent>;
-  let open: jest.Mock;
+  let open: Mock;
 
   const click = (label: string) => {
     const item = fixture.debugElement
@@ -327,7 +328,7 @@ describe('MenuComponent Pop-ups', () => {
 
   beforeEach(() => {
     FakeAudio.install();
-    open = jest.fn();
+    open = vi.fn();
 
     TestBed.configureTestingModule({
       providers: [
@@ -335,11 +336,11 @@ describe('MenuComponent Pop-ups', () => {
         {
           provide: WinampService,
           useValue: {
-            play: jest.fn(),
-            pause: jest.fn(),
-            prev: jest.fn(),
-            stop: jest.fn(),
-            next: jest.fn(),
+            play: vi.fn(),
+            pause: vi.fn(),
+            prev: vi.fn(),
+            stop: vi.fn(),
+            next: vi.fn(),
             playbackState$: new Subject<PlaybackState>(),
           },
         },

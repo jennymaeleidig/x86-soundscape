@@ -132,7 +132,7 @@ describe('the tune follows the player, end to end', () => {
 
   /** Fire the coalesced read, then let whatever it started settle. */
   const settle = async () => {
-    jest.advanceTimersByTime(0);
+    vi.advanceTimersByTime(0);
     await drainMicrotasks();
   };
 
@@ -162,7 +162,7 @@ describe('the tune follows the player, end to end', () => {
       source.notify();
       await settle();
       expect(transport.cancelled).toBeGreaterThan(0);
-      jest.advanceTimersByTime(120_000);
+      vi.advanceTimersByTime(120_000);
       await drainMicrotasks();
       expect(attemptsFor(station)).toBe(1);
       expect(seen.at(-1)).toEqual({ artist: 'Artist', title: 'Title' });
@@ -197,7 +197,7 @@ describe('the tune follows the player, end to end', () => {
       source.notify();
       await settle();
       expect(seen.at(-1)).toBeUndefined();
-      jest.advanceTimersByTime(120_000);
+      vi.advanceTimersByTime(120_000);
       await drainMicrotasks();
       expect(attemptsFor(station)).toBe(2); // only the two play gestures fetched
 
@@ -235,7 +235,7 @@ describe('the tune follows the player, end to end', () => {
       transport.queue(icyPayload('Fresh - Track'));
       source.now = 'PLAYING';
       source.notify();
-      jest.advanceTimersByTime(0);
+      vi.advanceTimersByTime(0);
       expect(attemptsFor(station)).toBe(2);
       await drainMicrotasks();
       expect(seen.at(-1)).toEqual({ artist: 'Fresh', title: 'Track' });

@@ -1,4 +1,9 @@
-import { Component, HostListener, Input } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
 import { type Feature } from '../../services/feature/feature';
 import { AppletDrag } from './applet-drag';
@@ -13,6 +18,7 @@ import { AppletDrag } from './applet-drag';
   standalone: true,
   imports: [CdkDragHandle],
   templateUrl: './applet.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './applet.component.css',
 })
 export class AppletComponent {

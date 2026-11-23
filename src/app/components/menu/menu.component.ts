@@ -4,6 +4,7 @@ import {
   PipeTransform,
   computed,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PopUpService } from '../../services/pop-up/pop-up.service';
@@ -36,6 +37,7 @@ export class DecodeHtmlString implements PipeTransform {
   standalone: true,
   imports: [DecodeHtmlString, NgxMarqueeComponent],
   templateUrl: './menu.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './menu.component.css',
 })
 export class MenuComponent {

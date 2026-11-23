@@ -1,4 +1,10 @@
-import { ApplicationRef, Component, Input, inputBinding } from '@angular/core';
+import {
+  ApplicationRef,
+  Component,
+  Input,
+  inputBinding,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { MountService } from './mount';
@@ -6,6 +12,7 @@ import { MountService } from './mount';
 @Component({
   selector: 'app-mount-stub',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: 'stub:{{ label }}',
 })
 class MountStubComponent {
