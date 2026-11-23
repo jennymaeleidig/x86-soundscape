@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { type Observable, retry } from 'rxjs';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
@@ -16,6 +16,7 @@ export type VideoData = Video;
   selector: 'app-surfer',
   imports: [CommonModule, NgxMarqueeComponent, CrtComponent],
   templateUrl: './surfer.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './surfer.component.css',
 })
 export class SurferComponent {

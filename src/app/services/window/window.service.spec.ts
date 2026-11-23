@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import type { Mock } from 'vitest';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { WindowService } from './window.service';
@@ -11,14 +12,15 @@ import { FeatureId } from '../../services/feature/feature';
 @Component({
   selector: 'app-window-host-stub',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class WindowStubContent {}
 
 describe('WindowService', () => {
   let bounds: HTMLElement;
-  let destroy: jest.Mock;
-  let mount: jest.Mock;
+  let destroy: Mock;
+  let mount: Mock;
   let service: WindowService;
 
   const optionsFor = (id: FeatureId, title: string): Options => ({
@@ -38,8 +40,8 @@ describe('WindowService', () => {
 
   beforeEach(() => {
     bounds = document.createElement('div');
-    destroy = jest.fn();
-    mount = jest.fn(() => ({ destroy }));
+    destroy = vi.fn();
+    mount = vi.fn(() => ({ destroy }));
 
     TestBed.configureTestingModule({
       providers: [

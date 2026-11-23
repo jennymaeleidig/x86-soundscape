@@ -3,6 +3,7 @@ import {
   ElementRef,
   ViewChild,
   AfterViewInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
 import { WinampComponent } from '../winamp/winamp.component';
@@ -13,7 +14,7 @@ import {
   DragToSelectModule,
   SelectContainerComponent,
 } from 'ngx-drag-to-select';
-import { CommonModule } from '@angular/common';
+
 import {
   CdkDrag,
   CdkDragMove,
@@ -37,12 +38,12 @@ interface DesktopApplet {
     MenuComponent,
     WinampComponent,
     DragToSelectModule,
-    CommonModule,
     CdkDrag,
     AppletComponent,
   ],
   templateUrl: './desktop.component.html',
   styleUrl: './desktop.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: AppletDrag, useExisting: DesktopComponent }],
 })
 export class DesktopComponent implements AfterViewInit, AppletDrag {

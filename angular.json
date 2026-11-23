@@ -22,7 +22,6 @@
             "index": "src/index.html",
             "baseHref": "/",
             "browser": "src/main.ts",
-            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
@@ -79,14 +78,10 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:jest",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing",
-              "src/testing/jsdom-globals.ts"
-            ],
-            "tsConfig": "tsconfig.spec.json"
+            "tsConfig": "tsconfig.spec.json",
+            "runnerConfig": "vitest.config.ts"
           }
         },
         "deploy": {

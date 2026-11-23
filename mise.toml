@@ -1,0 +1,4 @@
+[tools]
+node = "24.22.3"
+marksman = "2026-02-08"
+"npm:typescript-language-server" = "6.1.0"

@@ -4,6 +4,7 @@ import {
   Input,
   Output,
   type Type,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { NgClass, NgComponentOutlet } from '@angular/common';
@@ -19,6 +20,7 @@ import { NgClass, NgComponentOutlet } from '@angular/common';
   standalone: true,
   imports: [CdkDrag, CdkDragHandle, NgClass, NgComponentOutlet],
   templateUrl: './window.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './window.component.css',
 })
 export class WindowComponent {

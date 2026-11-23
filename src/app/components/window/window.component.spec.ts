@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -7,6 +7,7 @@ import { WindowComponent } from './window.component';
 @Component({
   selector: 'app-window-stub',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: 'stub content',
 })
 class WindowStubContent {}
@@ -66,8 +67,8 @@ describe('WindowComponent', () => {
 
   it('raises onClose from the close button and onActivate from the title bar', () => {
     show('About', 'text', '50%');
-    const closed = jest.fn();
-    const activated = jest.fn();
+    const closed = vi.fn();
+    const activated = vi.fn();
     fixture.componentInstance.onClose.subscribe(closed);
     fixture.componentInstance.onActivate.subscribe(activated);
 

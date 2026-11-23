@@ -1,7 +1,7 @@
 # Language servers
 
 pi-lens launches the language servers itself; there is no separate LSP client to install or point at
-the repo. Verification ran with Node 24.3.0, `typescript-language-server` 6.1.0, and Marksman
+the repo. Verification ran with Node 24.22.3, `typescript-language-server` 6.1.0, and Marksman
 2026-02-08.
 
 ## Install
@@ -13,7 +13,7 @@ Run `npm install` first so the TypeScript server can resolve Angular dependencie
 mise install
 ```
 
-`.tool-versions` owns all three tools: Node, `npm:typescript-language-server`, and `marksman`. No
+`mise.toml` owns all three tools: Node, `npm:typescript-language-server`, and `marksman`. No
 server is a package dependency, and there is no project `.pi-lens.json`: the host's defaults select
 the servers, and its gitignore-backed ignore set covers `node_modules/`, `dist/`, `tmp/`, and
 `.scratch/`.
@@ -44,7 +44,7 @@ error.
 - `.husky/pre-commit` and `.husky/pre-push` are extensionless POSIX shell hooks.
   `bash-language-server` covers only `.sh` and `.bash`, so no server selects them.
 - `src/assets/**` (images, audio, cursors, fonts), `src/favicon.ico`, `CNAME`, `CITATION.cff`,
-  `.editorconfig`, and `.tool-versions` are assets and metadata, not source languages.
+  `.editorconfig`, `mise.toml`, and `.npmrc` are assets and metadata, not source languages.
 
 ## Re-probing
 

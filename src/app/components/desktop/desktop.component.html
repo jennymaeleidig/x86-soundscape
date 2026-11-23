@@ -14,26 +14,27 @@
       dir="rtl"
       class="flex flex-col flex-wrap gap-6 max-h-full absolute top-5 right-5 items-center"
     >
-      <div
-        *ngFor="let applet of applets"
-        [dtsSelectItem]="applet"
-        [class.selected]="isSelected(applet)"
-        [style.transform]="
-          applet.x !== 0 || applet.y !== 0
-            ? 'translate3d(' + applet.x + 'px, ' + applet.y + 'px, 0)'
-            : 'none'
-        "
-      >
+      @for (applet of applets; track applet) {
         <div
-          cdkDragBoundary=".desktop-bounds"
-          cdkDrag
-          (cdkDragStarted)="onDragStarted(applet)"
-          (cdkDragMoved)="onDragMoved($event, applet)"
-          (cdkDragEnded)="onDragEnded($event, applet)"
+          [dtsSelectItem]="applet"
+          [class.selected]="isSelected(applet)"
+          [style.transform]="
+            applet.x !== 0 || applet.y !== 0
+              ? 'translate3d(' + applet.x + 'px, ' + applet.y + 'px, 0)'
+              : 'none'
+          "
         >
-          <app-applet [feature]="applet.feature"></app-applet>
+          <div
+            cdkDragBoundary=".desktop-bounds"
+            cdkDrag
+            (cdkDragStarted)="onDragStarted(applet)"
+            (cdkDragMoved)="onDragMoved($event, applet)"
+            (cdkDragEnded)="onDragEnded($event, applet)"
+          >
+            <app-applet [feature]="applet.feature"></app-applet>
+          </div>
         </div>
-      </div>
+      }
     </div>
   </dts-select-container>
 </div>

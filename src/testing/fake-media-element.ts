@@ -1,3 +1,6 @@
+import type { MockInstance } from 'vitest';
+import { vi } from 'vitest';
+
 /**
  * The transport-level fake: stands in for the audio element the engine builds,
  * recording every source the media stack is handed. jsdom performs no media
@@ -10,27 +13,20 @@ export class FakeMediaElement {
   static requests: string[] = [];
 
   private static real: typeof document.createElement | undefined;
-  private static spy: jest.SpyInstance | undefined;
+  private static spy: MockInstance | undefined;
 
   /** Puts the recording shim behind the document's element factory. */
   static install(): void {
     FakeMediaElement.requests = [];
     FakeMediaElement.real = document.createElement.bind(document);
-    FakeMediaElement.spy = jest
+    FakeMediaElement.spy = vi
       .spyOn(document, 'createElement')
       .mockImplementation(((tag: string, options?: ElementCreationOptions) => {
         const element = FakeMediaElement.real!(tag, options);
         if (String(tag).toLowerCase() !== 'audio') {
           return element;
         }
-        return new Proxy(element, {
-          set(target, property, value) {
-            if (property === 'src' && typeof value === 'string') {
-              FakeMediaElement.requests.push(value);
-            }
-            return Reflect.set(target, property, value);
-          },
-        });
+        return recordingSource(element);
       }) as typeof document.createElement);
   }
 
@@ -39,4 +35,27 @@ export class FakeMediaElement {
     FakeMediaElement.spy?.mockRestore();
     FakeMediaElement.spy = undefined;
   }
+}
+
+/**
+ * An own `src` property on the element itself records every source the media
+ * stack is handed: the element stays a real jsdom EventTarget (its engine
+ * calls addEventListener on it, and jsdom's wrappers reject a Proxy), and the
+ * own property shadows the accessor jsdom defines on the prototype.
+ */
+function recordingSource(element: HTMLElement): HTMLElement {
+  let src = '';
+  Object.defineProperty(element, 'src', {
+    configurable: true,
+    get(): string {
+      return src;
+    },
+    set(value: string) {
+      if (typeof value === 'string') {
+        FakeMediaElement.requests.push(value);
+      }
+      src = value;
+    },
+  });
+  return element;
 }

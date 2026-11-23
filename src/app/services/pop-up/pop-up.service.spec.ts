@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { ApplicationRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
@@ -90,7 +91,7 @@ describe('PopUpService', () => {
       pressEscape();
       expect(popUp()).toBeNull();
 
-      const close = jest.spyOn(service, 'close');
+      const close = vi.spyOn(service, 'close');
       pressEscape();
       expect(close).not.toHaveBeenCalled();
     });
@@ -104,13 +105,13 @@ describe('PopUpService', () => {
   });
 
   describe('with the mount module mocked, for the at-most-one rule', () => {
-    let destroy: jest.Mock;
-    let mount: jest.Mock;
+    let destroy: Mock;
+    let mount: Mock;
     let service: PopUpService;
 
     beforeEach(() => {
-      destroy = jest.fn();
-      mount = jest.fn().mockReturnValue({ destroy });
+      destroy = vi.fn();
+      mount = vi.fn().mockReturnValue({ destroy });
 
       TestBed.configureTestingModule({
         providers: [{ provide: MountService, useValue: { mount } }],

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 /**
  * About's text, owned here rather than in a data file. The Window renders this
@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-about',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './about.component.html',
 })
 export class AboutComponent {

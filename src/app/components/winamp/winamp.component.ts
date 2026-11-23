@@ -1,4 +1,9 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import Webamp from 'webamp';
 import { WinampService } from '../../services/winamp/winamp.service';
@@ -8,6 +13,7 @@ import { WinampService } from '../../services/winamp/winamp.service';
   standalone: true,
   imports: [],
   templateUrl: './winamp.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './winamp.component.css',
 })
 export class WinampComponent {
