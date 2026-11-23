@@ -26,9 +26,8 @@ import {
 @Pipe({ name: 'decodeHtmlString', standalone: true })
 export class DecodeHtmlString implements PipeTransform {
   transform(value: string) {
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = value;
-    return tempElement.textContent;
+    const parsed = new DOMParser().parseFromString(value, 'text/html');
+    return parsed.body.textContent;
   }
 }
 

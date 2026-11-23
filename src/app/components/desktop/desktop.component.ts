@@ -16,7 +16,6 @@ import {
 import { CommonModule } from '@angular/common';
 import {
   CdkDrag,
-  CdkDragStart,
   CdkDragMove,
   CdkDragEnd,
   Point,
@@ -58,7 +57,6 @@ export class DesktopComponent implements AfterViewInit, AppletDrag {
 
   // Track drag state
   private dragStartPositions: Map<DesktopApplet, Point> = new Map();
-  private activelyDraggedApplet: DesktopApplet | null = null;
   dragGestureActive: boolean = false;
 
   constructor(
@@ -82,9 +80,8 @@ export class DesktopComponent implements AfterViewInit, AppletDrag {
     }));
   }
 
-  onDragStarted(event: CdkDragStart, applet: DesktopApplet) {
+  onDragStarted(applet: DesktopApplet) {
     this.dragGestureActive = true;
-    this.activelyDraggedApplet = applet;
 
     // If the dragged applet is not selected, clear selection and select only this one
     if (!this.selectedApplets.includes(applet)) {
@@ -148,7 +145,6 @@ export class DesktopComponent implements AfterViewInit, AppletDrag {
 
     // Clear drag state
     this.dragStartPositions.clear();
-    this.activelyDraggedApplet = null;
 
     // Force the drag-select library to recalculate element positions
     setTimeout(() => {

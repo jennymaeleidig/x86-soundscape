@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { NgFor } from '@angular/common';
 import { announcements } from './announcements';
 
 /**
@@ -10,7 +9,6 @@ import { announcements } from './announcements';
 @Component({
   selector: 'app-announcements',
   standalone: true,
-  imports: [NgFor],
   templateUrl: './announcements.component.html',
 })
 export class AnnouncementsComponent {
