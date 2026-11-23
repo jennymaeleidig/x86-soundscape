@@ -1,9 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  ViewChild,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
 import { WinampComponent } from '../winamp/winamp.component';
 import { AppletComponent } from '../applet/applet.component';
@@ -13,7 +8,7 @@ import {
   DragToSelectModule,
   SelectContainerComponent,
 } from 'ngx-drag-to-select';
-import { CommonModule } from '@angular/common';
+
 import {
   CdkDrag,
   CdkDragMove,
@@ -37,7 +32,6 @@ interface DesktopApplet {
     MenuComponent,
     WinampComponent,
     DragToSelectModule,
-    CommonModule,
     CdkDrag,
     AppletComponent,
   ],

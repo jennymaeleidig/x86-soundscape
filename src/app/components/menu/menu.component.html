@@ -120,9 +120,9 @@
               <ng-template>
                 <div [title]="ambienceName()" class="item">
                   <span class="name">{{ ambienceName() }}</span>
-                  <span *ngIf="ambienceCredit()" class="credit">{{
-                    ambienceCredit()
-                  }}</span>
+                  @if (ambienceCredit()) {
+                    <span class="credit">{{ ambienceCredit() }}</span>
+                  }
                 </div>
               </ng-template>
             </om-marquee>

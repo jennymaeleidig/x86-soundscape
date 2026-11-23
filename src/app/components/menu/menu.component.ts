@@ -11,7 +11,7 @@ import { FeatureId } from '../../services/feature/feature';
 import { WinampService } from '../../services/winamp/winamp.service';
 import { type PlaybackState } from '../../services/winamp/playback-state';
 import { NowPlayingService } from '../../services/now-playing/now-playing.service';
-import { CommonModule } from '@angular/common';
+
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
 import { AmbienceService } from '../../services/ambience/ambience';
 import {
@@ -34,7 +34,7 @@ export class DecodeHtmlString implements PipeTransform {
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [DecodeHtmlString, NgxMarqueeComponent, CommonModule],
+  imports: [DecodeHtmlString, NgxMarqueeComponent],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
 })
