@@ -5,7 +5,7 @@ export type Station = URLTrack & {
   metadataKind?: MetadataKind;
 };
 
-const DEFAULT_DURATION: number = 5999;
+const DEFAULT_DURATION = 5999;
 
 export default class Stations {
   static stations: Station[] = [
@@ -113,7 +113,7 @@ export default class Stations {
     {
       metaData: {
         artist: 'NTS Mixtapes',
-        title: 'Labrynth',
+        title: 'Labyrinth',
       },
       url: 'https://audio-edge-vqwx4.yyz.g.radiomast.io/51a1ebc2-ca46-43e4-9567-943551b956ce',
       duration: DEFAULT_DURATION,

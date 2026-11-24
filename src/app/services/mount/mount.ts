@@ -47,7 +47,7 @@ export class MountService {
       bindings,
     });
     this.appRef.attachView(ref.hostView);
-    target.appendChild(ref.location.nativeElement);
+    target.append(ref.location.nativeElement);
 
     return {
       destroy: () => {

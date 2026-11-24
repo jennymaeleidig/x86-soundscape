@@ -91,5 +91,6 @@ function metadataOf(reading: NowPlaying): MediaMetadata {
     return new MediaMetadata(fields);
   }
   // Environments without the constructor (tests) still get the shape.
+  // SAFETY: environments without the MediaMetadata constructor only need the fields shape.
   return fields as unknown as MediaMetadata;
 }

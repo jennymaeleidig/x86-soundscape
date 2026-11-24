@@ -1,4 +1,4 @@
-import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { Inject, Injectable, InjectionToken, OnDestroy } from '@angular/core';
 import Webamp from 'webamp';
 import Stations from '../../data/stations';
 import { NowPlayingService } from '../now-playing/now-playing.service';
@@ -53,7 +53,7 @@ type Engine = InstanceType<typeof Webamp>;
 @Injectable({
   providedIn: 'root',
 })
-export class WinampService {
+export class WinampService implements OnDestroy {
   /**
    * The cache over the engine's own authority on whether audio runs. The
    * store is the single funnel for every real status change — the element's
@@ -223,5 +223,10 @@ export class WinampService {
 
   next() {
     this.webamp.nextTrack();
+  }
+
+  ngOnDestroy() {
+    this.unsubTuneGate.unsubscribe();
+    this.unsubMediaSession.unsubscribe();
   }
 }

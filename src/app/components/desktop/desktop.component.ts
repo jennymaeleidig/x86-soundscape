@@ -5,6 +5,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   signal,
+  OnInit,
 } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
 import { WinampComponent } from '../winamp/winamp.component';
@@ -47,20 +48,20 @@ interface DesktopApplet {
   changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: AppletDrag, useExisting: DesktopComponent }],
 })
-export class DesktopComponent implements AfterViewInit, AppletDrag {
+export class DesktopComponent implements AfterViewInit, AppletDrag, OnInit {
   @ViewChild('container') selectContainer!: SelectContainerComponent;
   @ViewChild('container', { read: ElementRef }) containerRef!: ElementRef;
   @ViewChild('bounds') bounds!: ElementRef<HTMLElement>;
 
-  selectedApplets: Array<DesktopApplet> = [];
+  selectedApplets: DesktopApplet[] = [];
   console = console;
   applets: DesktopApplet[] = [];
   /** Zoneless: the select container stands down through this signal's write. */
   readonly appletIsMoving = signal(false);
 
   // Track drag state
-  private dragStartPositions: Map<DesktopApplet, Point> = new Map();
-  dragGestureActive: boolean = false;
+  private dragStartPositions = new Map<DesktopApplet, Point>();
+  dragGestureActive = false;
 
   constructor(
     private readonly desktopBounds: DesktopBounds,
@@ -127,7 +128,7 @@ export class DesktopComponent implements AfterViewInit, AppletDrag {
     const transform = element.style.transform;
 
     // Parse the transform to get actual delta (respecting boundaries)
-    let actualDelta = { x: 0, y: 0 };
+    const actualDelta = { x: 0, y: 0 };
     if (transform && transform !== 'none') {
       const match = transform.match(
         /translate3d\((-?\d+(?:\.\d+)?)px,\s*(-?\d+(?:\.\d+)?)px/,

@@ -151,6 +151,7 @@ export class NowPlayingService {
         }
       } else if (!this.failing) {
         this.failing = true;
+        // pi-lens-ignore: no-console-except-error — no logger exists; a failing Station is a real warning.
         console.warn(failureLine(station));
       }
       await this.rest();

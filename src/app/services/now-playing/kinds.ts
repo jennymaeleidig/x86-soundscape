@@ -139,12 +139,14 @@ function readIcestats(
   config: IcestatsConfig,
 ): NowPlaying | undefined {
   const source = asRecord(asRecord(raw)?.['icestats'])?.['source'];
-  const entry =
-    config.sourceIndex != null
-      ? Array.isArray(source)
-        ? asRecord(source[config.sourceIndex])
-        : undefined
-      : asRecord(source);
+  let entry: Record<string, unknown> | undefined;
+  if (config.sourceIndex != null) {
+    entry = Array.isArray(source)
+      ? asRecord(source[config.sourceIndex])
+      : undefined;
+  } else {
+    entry = asRecord(source);
+  }
   const title = asString(entry?.[config.titleField]);
   if (!title) {
     return undefined;

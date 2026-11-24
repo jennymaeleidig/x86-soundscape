@@ -3,20 +3,22 @@ import {
   ElementRef,
   ViewChild,
   ChangeDetectionStrategy,
+  AfterViewInit,
+  OnInit,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import Webamp from 'webamp';
 import { WinampService } from '../../services/winamp/winamp.service';
 
 @Component({
-  selector: 'winamp',
+  selector: 'app-winamp',
   standalone: true,
   imports: [],
   templateUrl: './winamp.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './winamp.component.css',
 })
-export class WinampComponent {
+export class WinampComponent implements AfterViewInit, OnInit {
   @ViewChild('winamp') winamp!: ElementRef<HTMLElement>;
   title = 'component';
 
@@ -40,6 +42,7 @@ export class WinampComponent {
 
   ngOnInit() {
     if (!Webamp.browserIsSupported()) {
+      // pi-lens-ignore: no-alert — refusing to mount needs a visible message; no generic notifier exists.
       alert('Oh no! Webamp does not work in this browser!');
       throw new Error("What's the point of anything?");
     }

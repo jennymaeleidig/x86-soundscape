@@ -1,4 +1,9 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { type Observable, retry } from 'rxjs';
 import { NgxMarqueeComponent } from '@omnedia/ngx-marquee';
@@ -19,7 +24,7 @@ export type VideoData = Video;
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './surfer.component.css',
 })
-export class SurferComponent {
+export class SurferComponent implements OnInit {
   // The Surfer holds the Channel itself — no index beside it — so the label
   // it prints is the Channel it is showing and cannot go stale.
   currentChannel: Channel = CHANNELS[0];

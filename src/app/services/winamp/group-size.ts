@@ -33,9 +33,7 @@ export interface WindowBox {
 }
 
 /** The engine's window map, keyed by the engine's window id. */
-export interface WindowBoxes {
-  [windowId: string]: WindowBox;
-}
+export type WindowBoxes = Record<string, WindowBox>;
 
 /** The union of the player's open windows: the rectangle the engine drags. */
 export interface GroupSize {

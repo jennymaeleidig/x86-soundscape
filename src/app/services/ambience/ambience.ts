@@ -65,6 +65,7 @@ export class AmbienceService {
   /** Pick a new random Sound and play it — the only thing that replaces the held one. */
   shuffle(): void {
     if (this.sounds.length === 0) {
+      // pi-lens-ignore: no-console-except-error — no logger exists; an empty ambience set is a real warning.
       console.warn('No ambience sounds available.');
       this.releaseElement();
       this.publish({ sound: null, playing: false });

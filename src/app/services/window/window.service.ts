@@ -59,7 +59,7 @@ export class WindowService {
       '--cascade-n',
       String(this.windows.length),
     );
-    target.appendChild(mountedElement);
+    target.append(mountedElement);
 
     const handle = this.mount.mount(WindowComponent, mountedElement, [
       inputBinding('title', () => options.title),
@@ -104,11 +104,11 @@ export class WindowService {
 
   /** Whether the Window belongs to the last entry, which is the Active Window. */
   isActive(id: FeatureId): boolean {
-    return this.windows[this.windows.length - 1]?.options.id === id;
+    return this.windows.at(-1)?.options.id === id;
   }
 
   private isOpen(id: FeatureId): boolean {
-    return this.indexOf(id) >= 0;
+    return this.windows.some((open) => open.options.id === id);
   }
 
   private indexOf(id: FeatureId): number {

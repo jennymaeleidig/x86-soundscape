@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/apmantza/pi-lens/master/docs/schema/pi-lens-config-v1.json",
+  "ignore": ["dist/**", ".angular/**", "src/assets/**"],
+  "rules": {
+    "find-import-file-without-extension": {
+      "disable": ["find-import-file-without-extension"]
+    },
+    "large-class": { "disable": ["large-class"] },
+    "missing-component-decorator": {
+      "disable": ["missing-component-decorator"]
+    },
+    "no-important": { "disable": ["no-important"] },
+    "no-runtime-typeof": { "disable": ["no-runtime-typeof"] },
+    "no-shape-in-symbol-names": {
+      "disable": ["no-shape-in-symbol-names"]
+    },
+    "no-unknown-parameters": {
+      "disable": ["no-unknown-parameters"]
+    },
+    "no-unsafe-dictionary-unknown": {
+      "disable": ["no-unsafe-dictionary-unknown"]
+    }
+  }
+}

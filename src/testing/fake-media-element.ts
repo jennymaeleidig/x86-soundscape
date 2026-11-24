@@ -12,17 +12,16 @@ export class FakeMediaElement {
   /** Every source set on an audio element while installed, in order. */
   static requests: string[] = [];
 
-  private static real: typeof document.createElement | undefined;
   private static spy: MockInstance | undefined;
 
   /** Puts the recording shim behind the document's element factory. */
   static install(): void {
     FakeMediaElement.requests = [];
-    FakeMediaElement.real = document.createElement.bind(document);
+    const real = document.createElement.bind(document);
     FakeMediaElement.spy = vi
       .spyOn(document, 'createElement')
       .mockImplementation(((tag: string, options?: ElementCreationOptions) => {
-        const element = FakeMediaElement.real!(tag, options);
+        const element = real(tag, options);
         if (String(tag).toLowerCase() !== 'audio') {
           return element;
         }

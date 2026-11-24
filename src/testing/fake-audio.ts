@@ -15,18 +15,24 @@ export class FakeAudio {
   static install(): void {
     FakeAudio.built = [];
     FakeAudio.refusePlay = false;
+    // SAFETY: webamp installs itself on the global Audio; the fake swaps it at runtime.
     const audio = globalThis as unknown as { Audio: unknown };
     FakeAudio.real = audio.Audio;
     audio.Audio = FakeAudio;
   }
 
   static restore(): void {
+    // SAFETY: install recorded the real constructor before replacing it.
     (globalThis as unknown as { Audio: unknown }).Audio = FakeAudio.real;
   }
 
   /** The element the module built last. */
   static get last(): FakeAudio {
-    return FakeAudio.built[FakeAudio.built.length - 1];
+    const last = FakeAudio.built.at(-1);
+    if (!last) {
+      throw new Error('No FakeAudio has been built');
+    }
+    return last;
   }
 
   readonly src: string;

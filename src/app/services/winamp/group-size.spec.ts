@@ -87,7 +87,7 @@ describe('groupSize$', () => {
     const source = new DrivenWindows();
     source.boxes = { main: box(0, 0, 0, 0), playlist: box(0, 116, 0, 0) };
 
-    const seen: Array<GroupSize | null> = [];
+    const seen: (GroupSize | null)[] = [];
     const subscription = groupSize$(source).subscribe((size) =>
       seen.push(size),
     );
@@ -109,7 +109,7 @@ describe('groupSize$', () => {
     const source = new DrivenWindows();
     source.boxes = { main: box(0, 0, 0, 0) };
 
-    const seen: Array<GroupSize | null> = [];
+    const seen: (GroupSize | null)[] = [];
     const subscription = groupSize$(source).subscribe((size) =>
       seen.push(size),
     );
@@ -130,7 +130,7 @@ describe('groupSize$', () => {
     const source = new DrivenWindows();
     source.boxes = { main: box(0, 0, 0, 0, { canDouble: true }) };
 
-    const seen: Array<GroupSize | null> = [];
+    const seen: (GroupSize | null)[] = [];
     const subscription = groupSize$(source).subscribe((size) =>
       seen.push(size),
     );
@@ -152,12 +152,12 @@ describe('groupSize$', () => {
     source.boxes = { main: box(0, 0, 0, 0) };
     const size$ = groupSize$(source);
 
-    const first: Array<GroupSize | null> = [];
+    const first: (GroupSize | null)[] = [];
     const a = size$.subscribe((size) => first.push(size));
     await flush();
     expect(source.subscribers).toBe(1);
 
-    const second: Array<GroupSize | null> = [];
+    const second: (GroupSize | null)[] = [];
     const b = size$.subscribe((size) => second.push(size));
     await flush();
     expect(second).toEqual([{ width: 275, height: 116 }]);

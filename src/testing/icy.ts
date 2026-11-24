@@ -6,5 +6,12 @@ export const icyPayload = (streamTitle: string) => ({
 });
 
 /** The plain-icy Station most poll specs tune. */
-export const plainStation = () =>
-  Stations.stations.find((candidate) => !candidate.metadataKind)!;
+export const plainStation = () => {
+  const station = Stations.stations.find(
+    (candidate) => !candidate.metadataKind,
+  );
+  if (!station) {
+    throw new Error('No Station without a metadata kind exists');
+  }
+  return station;
+};

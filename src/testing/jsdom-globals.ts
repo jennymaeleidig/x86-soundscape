@@ -34,7 +34,7 @@ globals['IntersectionObserver'] ??= NoopIntersectionObserver;
  * observe what reaches the audio element rather than what the graph does.
  */
 function inertAudioNode(): Record<string, unknown> {
-  const node: Record<string, unknown> = {
+  const node = {
     connect: () => node,
     disconnect: () => undefined,
     gain: { value: 1 },
@@ -45,7 +45,8 @@ function inertAudioNode(): Record<string, unknown> {
     smoothingTimeConstant: 0,
     getByteFrequencyData: () => undefined,
     getByteTimeDomainData: () => undefined,
-  };
+  } satisfies Record<string, unknown>;
+  // pi-lens-ignore: redundant-state — `connect` refers back to the node it returns.
   return node;
 }
 
@@ -84,10 +85,10 @@ globals['AudioContext'] ??= NoopAudioContext;
 // webamp patches node wiring through the real AudioNode prototype's connect
 // and disconnect, so the stub must carry them.
 globals['AudioNode'] ??= class NoopAudioNode {
-  connect(): unknown {
+  connect(): void {
     return undefined;
   }
-  disconnect(): unknown {
+  disconnect(): void {
     return undefined;
   }
 };

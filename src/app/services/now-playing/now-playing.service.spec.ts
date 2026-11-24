@@ -40,7 +40,6 @@ describe('NowPlayingService', () => {
     for (const station of kinds) {
       const seen = await readings();
       service.tune(station);
-      await seen;
       transport.queue(undefined); // keep the next tune's first attempt settled
       expect(seen.at(-1)).toEqual({
         artist: station.metaData!.artist,

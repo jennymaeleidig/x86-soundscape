@@ -36,7 +36,7 @@ export const flushPage = (
 export const flushMetadata = (
   httpMock: HttpTestingController,
   identifier: string,
-  body: object,
+  body: Record<string, unknown>,
 ) => {
   const req = httpMock.expectOne(`${METADATA_URL}/${identifier}`);
   expect(req.request.method).toBe('GET');
